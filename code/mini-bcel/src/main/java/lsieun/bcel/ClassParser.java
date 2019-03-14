@@ -5,8 +5,10 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import lsieun.bcel.classfile.AccessFlag;
+import lsieun.bcel.classfile.ConstantPool;
 import lsieun.bcel.classfile.JavaClass;
-import lsieun.bcel.classfile.JavaConst;
+import lsieun.bcel.classfile.consts.JVMConst;
 import lsieun.bcel.exceptions.ClassFormatException;
 import lsieun.bcel.utils.IOUtils;
 
@@ -26,9 +28,9 @@ public final class ClassParser {
     private int superclass_name_index;
     private int[] interfaces; // Names of implemented interfaces
     private ConstantPool constant_pool; // collection of constants
-//    private Field[] fields; // class fields, i.e., its variables
-//    private Method[] methods; // methods defined in the class
-//    private Attribute[] attributes; // attributes defined in the class
+    private Field[] fields; // class fields, i.e., its variables
+    private Method[] methods; // methods defined in the class
+    private Attribute[] attributes; // attributes defined in the class
 
     /**
      * Parse class from the given stream.
@@ -78,6 +80,17 @@ public final class ClassParser {
             /****************** Read constant pool and related **************/
             // Read constant pool entries
             readConstantPool();
+            // Get class information
+            readClassInfo();
+            // Get interface information, i.e., implemented interfaces
+            readInterfaces();
+            /****************** Read class fields and methods ***************/
+            // Read class fields, i.e., the variables of the class
+            readFields();
+            // Read class methods, i.e., the functions in the class
+            readMethods();
+            // Read class attributes
+            readAttributes();
         }
         finally {
             if (fileOwned) {
@@ -100,7 +113,7 @@ public final class ClassParser {
      * @throws  ClassFormatException
      */
     private void readID() throws IOException, ClassFormatException {
-        if (dataInputStream.readInt() != JavaConst.JVM_CLASSFILE_MAGIC) {
+        if (dataInputStream.readInt() != JVMConst.JVM_CLASSFILE_MAGIC) {
             throw new ClassFormatException(file_name + " is not a Java .class file");
         }
     }
@@ -122,6 +135,79 @@ public final class ClassParser {
      */
     private void readConstantPool() throws IOException, ClassFormatException {
         constant_pool = new ConstantPool(dataInputStream);
+    }
+
+    /**
+     * Read information about the class and its super class.
+     * @throws  IOException
+     * @throws  ClassFormatException
+     */
+    private void readClassInfo() throws IOException, ClassFormatException {
+        access_flags = dataInputStream.readUnsignedShort();
+        /* Interfaces are implicitely abstract, the flag should be set
+         * according to the JVM specification.
+         */
+        if ((access_flags & AccessFlag.INTERFACE) != 0) {
+            access_flags |= AccessFlag.ABSTRACT;
+        }
+        if (((access_flags & AccessFlag.ABSTRACT) != 0)
+                && ((access_flags & AccessFlag.FINAL) != 0)) {
+            throw new ClassFormatException("Class " + file_name + " can't be both final and abstract");
+        }
+        class_name_index = dataInputStream.readUnsignedShort();
+        superclass_name_index = dataInputStream.readUnsignedShort();
+    }
+
+    /**
+     * Read information about the interfaces implemented by this class.
+     * @throws  IOException
+     * @throws  ClassFormatException
+     */
+    private void readInterfaces() throws IOException, ClassFormatException {
+        final int interfaces_count = dataInputStream.readUnsignedShort();
+        interfaces = new int[interfaces_count];
+        for (int i = 0; i < interfaces_count; i++) {
+            interfaces[i] = dataInputStream.readUnsignedShort();
+        }
+    }
+
+    /**
+     * Read information about the fields of the class, i.e., its variables.
+     * @throws  IOException
+     * @throws  ClassFormatException
+     */
+    private void readFields() throws IOException, ClassFormatException {
+        final int fields_count = dataInputStream.readUnsignedShort();
+        fields = new Field[fields_count];
+        for (int i = 0; i < fields_count; i++) {
+            fields[i] = new Field(dataInputStream, constant_pool);
+        }
+    }
+
+    /**
+     * Read information about the methods of the class.
+     * @throws  IOException
+     * @throws  ClassFormatException
+     */
+    private void readMethods() throws IOException, ClassFormatException {
+        final int methods_count = dataInputStream.readUnsignedShort();
+        methods = new Method[methods_count];
+        for (int i = 0; i < methods_count; i++) {
+            methods[i] = new Method(dataInputStream, constant_pool);
+        }
+    }
+
+    /**
+     * Read information about the attributes of the class.
+     * @throws  IOException
+     * @throws  ClassFormatException
+     */
+    private void readAttributes() throws IOException, ClassFormatException {
+        final int attributes_count = dataInputStream.readUnsignedShort();
+        attributes = new Attribute[attributes_count];
+        for (int i = 0; i < attributes_count; i++) {
+            attributes[i] = Attribute.readAttribute(dataInputStream, constant_pool);
+        }
     }
     // endregion
 }

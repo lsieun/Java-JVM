@@ -8,19 +8,20 @@ import lsieun.bcel.classfile.consts.CPConst;
 
 /**
  * This class is derived from the abstract {@link Constant}
- * and represents a reference to a long object.
+ * and represents a reference to a String object.
  *
  * @see     Constant
  */
-public final class ConstantLong extends Constant {
-    private long bytes;
+public final class ConstantString extends Constant {
+
+    private int string_index; // Identical to ConstantClass except for this name
 
     /**
-     * @param bytes Data
+     * @param string_index Index of Constant_Utf8 in constant pool
      */
-    public ConstantLong(final long bytes) {
-        super(CPConst.CONSTANT_Long);
-        this.bytes = bytes;
+    public ConstantString(final int string_index) {
+        super(CPConst.CONSTANT_String);
+        this.string_index = string_index;
     }
 
     /**
@@ -29,15 +30,15 @@ public final class ConstantLong extends Constant {
      * @param file Input stream
      * @throws IOException
      */
-    ConstantLong(final DataInput file) throws IOException {
-        this(file.readLong());
+    ConstantString(final DataInput file) throws IOException {
+        this(file.readUnsignedShort());
     }
 
     /**
-     * @return data, i.e., 8 bytes.
+     * @return Index in constant pool of the string (ConstantUtf8).
      */
-    public final long getBytes() {
-        return bytes;
+    public final int getStringIndex() {
+        return string_index;
     }
 
     /**
@@ -49,7 +50,7 @@ public final class ConstantLong extends Constant {
      */
     @Override
     public void accept(final Visitor v) {
-        v.visitConstantLong(this);
+        v.visitConstantString(this);
     }
 
     /**
@@ -57,6 +58,6 @@ public final class ConstantLong extends Constant {
      */
     @Override
     public final String toString() {
-        return super.toString() + "(bytes = " + bytes + ")";
+        return super.toString() + "(string_index = " + string_index + ")";
     }
 }

@@ -8,19 +8,22 @@ import lsieun.bcel.classfile.consts.CPConst;
 
 /**
  * This class is derived from the abstract {@link Constant}
- * and represents a reference to a long object.
+ * and represents a reference to a package.
+ *
+ * <p>Note: Early access Java 9 support- currently subject to change</p>
  *
  * @see     Constant
  */
-public final class ConstantLong extends Constant {
-    private long bytes;
+public final class ConstantPackage extends Constant {
+    private int name_index;
 
     /**
-     * @param bytes Data
+     * @param name_index Name index in constant pool.  Should refer to a
+     * ConstantUtf8.
      */
-    public ConstantLong(final long bytes) {
-        super(CPConst.CONSTANT_Long);
-        this.bytes = bytes;
+    public ConstantPackage(final int name_index) {
+        super(CPConst.CONSTANT_Package);
+        this.name_index = name_index;
     }
 
     /**
@@ -29,15 +32,15 @@ public final class ConstantLong extends Constant {
      * @param file Input stream
      * @throws IOException
      */
-    ConstantLong(final DataInput file) throws IOException {
-        this(file.readLong());
+    ConstantPackage(final DataInput file) throws IOException {
+        this(file.readUnsignedShort());
     }
 
     /**
-     * @return data, i.e., 8 bytes.
+     * @return Name index in constant pool of package name.
      */
-    public final long getBytes() {
-        return bytes;
+    public final int getNameIndex() {
+        return name_index;
     }
 
     /**
@@ -49,7 +52,7 @@ public final class ConstantLong extends Constant {
      */
     @Override
     public void accept(final Visitor v) {
-        v.visitConstantLong(this);
+        v.visitConstantPackage(this);
     }
 
     /**
@@ -57,6 +60,6 @@ public final class ConstantLong extends Constant {
      */
     @Override
     public final String toString() {
-        return super.toString() + "(bytes = " + bytes + ")";
+        return super.toString() + "(name_index = " + name_index + ")";
     }
 }

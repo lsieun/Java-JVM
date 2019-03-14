@@ -8,19 +8,16 @@ import lsieun.bcel.classfile.consts.CPConst;
 
 /**
  * This class is derived from the abstract {@link Constant}
- * and represents a reference to a long object.
+ * and represents a reference to a method type.
  *
  * @see     Constant
  */
-public final class ConstantLong extends Constant {
-    private long bytes;
+public final class ConstantMethodType extends Constant {
+    private int descriptor_index;
 
-    /**
-     * @param bytes Data
-     */
-    public ConstantLong(final long bytes) {
-        super(CPConst.CONSTANT_Long);
-        this.bytes = bytes;
+    public ConstantMethodType(final int descriptor_index) {
+        super(CPConst.CONSTANT_MethodType);
+        this.descriptor_index = descriptor_index;
     }
 
     /**
@@ -29,19 +26,16 @@ public final class ConstantLong extends Constant {
      * @param file Input stream
      * @throws IOException
      */
-    ConstantLong(final DataInput file) throws IOException {
-        this(file.readLong());
+    ConstantMethodType(final DataInput file) throws IOException {
+        this(file.readUnsignedShort());
+    }
+
+    public int getDescriptorIndex() {
+        return descriptor_index;
     }
 
     /**
-     * @return data, i.e., 8 bytes.
-     */
-    public final long getBytes() {
-        return bytes;
-    }
-
-    /**
-     * Called by objects that are traversing the nodes of the tree implicitely
+     * Called by objects that are traversing the nodes of the tree implicitly
      * defined by the contents of a Java class. I.e., the hierarchy of methods,
      * fields, attributes, etc. spawns a tree of objects.
      *
@@ -49,14 +43,14 @@ public final class ConstantLong extends Constant {
      */
     @Override
     public void accept(final Visitor v) {
-        v.visitConstantLong(this);
+        v.visitConstantMethodType(this);
     }
 
     /**
-     * @return String representation.
+     * @return String representation
      */
     @Override
     public final String toString() {
-        return super.toString() + "(bytes = " + bytes + ")";
+        return super.toString() + "(descriptor_index = " + descriptor_index + ")";
     }
 }

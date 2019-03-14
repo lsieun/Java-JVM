@@ -1,4 +1,4 @@
-package lsieun.bcel.classfile.cp;
+package lsieun.bcel.classfile.consts;
 
 public class CPConst {
     /*

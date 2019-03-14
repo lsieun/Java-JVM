@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import lsieun.bcel.classfile.Node;
 import lsieun.bcel.classfile.Visitor;
+import lsieun.bcel.classfile.consts.CPConst;
 import lsieun.bcel.exceptions.ClassFormatException;
 
 public abstract class Constant implements Node {
@@ -56,21 +57,16 @@ public abstract class Constant implements Node {
                 return new ConstantDouble(dataInput);
             case CPConst.CONSTANT_Class:
                 return new ConstantClass(dataInput);
+            case CPConst.CONSTANT_String:
+                return new ConstantString(dataInput);
             case CPConst.CONSTANT_Fieldref:
                 return new ConstantFieldref(dataInput);
             case CPConst.CONSTANT_Methodref:
                 return new ConstantMethodref(dataInput);
             case CPConst.CONSTANT_InterfaceMethodref:
                 return new ConstantInterfaceMethodref(dataInput);
-            case CPConst.CONSTANT_String:
-                return new ConstantString(dataInput);
-
-
-
-
             case CPConst.CONSTANT_NameAndType:
                 return new ConstantNameAndType(dataInput);
-
             case CPConst.CONSTANT_MethodHandle:
                 return new ConstantMethodHandle(dataInput);
             case CPConst.CONSTANT_MethodType:
@@ -93,7 +89,7 @@ public abstract class Constant implements Node {
      */
     @Override
     public String toString() {
-        return getConstantName(tag) + "[" + tag + "]";
+        return CPConst.getConstantName(tag) + "[" + tag + "]";
     }
 
 }

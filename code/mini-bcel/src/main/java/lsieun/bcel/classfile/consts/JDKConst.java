@@ -1,14 +1,6 @@
-package lsieun.bcel.classfile;
+package lsieun.bcel.classfile.consts;
 
-public class JavaConst {
-    /**
-     * Java class file format Magic number (0xCAFEBABE)
-     *
-     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.1-200-A">
-     * The ClassFile Structure in The Java Virtual Machine Specification</a>
-     */
-    public static final int JVM_CLASSFILE_MAGIC = 0xCAFEBABE;
-
+public class JDKConst {
     /**
      * The major version number of class files
      * for JDK 1.1.
@@ -74,5 +66,4 @@ public class JavaConst {
      * for JDK 11.
      */
     public static final int JAVA_11 = 55;
-
 }

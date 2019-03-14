@@ -4,6 +4,7 @@ import java.io.DataInput;
 import java.io.IOException;
 
 import lsieun.bcel.classfile.Visitor;
+import lsieun.bcel.classfile.consts.CPConst;
 
 /**
  * This class is derived from the abstract  {@link Constant}
