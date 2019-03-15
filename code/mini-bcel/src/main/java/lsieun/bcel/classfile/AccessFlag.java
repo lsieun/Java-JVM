@@ -29,6 +29,32 @@ public class AccessFlag {
     public static final int SUPER     = 0x0020;
     public static final int MODULE    = 0x8000;
 
+    /** One of the access flags for fields, methods, or classes.
+     *  @see #PUBLIC
+     */
+    public static final int MAX_ACC_FLAG     = ENUM;
+
+    /**
+     * The names of the access flags.
+     */
+    private static final String[] ACCESS_NAMES = {
+            "public", "private", "protected", "static", "final", "synchronized",
+            "volatile", "transient", "native", "interface", "abstract", "strictfp",
+            "synthetic", "annotation", "enum"
+    };
+
+    /** @since 6.0 */
+    public static final int ACCESS_NAMES_LENGTH = ACCESS_NAMES.length;
+
+    /**
+     * @param index
+     * @return the ACCESS_NAMES entry at the given index
+     * @since 6.0
+     */
+    public static String getAccessName(final int index) {
+        return ACCESS_NAMES[index];
+    }
+
     /**
      * Turns the public bit on.  The protected and private bits are
      * cleared.

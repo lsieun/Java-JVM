@@ -1,8 +1,17 @@
 package lsieun.bcel.classfile;
 
+import lsieun.bcel.classfile.attributes.Code;
 import lsieun.bcel.classfile.attributes.CodeException;
 import lsieun.bcel.classfile.attributes.ConstantValue;
+import lsieun.bcel.classfile.attributes.ExceptionTable;
+import lsieun.bcel.classfile.attributes.InnerClass;
+import lsieun.bcel.classfile.attributes.InnerClasses;
+import lsieun.bcel.classfile.attributes.LineNumber;
+import lsieun.bcel.classfile.attributes.LineNumberTable;
+import lsieun.bcel.classfile.attributes.LocalVariable;
+import lsieun.bcel.classfile.attributes.LocalVariableTable;
 import lsieun.bcel.classfile.attributes.SourceFile;
+import lsieun.bcel.classfile.attributes.Synthetic;
 import lsieun.bcel.classfile.cp.ConstantClass;
 import lsieun.bcel.classfile.cp.ConstantDouble;
 import lsieun.bcel.classfile.cp.ConstantDynamic;
@@ -73,10 +82,37 @@ public interface Visitor {
     // endregion
 
     // region attributes
-    void visitConstantValue(ConstantValue obj);
+
+    // region ClassFile
+    void visitInnerClass(InnerClass obj);
+
+    void visitInnerClasses(InnerClasses obj);
 
     void visitSourceFile(SourceFile obj);
+    // endregion
 
+    // region field_info
+    void visitConstantValue(ConstantValue obj);
+    // endregion
+
+    // region method_info
+    void visitCode(Code obj);
+
+    void visitExceptionTable(ExceptionTable obj);
+    // endregion
+
+    // region Code
     void visitCodeException(CodeException obj);
+
+    void visitLineNumber(LineNumber obj);
+
+    void visitLineNumberTable(LineNumberTable obj);
+
+    void visitLocalVariable(LocalVariable obj);
+
+    void visitLocalVariableTable(LocalVariableTable obj);
+    // endregion
+
+    void visitSynthetic(Synthetic obj);
     // endregion
 }

@@ -3,8 +3,11 @@ package lsieun.bcel.classfile.attributes;
 import java.io.DataInput;
 import java.io.IOException;
 
+import lsieun.bcel.classfile.ConstantPool;
 import lsieun.bcel.classfile.Node;
+import lsieun.bcel.classfile.Utility;
 import lsieun.bcel.classfile.Visitor;
+import lsieun.bcel.classfile.consts.CPConst;
 
 /**
  * This class represents an entry in the exception table of the <em>Code</em>
@@ -104,5 +107,19 @@ public final class CodeException implements Node {
     public final String toString() {
         return "CodeException(start_pc = " + start_pc + ", end_pc = " + end_pc + ", handler_pc = "
                 + handler_pc + ", catch_type = " + catch_type + ")";
+    }
+
+    /**
+     * @return String representation.
+     */
+    public final String toString(final ConstantPool cp, final boolean verbose) {
+        String str;
+        if (catch_type == 0) {
+            str = "<Any exception>(0)";
+        } else {
+            str = Utility.compactClassName(cp.getConstantString(catch_type, CPConst.CONSTANT_Class), false)
+                    + (verbose ? "(" + catch_type + ")" : "");
+        }
+        return start_pc + "\t" + end_pc + "\t" + handler_pc + "\t" + str;
     }
 }

@@ -46,6 +46,14 @@ public abstract class Attribute implements Node {
     }
 
     /**
+     * @param length length in bytes.
+     */
+    public final void setLength(final int length)
+    {
+        this.length = length;
+    }
+
+    /**
      * @return Tag of attribute, i.e., its type. Value may not be altered, thus there is no setTag() method.
      */
     public final byte getTag()
