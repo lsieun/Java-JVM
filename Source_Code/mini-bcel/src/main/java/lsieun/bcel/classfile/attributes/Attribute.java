@@ -62,6 +62,15 @@ public abstract class Attribute implements Node {
     }
 
     /**
+     * @return Name of attribute
+     */
+    public String getName()
+    {
+        final ConstantUtf8 c = (ConstantUtf8) constant_pool.getConstant(name_index, CPConst.CONSTANT_Utf8);
+        return c.getBytes();
+    }
+
+    /**
      * @return Constant pool used by this object.
      * @see ConstantPool
      */

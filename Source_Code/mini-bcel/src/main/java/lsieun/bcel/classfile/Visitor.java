@@ -3,6 +3,7 @@ package lsieun.bcel.classfile;
 import lsieun.bcel.classfile.attributes.Code;
 import lsieun.bcel.classfile.attributes.CodeException;
 import lsieun.bcel.classfile.attributes.ConstantValue;
+import lsieun.bcel.classfile.attributes.Deprecated;
 import lsieun.bcel.classfile.attributes.ExceptionTable;
 import lsieun.bcel.classfile.attributes.InnerClass;
 import lsieun.bcel.classfile.attributes.InnerClasses;
@@ -10,8 +11,10 @@ import lsieun.bcel.classfile.attributes.LineNumber;
 import lsieun.bcel.classfile.attributes.LineNumberTable;
 import lsieun.bcel.classfile.attributes.LocalVariable;
 import lsieun.bcel.classfile.attributes.LocalVariableTable;
+import lsieun.bcel.classfile.attributes.Signature;
 import lsieun.bcel.classfile.attributes.SourceFile;
 import lsieun.bcel.classfile.attributes.Synthetic;
+import lsieun.bcel.classfile.attributes.Unknown;
 import lsieun.bcel.classfile.cp.ConstantClass;
 import lsieun.bcel.classfile.cp.ConstantDouble;
 import lsieun.bcel.classfile.cp.ConstantDynamic;
@@ -113,6 +116,12 @@ public interface Visitor {
     void visitLocalVariableTable(LocalVariableTable obj);
     // endregion
 
+    void visitDeprecated(Deprecated obj);
+
+    void visitSignature(Signature obj);
+
     void visitSynthetic(Synthetic obj);
+
+    void visitUnknown(Unknown obj);
     // endregion
 }
