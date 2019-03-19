@@ -9,25 +9,23 @@ import lsieun.bcel.classfile.ConstantPool;
  * @version $Id: ElementValue
  */
 public abstract class ElementValue {
-    public static final byte STRING            = 's';
-    public static final byte ENUM_CONSTANT     = 'e';
-    public static final byte CLASS             = 'c';
-    public static final byte ANNOTATION        = '@';
-    public static final byte ARRAY             = '[';
-    public static final byte PRIMITIVE_INT     = 'I';
-    public static final byte PRIMITIVE_BYTE    = 'B';
-    public static final byte PRIMITIVE_CHAR    = 'C';
-    public static final byte PRIMITIVE_DOUBLE  = 'D';
-    public static final byte PRIMITIVE_FLOAT   = 'F';
-    public static final byte PRIMITIVE_LONG    = 'J';
-    public static final byte PRIMITIVE_SHORT   = 'S';
+    public static final byte STRING = 's';
+    public static final byte ENUM_CONSTANT = 'e';
+    public static final byte CLASS = 'c';
+    public static final byte ANNOTATION = '@';
+    public static final byte ARRAY = '[';
+    public static final byte PRIMITIVE_INT = 'I';
+    public static final byte PRIMITIVE_BYTE = 'B';
+    public static final byte PRIMITIVE_CHAR = 'C';
+    public static final byte PRIMITIVE_DOUBLE = 'D';
+    public static final byte PRIMITIVE_FLOAT = 'F';
+    public static final byte PRIMITIVE_LONG = 'J';
+    public static final byte PRIMITIVE_SHORT = 'S';
     public static final byte PRIMITIVE_BOOLEAN = 'Z';
 
-    public static ElementValue readElementValue(final DataInput input, final ConstantPool cpool) throws IOException
-    {
+    public static ElementValue readElementValue(final DataInput input, final ConstantPool cpool) throws IOException {
         final byte type = input.readByte();
-        switch (type)
-        {
+        switch (type) {
             case PRIMITIVE_BYTE:
             case PRIMITIVE_CHAR:
             case PRIMITIVE_DOUBLE:
@@ -46,14 +44,13 @@ public abstract class ElementValue {
                 return new ClassElementValue(CLASS, input.readUnsignedShort(), cpool);
 
             case ANNOTATION:
-                // TODO isRuntimeVisible
+                // TODO isRuntimeVisible  这是原来的注释，现在我还不明白是要做什么
                 return new AnnotationElementValue(ANNOTATION, AnnotationEntry.read(input, cpool, false), cpool);
 
             case ARRAY:
                 final int numArrayVals = input.readUnsignedShort();
                 final ElementValue[] evalues = new ElementValue[numArrayVals];
-                for (int j = 0; j < numArrayVals; j++)
-                {
+                for (int j = 0; j < numArrayVals; j++) {
                     evalues[j] = ElementValue.readElementValue(input, cpool);
                 }
                 return new ArrayElementValue(ARRAY, evalues, cpool);

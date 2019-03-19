@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.sun.org.apache.bcel.internal.util.ByteSequence;
 
+import lsieun.bcel.classfile.attributes.LocalVariable;
+import lsieun.bcel.classfile.attributes.LocalVariableTable;
 import lsieun.bcel.classfile.consts.CPConst;
 import lsieun.bcel.classfile.consts.OpcodeConst;
 import lsieun.bcel.classfile.cp.Constant;
@@ -101,6 +103,16 @@ public class Utility {
             }
         }
         return buf.toString().trim();
+    }
+
+    /**
+     * Convert bit field of flags into string such as `static final'.
+     *
+     * @param  access_flags Access flags
+     * @return String representation of flags
+     */
+    public static String accessToString( final int access_flags ) {
+        return accessToString(access_flags, false);
     }
 
     /**
@@ -490,6 +502,96 @@ public class Utility {
         } catch (final StringIndexOutOfBoundsException e) { // Should never occur
             throw new ClassFormatException("Invalid signature: " + signature, e);
         }
+    }
+
+    /**
+     * Converts signature to string with all class names compacted.
+     *
+     * @param signature to convert
+     * @return Human readable signature
+     */
+    public static String signatureToString( final String signature ) {
+        return signatureToString(signature, true);
+    }
+
+    /**
+     * A returntype signature represents the return value from a method.
+     * It is a series of bytes in the following grammar:
+     *
+     * <pre>
+     * &lt;return_signature&gt; ::= &lt;field_type&gt; | V
+     * </pre>
+     *
+     * The character V indicates that the method returns no value. Otherwise, the
+     * signature indicates the type of the return value.
+     * An argument signature represents an argument passed to a method:
+     *
+     * <pre>
+     * &lt;argument_signature&gt; ::= &lt;field_type&gt;
+     * </pre>
+     *
+     * A method signature represents the arguments that the method expects, and
+     * the value that it returns.
+     * <pre>
+     * &lt;method_signature&gt; ::= (&lt;arguments_signature&gt;) &lt;return_signature&gt;
+     * &lt;arguments_signature&gt;::= &lt;argument_signature&gt;*
+     * </pre>
+     *
+     * This method converts such a string into a Java type declaration like
+     * `void main(String[])' and throws a `ClassFormatException' when the parsed
+     * type is invalid.
+     *
+     * @param  signature    Method signature
+     * @param  name         Method name
+     * @param  access       Method access rights
+     * @param chopit
+     * @param vars
+     * @return Java type declaration
+     * @throws  ClassFormatException
+     */
+    public static String methodSignatureToString( final String signature, final String name,
+                                                  final String access, final boolean chopit, final LocalVariableTable vars ) throws ClassFormatException {
+        final StringBuilder buf = new StringBuilder("(");
+        String type;
+        int index;
+        int var_index = access.contains("static") ? 0 : 1;
+        try { // Read all declarations between for `(' and `)'
+            if (signature.charAt(0) != '(') {
+                throw new ClassFormatException("Invalid method signature: " + signature);
+            }
+            index = 1; // current string position
+            while (signature.charAt(index) != ')') {
+                final String param_type = signatureToString(signature.substring(index), chopit);
+                buf.append(param_type);
+                if (vars != null) {
+                    final LocalVariable l = vars.getLocalVariable(var_index, 0);
+                    if (l != null) {
+                        buf.append(" ").append(l.getName());
+                    }
+                } else {
+                    buf.append(" arg").append(var_index);
+                }
+                if ("double".equals(param_type) || "long".equals(param_type)) {
+                    var_index += 2;
+                } else {
+                    var_index++;
+                }
+                buf.append(", ");
+                //corrected concurrent private static field acess
+                index += unwrap(consumed_chars); // update position
+            }
+            index++; // update position
+            // Read return type after `)'
+            type = signatureToString(signature.substring(index), chopit);
+        } catch (final StringIndexOutOfBoundsException e) { // Should never occur
+            throw new ClassFormatException("Invalid method signature: " + signature, e);
+        }
+        if (buf.length() > 1) {
+            buf.setLength(buf.length() - 2);
+        }
+        buf.append(")");
+        return access + ((access.length() > 0) ? " " : "") + // May be an empty string
+                type + " " + name + buf.toString();
     }
 
     /**

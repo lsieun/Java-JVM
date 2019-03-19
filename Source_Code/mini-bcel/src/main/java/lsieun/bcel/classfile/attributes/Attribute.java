@@ -32,40 +32,35 @@ public abstract class Attribute implements Node {
     /**
      * @return Name index in constant pool of attribute name.
      */
-    public final int getNameIndex()
-    {
+    public final int getNameIndex() {
         return name_index;
     }
 
     /**
      * @return Length of attribute field in bytes.
      */
-    public final int getLength()
-    {
+    public final int getLength() {
         return length;
     }
 
     /**
      * @param length length in bytes.
      */
-    public final void setLength(final int length)
-    {
+    public final void setLength(final int length) {
         this.length = length;
     }
 
     /**
      * @return Tag of attribute, i.e., its type. Value may not be altered, thus there is no setTag() method.
      */
-    public final byte getTag()
-    {
+    public final byte getTag() {
         return tag;
     }
 
     /**
      * @return Name of attribute
      */
-    public String getName()
-    {
+    public String getName() {
         final ConstantUtf8 c = (ConstantUtf8) constant_pool.getConstant(name_index, CPConst.CONSTANT_Utf8);
         return c.getBytes();
     }
@@ -74,9 +69,20 @@ public abstract class Attribute implements Node {
      * @return Constant pool used by this object.
      * @see ConstantPool
      */
-    public final ConstantPool getConstantPool()
-    {
+    public final ConstantPool getConstantPool() {
         return constant_pool;
+    }
+
+    /**
+     * Add an Attribute reader capable of parsing (user-defined) attributes
+     * named "name". You should not add readers for the standard attributes such
+     * as "LineNumberTable", because those are handled internally.
+     *
+     * @param name the name of the attribute as stored in the class file
+     * @param r    the reader object
+     */
+    public static void addAttributeReader(final String name, final UnknownAttributeReader r) {
+        readers.put(name, r);
     }
 
     /**
@@ -94,18 +100,16 @@ public abstract class Attribute implements Node {
      * must not be accessible from the outside. It is called by the Field and
      * Method constructor methods.
      *
-     * @see Field
-     * @see Method
-     *
-     * @param file Input stream
+     * @param file          Input stream
      * @param constant_pool Array of constants
      * @return Attribute
      * @throws IOException
      * @throws ClassFormatException
+     * @see Field
+     * @see Method
      * @since 6.0
      */
-    public static Attribute readAttribute(final DataInput file, final ConstantPool constant_pool) throws IOException, ClassFormatException
-    {
+    public static Attribute readAttribute(final DataInput file, final ConstantPool constant_pool) throws IOException, ClassFormatException {
         byte tag = AttrConst.ATTR_UNKNOWN; // Unknown attribute
         // Get class name from constant pool via `name_index' indirection
         final int name_index = file.readUnsignedShort();
@@ -116,22 +120,18 @@ public abstract class Attribute implements Node {
         final int length = file.readInt();
 
         // Compare strings to find known attribute
-        for (byte i = 0; i < AttrConst.KNOWN_ATTRIBUTES; i++)
-        {
-            if (name.equals(AttrConst.getAttributeName(i)))
-            {
+        for (byte i = 0; i < AttrConst.KNOWN_ATTRIBUTES; i++) {
+            if (name.equals(AttrConst.getAttributeName(i))) {
                 tag = i; // found!
                 break;
             }
         }
 
         // Call proper constructor, depending on `tag'
-        switch (tag)
-        {
+        switch (tag) {
             case AttrConst.ATTR_UNKNOWN:
                 final Object r = readers.get(name);
-                if (r instanceof UnknownAttributeReader)
-                {
+                if (r instanceof UnknownAttributeReader) {
                     return ((UnknownAttributeReader) r).createAttribute(name_index, length, file, constant_pool);
                 }
                 return new Unknown(name_index, length, file, constant_pool);
@@ -188,5 +188,13 @@ public abstract class Attribute implements Node {
                 // Never reached
                 throw new IllegalStateException("Unrecognized attribute type tag parsed: " + tag);
         }
+    }
+
+    /**
+     * @return attribute name.
+     */
+    @Override
+    public String toString() {
+        return AttrConst.getAttributeName(tag);
     }
 }

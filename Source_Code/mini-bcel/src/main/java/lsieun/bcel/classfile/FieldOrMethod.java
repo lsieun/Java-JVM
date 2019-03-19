@@ -3,7 +3,10 @@ package lsieun.bcel.classfile;
 import java.io.DataInput;
 import java.io.IOException;
 
+import lsieun.bcel.classfile.attributes.AnnotationEntry;
 import lsieun.bcel.classfile.attributes.Attribute;
+import lsieun.bcel.classfile.consts.CPConst;
+import lsieun.bcel.classfile.cp.ConstantUtf8;
 import lsieun.bcel.exceptions.ClassFormatException;
 
 /**
@@ -11,6 +14,7 @@ import lsieun.bcel.exceptions.ClassFormatException;
  *
  */
 public abstract class FieldOrMethod implements Node {
+    private int access_flags;
     private int name_index;
     private int signature_index;
     private ConstantPool constant_pool;
@@ -20,8 +24,7 @@ public abstract class FieldOrMethod implements Node {
     private int attributes_count;
     private Attribute[] attributes;
 
-    // FIXME: 这个，我还不知道存储在哪里呢
-    //private AnnotationEntry[] annotationEntries;
+    private AnnotationEntry[] annotationEntries;
 
     FieldOrMethod() {
     }
@@ -55,5 +58,75 @@ public abstract class FieldOrMethod implements Node {
             attributes[i] = Attribute.readAttribute(file, constant_pool);
         }
         this.attributes_count = attributes_count;
+    }
+
+    public int getAccessFlags() {
+        return access_flags;
+    }
+
+    /**
+     * @return Index in constant pool of object's name.
+     */
+    public final int getNameIndex() {
+        return name_index;
+    }
+
+    /**
+     * @return Index in constant pool of field signature.
+     */
+    public final int getSignatureIndex() {
+        return signature_index;
+    }
+
+    /**
+     * @return Constant pool used by this object.
+     */
+    public final ConstantPool getConstantPool() {
+        return constant_pool;
+    }
+
+    /**
+     * @return Name of object, i.e., method name or field name
+     */
+    public final String getName() {
+        ConstantUtf8 c;
+        c = (ConstantUtf8) constant_pool.getConstant(name_index, CPConst.CONSTANT_Utf8);
+        return c.getBytes();
+    }
+
+    /**
+     * @return String representation of object's type signature (java style)
+     */
+    public final String getSignature() {
+        ConstantUtf8 c;
+        c = (ConstantUtf8) constant_pool.getConstant(signature_index, CPConst.CONSTANT_Utf8);
+        return c.getBytes();
+    }
+
+    /**
+     * @return Collection of object attributes.
+     */
+    public final Attribute[] getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * @param attributes Collection of object attributes.
+     */
+    public final void setAttributes(final Attribute[] attributes) {
+        this.attributes = attributes;
+        this.attributes_count = attributes != null ? attributes.length : 0; // init deprecated field
+    }
+
+    /**
+     * @return Annotations on the field or method
+     * @since 6.0
+     */
+    public AnnotationEntry[] getAnnotationEntries() {
+        if (annotationEntries == null) {
+            annotationEntries = AnnotationEntry.createAnnotationEntries(getAttributes());
+        }
+
+        return annotationEntries;
     }
 }

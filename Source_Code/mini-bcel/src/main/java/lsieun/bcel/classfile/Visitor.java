@@ -1,9 +1,14 @@
 package lsieun.bcel.classfile;
 
+import lsieun.bcel.classfile.attributes.AnnotationDefault;
+import lsieun.bcel.classfile.attributes.AnnotationEntry;
+import lsieun.bcel.classfile.attributes.Annotations;
+import lsieun.bcel.classfile.attributes.BootstrapMethods;
 import lsieun.bcel.classfile.attributes.Code;
 import lsieun.bcel.classfile.attributes.CodeException;
 import lsieun.bcel.classfile.attributes.ConstantValue;
 import lsieun.bcel.classfile.attributes.Deprecated;
+import lsieun.bcel.classfile.attributes.EnclosingMethod;
 import lsieun.bcel.classfile.attributes.ExceptionTable;
 import lsieun.bcel.classfile.attributes.InnerClass;
 import lsieun.bcel.classfile.attributes.InnerClasses;
@@ -11,8 +16,14 @@ import lsieun.bcel.classfile.attributes.LineNumber;
 import lsieun.bcel.classfile.attributes.LineNumberTable;
 import lsieun.bcel.classfile.attributes.LocalVariable;
 import lsieun.bcel.classfile.attributes.LocalVariableTable;
+import lsieun.bcel.classfile.attributes.LocalVariableTypeTable;
+import lsieun.bcel.classfile.attributes.MethodParameters;
+import lsieun.bcel.classfile.attributes.ParameterAnnotationEntry;
+import lsieun.bcel.classfile.attributes.ParameterAnnotations;
 import lsieun.bcel.classfile.attributes.Signature;
 import lsieun.bcel.classfile.attributes.SourceFile;
+import lsieun.bcel.classfile.attributes.StackMap;
+import lsieun.bcel.classfile.attributes.StackMapEntry;
 import lsieun.bcel.classfile.attributes.Synthetic;
 import lsieun.bcel.classfile.attributes.Unknown;
 import lsieun.bcel.classfile.cp.ConstantClass;
@@ -44,6 +55,10 @@ public interface Visitor {
     void visitJavaClass(JavaClass obj);
 
     void visitConstantPool(ConstantPool obj);
+
+    void visitField(Field obj);
+
+    void visitMethod(Method obj);
 
     // region constants
     void visitConstantUtf8(ConstantUtf8 obj);
@@ -87,6 +102,10 @@ public interface Visitor {
     // region attributes
 
     // region ClassFile
+    void visitBootstrapMethods(BootstrapMethods obj);
+
+    void visitEnclosingMethod(EnclosingMethod obj);
+
     void visitInnerClass(InnerClass obj);
 
     void visitInnerClasses(InnerClasses obj);
@@ -99,9 +118,17 @@ public interface Visitor {
     // endregion
 
     // region method_info
+    void visitAnnotationDefault(AnnotationDefault obj);
+
     void visitCode(Code obj);
 
     void visitExceptionTable(ExceptionTable obj);
+
+    void visitMethodParameters(MethodParameters obj);
+
+    void visitParameterAnnotation(ParameterAnnotations obj);
+
+    void visitParameterAnnotationEntry(ParameterAnnotationEntry obj);
     // endregion
 
     // region Code
@@ -114,7 +141,17 @@ public interface Visitor {
     void visitLocalVariable(LocalVariable obj);
 
     void visitLocalVariableTable(LocalVariableTable obj);
+
+    void visitLocalVariableTypeTable(LocalVariableTypeTable obj);
+
+    void visitStackMap(StackMap obj);
+
+    void visitStackMapEntry(StackMapEntry obj);
     // endregion
+
+    void visitAnnotation(Annotations obj);
+
+    void visitAnnotationEntry(AnnotationEntry obj);
 
     void visitDeprecated(Deprecated obj);
 

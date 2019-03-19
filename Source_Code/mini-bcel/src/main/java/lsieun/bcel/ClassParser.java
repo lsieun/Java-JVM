@@ -7,7 +7,10 @@ import java.io.InputStream;
 
 import lsieun.bcel.classfile.AccessFlag;
 import lsieun.bcel.classfile.ConstantPool;
+import lsieun.bcel.classfile.Field;
 import lsieun.bcel.classfile.JavaClass;
+import lsieun.bcel.classfile.Method;
+import lsieun.bcel.classfile.attributes.Attribute;
 import lsieun.bcel.classfile.consts.JVMConst;
 import lsieun.bcel.exceptions.ClassFormatException;
 import lsieun.bcel.utils.IOUtils;
