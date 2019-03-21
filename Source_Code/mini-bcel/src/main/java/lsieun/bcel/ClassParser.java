@@ -2,8 +2,11 @@ package lsieun.bcel;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import lsieun.bcel.classfile.AccessFlag;
 import lsieun.bcel.classfile.ConstantPool;
@@ -75,6 +78,10 @@ public final class ClassParser {
      */
     public JavaClass parse() throws IOException, ClassFormatException {
         try {
+            if (fileOwned) {
+                dataInputStream = new DataInputStream(new BufferedInputStream(new FileInputStream(
+                        file_name), BUF_SIZE));
+            }
             /****************** Read headers ********************************/
             // Check magic tag of class file
             readID();
@@ -103,9 +110,7 @@ public final class ClassParser {
 
         // Return the information we have gathered in a new object
         return new JavaClass(class_name_index, superclass_name_index, file_name, major, minor,
-                access_flags, constant_pool, interfaces, fields, methods, attributes, is_zip
-                ? JavaClass.ZIP
-                : JavaClass.FILE);
+                access_flags, constant_pool, interfaces, fields, methods, attributes, JavaClass.FILE);
     }
 
     // region Private utility methods

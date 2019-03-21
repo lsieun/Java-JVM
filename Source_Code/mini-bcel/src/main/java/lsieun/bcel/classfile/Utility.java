@@ -74,6 +74,15 @@ public class Utility {
     }
 
     /**
+     * @param access_flags the class flags
+     *
+     * @return "class" or "interface", depending on the ACC_INTERFACE flag
+     */
+    public static String classOrInterface( final int access_flags ) {
+        return ((access_flags & AccessFlag.INTERFACE) != 0) ? "interface" : "class";
+    }
+
+    /**
      * Convert bit field of flags into string such as `static final'.
      *
      * Special case: Classes compiled with new compilers and with the

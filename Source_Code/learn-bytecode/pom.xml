@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>lsieun</groupId>
-    <artifactId>mini-bcel</artifactId>
+    <artifactId>learn-bytecode</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,6 +17,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>lsieun</groupId>
+            <artifactId>lsieun-utils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
             <groupId>junit</groupId>
