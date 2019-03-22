@@ -64,16 +64,14 @@ public class ByteDashboard {
         return b;
     }
 
-    public void nextN(byte[] bytes) {
-        nextN(bytes, bytes.length);
-    }
-
-    public void nextN(byte[] bytes, int n) {
+    public byte[] nextN(int n) {
+        byte[] bytes = new byte[n];
         for(int i=0; i<n; i++) {
             byte b = this.bytes[index];
             this.index++;
             bytes[i] = b;
         }
+        return bytes;
     }
 
     public byte[] peek(int n) {

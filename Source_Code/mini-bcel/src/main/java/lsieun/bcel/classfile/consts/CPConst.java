@@ -98,7 +98,6 @@ public class CPConst {
      * Marks a constant pool entry as dynamically computed.
      * @see  <a href="https://bugs.openjdk.java.net/secure/attachment/74618/constant-dynamic.html">
      * Change request for JEP 309</a>
-     * @since 6.3
      */
     public static final byte CONSTANT_Dynamic            = 17;
 
@@ -113,7 +112,6 @@ public class CPConst {
      * Marks a constant pool entry as a Module Reference.
      * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.4.11">
      * The Constant Pool in The Java Virtual Machine Specification</a>
-     * @since 6.1
      */
     public static final byte CONSTANT_Module             = 19;
 
@@ -121,7 +119,6 @@ public class CPConst {
      * Marks a constant pool entry as a Package Reference.
      * @see <a href="https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.4.12">
      * The Constant Pool in The Java Virtual Machine Specification</a>
-     * @since 6.1
      */
     public static final byte CONSTANT_Package            = 20;
 

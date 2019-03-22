@@ -2,7 +2,7 @@ package lsieun.bytecode;
 
 import lsieun.bytecode.classfile.JavaClass;
 import lsieun.bytecode.utils.ByteDashboard;
-import lsieun.bytecode.utils.ClassParser;
+import lsieun.bytecode.classfile.ClassParser;
 import lsieun.utils.io.FileUtils;
 import lsieun.utils.io.JarUtils;
 

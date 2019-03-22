@@ -1,4 +1,4 @@
-package lsieun.bytecode.classfile.consts;
+package lsieun.bytecode.classfile.basic;
 
 public class JVMConst {
     /**
