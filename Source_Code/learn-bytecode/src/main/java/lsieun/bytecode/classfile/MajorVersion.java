@@ -8,7 +8,7 @@ import lsieun.utils.radix.ByteUtils;
 
 public class MajorVersion extends Node {
     public String getJDKVersion() {
-        int num = ByteUtils.toInt(super.getBytes(), 45);
+        int num = ByteUtils.bytesToInt(super.getBytes(), 45);
         return "JDK "  + (num - 44);
     }
 

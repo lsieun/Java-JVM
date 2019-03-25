@@ -5,6 +5,7 @@ import java.util.List;
 
 import lsieun.bytecode.classfile.Node;
 import lsieun.bytecode.classfile.basic.CPConst;
+import lsieun.bytecode.exceptions.ClassFormatException;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
 
@@ -28,10 +29,21 @@ public abstract class Constant extends Node {
         this.index = index;
     }
 
-    public abstract Object getValue();
+    public abstract String getValue();
 
+    public abstract void setValue(String value);
+
+    // FIXME: 2,要进行混合，
+    //  Class->Utf8
+    //  String->Utf8
+    //  NameAndType->Utf8
+    //  MethodType->Utf8
+    //  Module->Utf8
+    //  Dynamic->NameAndType
+    //  MemberRef->Class,NameAndType
+    //  MethodHandle-> Ref
     public static Constant readConstant(final ByteDashboard byteDashboard) {
-        final byte tag = byteDashboard.peek(1)[0];
+        final byte tag = byteDashboard.peek();
 
         switch (tag) {
             case CPConst.CONSTANT_Utf8:
@@ -69,7 +81,7 @@ public abstract class Constant extends Node {
             case CPConst.CONSTANT_Package:
                 return new ConstantPackage(byteDashboard);
             default:
-                throw new ClassFormatException("Invalid byte tag in constant pool: " + b);
+                throw new ClassFormatException("Invalid byte tag in constant pool: " + tag);
         }
     }
 

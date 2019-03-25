@@ -74,6 +74,11 @@ public class ByteDashboard {
         return bytes;
     }
 
+    public byte peek() {
+        byte b = this.bytes[index];
+        return b;
+    }
+
     public byte[] peek(int n) {
         byte[] bytes = new byte[n];
         for(int i=0; i<n; i++) {

@@ -20,12 +20,15 @@ public class ClassParser {
         MajorVersion majorVersion = readMajorVersion();
         // Read constant pool entries
         ConstantPoolCount constantPoolCount = readConstantPoolCount();
+        ConstantPool constantPool = readConstantPool(constantPoolCount.getValue());
+        //constantPool.merge();
 
         JavaClass javaClass = new JavaClass();
         javaClass.setMagicNumber(magicNumber);
         javaClass.setMinorVersion(minorVersion);
         javaClass.setMajorVersion(majorVersion);
         javaClass.setConstantPoolCount(constantPoolCount);
+        javaClass.setConstantPool(constantPool);
 
         return javaClass;
     }
@@ -38,7 +41,7 @@ public class ClassParser {
     private MagicNumber readMagicNumber() {
         byte[] bytes = this.byteDashboard.nextN(4);
 
-        int magic = ByteUtils.toInt(bytes, 0);
+        int magic = ByteUtils.toInt(bytes);
         if (magic != JVMConst.JVM_CLASSFILE_MAGIC) {
             throw new ClassFormatException(this.byteDashboard + " is not a Java .class file");
         }
@@ -72,5 +75,8 @@ public class ClassParser {
         return instance;
     }
 
-
+    private ConstantPool readConstantPool(int count) {
+        ConstantPool instance = new ConstantPool(this.byteDashboard, count);
+        return instance;
+    }
 }

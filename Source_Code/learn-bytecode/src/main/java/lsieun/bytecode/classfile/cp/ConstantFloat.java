@@ -5,16 +5,16 @@ import lsieun.bytecode.classfile.basic.CPConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
-public final class ConstantInteger extends Constant {
-    private final Integer value;
+public final class ConstantFloat extends Constant {
+    private final Float value;
 
-    ConstantInteger(ByteDashboard byteDashboard) {
-        super(CPConst.CONSTANT_Integer);
+    ConstantFloat(ByteDashboard byteDashboard) {
+        super(CPConst.CONSTANT_Float);
         byte[] tag_bytes = byteDashboard.nextN(1);
         byte[] value_bytes = byteDashboard.nextN(4);
         byte[] bytes = ByteUtils.merge(tag_bytes, value_bytes);
 
-        this.value = ByteUtils.toInt(value_bytes);
+        this.value = ByteUtils.toFloat(value_bytes);
         super.setBytes(bytes);
     }
 
@@ -30,6 +30,6 @@ public final class ConstantInteger extends Constant {
 
     @Override
     public void accept(Visitor obj) {
-        obj.visitConstantInteger(this);
+        obj.visitConstantFloat(this);
     }
 }

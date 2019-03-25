@@ -5,10 +5,11 @@ import java.util.List;
 
 import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
+import lsieun.utils.radix.HexUtils;
 
 public class ConstantPoolCount extends Node {
     public int getValue() {
-        int num = ByteUtils.toInt(super.getBytes(), 0);
+        int num = ByteUtils.bytesToInt(super.getBytes(), 0);
         return num;
     }
 

@@ -5,31 +5,36 @@ import lsieun.bytecode.classfile.basic.CPConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
-public final class ConstantInteger extends Constant {
-    private final Integer value;
+public final class ConstantClass extends Constant {
+    private final int name_index;
+    private String value;
 
-    ConstantInteger(ByteDashboard byteDashboard) {
-        super(CPConst.CONSTANT_Integer);
+    ConstantClass(ByteDashboard byteDashboard) {
+        super(CPConst.CONSTANT_Class);
         byte[] tag_bytes = byteDashboard.nextN(1);
-        byte[] value_bytes = byteDashboard.nextN(4);
+        byte[] value_bytes = byteDashboard.nextN(2);
         byte[] bytes = ByteUtils.merge(tag_bytes, value_bytes);
 
-        this.value = ByteUtils.toInt(value_bytes);
+        this.name_index = ByteUtils.bytesToInt(value_bytes, 0);
         super.setBytes(bytes);
+    }
+
+    public int getNameIndex() {
+        return name_index;
     }
 
     @Override
     public String getValue() {
-        return String.valueOf(this.value);
+        return this.value;
     }
 
     @Override
     public void setValue(String value) {
-        // do nothing
+        this.value = value;
     }
 
     @Override
     public void accept(Visitor obj) {
-        obj.visitConstantInteger(this);
+        obj.visitConstantClass(this);
     }
 }

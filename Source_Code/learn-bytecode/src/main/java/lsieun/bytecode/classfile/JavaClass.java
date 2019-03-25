@@ -7,6 +7,7 @@ public class JavaClass {
     private MinorVersion minorVersion;
     private MajorVersion majorVersion;
     private ConstantPoolCount constantPoolCount;
+    private ConstantPool constantPool;
 
     // region getters and setters
     public MagicNumber getMagicNumber() {
@@ -41,7 +42,14 @@ public class JavaClass {
         this.constantPoolCount = constantPoolCount;
     }
 
-    // endregion
+    public ConstantPool getConstantPool() {
+        return constantPool;
+    }
+
+    public void setConstantPool(ConstantPool constantPool) {
+        this.constantPool = constantPool;
+    }
+// endregion
 
     @Override
     public String toString() {
@@ -51,6 +59,7 @@ public class JavaClass {
         buff.append(minorVersion + StringUtils.LF);
         buff.append(majorVersion + StringUtils.LF);
         buff.append(constantPoolCount + StringUtils.LF);
+        buff.append(constantPool + StringUtils.LF);
         return buff.toString();
     }
 }

@@ -16,7 +16,7 @@ public final class ConstantUtf8 extends Constant {
         super(CPConst.CONSTANT_Utf8);
         byte[] tag_bytes = byteDashboard.nextN(1);
         byte[] length_bytes = byteDashboard.nextN(2);
-        int length = ByteUtils.toInt(length_bytes, 0);
+        int length = ByteUtils.bytesToInt(length_bytes, 0);
         byte[] utf_bytes = byteDashboard.nextN(length);
         byte[] bytes = ByteUtils.merge(tag_bytes, length_bytes, utf_bytes);
 
@@ -30,8 +30,13 @@ public final class ConstantUtf8 extends Constant {
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return this.value;
+    }
+
+    @Override
+    public void setValue(String value) {
+        // do nothing
     }
 
     @Override
