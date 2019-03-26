@@ -3,25 +3,27 @@ package lsieun.bytecode.classfile;
 import java.util.ArrayList;
 import java.util.List;
 
+import lsieun.bytecode.classfile.basic.AccessConst;
 import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
-import lsieun.utils.radix.HexUtils;
 
-public class ConstantPoolCount extends Node {
-    private final int value;
+public final class AccessFlags extends Node {
+    private final int access_flags;
+    private final String value;
 
-    public ConstantPoolCount(byte[] bytes) {
+    public AccessFlags(byte[] bytes) {
         super.setBytes(bytes);
-        this.value = ByteUtils.bytesToInt(bytes, 0);
+        this.access_flags = ByteUtils.bytesToInt(bytes, 0);
+        this.value = AccessConst.getClassAccessFlagsString(access_flags);
     }
 
-    public int getValue() {
+    public String getValue() {
         return this.value;
     }
 
     @Override
     public void accept(Visitor obj) {
-        obj.visitConstantPoolCount(this);
+        obj.visitAccessFlags(this);
     }
 
     @Override
@@ -34,7 +36,7 @@ public class ConstantPoolCount extends Node {
         String content = StringUtils.list2str(list, ", ");
 
         StringBuilder buf = new StringBuilder();
-        buf.append("ConstantPoolCount {");
+        buf.append("AccessFlags {");
         buf.append(content);
         buf.append("}");
         return buf.toString();

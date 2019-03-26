@@ -20,6 +20,7 @@ public final class ConstantFieldref extends Constant {
 
         this.class_index = ByteUtils.bytesToInt(class_index_bytes, 0);
         this.name_and_type_index = ByteUtils.bytesToInt(name_and_type_index_bytes, 0);
+        this.value = "#" + class_index + ".#" + name_and_type_index;
         super.setBytes(bytes);
     }
 

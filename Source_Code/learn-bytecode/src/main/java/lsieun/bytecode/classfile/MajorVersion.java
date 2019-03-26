@@ -7,6 +7,10 @@ import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
 
 public class MajorVersion extends Node {
+    public MajorVersion(byte[] bytes) {
+        super.setBytes(bytes);
+    }
+
     public String getJDKVersion() {
         int num = ByteUtils.bytesToInt(super.getBytes(), 45);
         return "JDK "  + (num - 44);
@@ -22,7 +26,7 @@ public class MajorVersion extends Node {
     public String toString() {
         List<String> list = new ArrayList();
         list.add("HexCode='" + super.getHexCode() + "'");
-        list.add("Version='" + this.getJDKVersion() + "'");
+        list.add("Compiler-Version='" + this.getJDKVersion() + "'");
 
         String content = StringUtils.list2str(list, ", ");
 

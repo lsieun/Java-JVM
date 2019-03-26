@@ -5,12 +5,11 @@ import java.util.List;
 
 import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
-import lsieun.utils.radix.HexUtils;
 
-public class ConstantPoolCount extends Node {
+public final class InterfacesCount extends Node {
     private final int value;
 
-    public ConstantPoolCount(byte[] bytes) {
+    public InterfacesCount(byte[] bytes) {
         super.setBytes(bytes);
         this.value = ByteUtils.bytesToInt(bytes, 0);
     }
@@ -21,7 +20,7 @@ public class ConstantPoolCount extends Node {
 
     @Override
     public void accept(Visitor obj) {
-        obj.visitConstantPoolCount(this);
+        obj.visitInterfacesCount(this);
     }
 
     @Override
@@ -34,7 +33,7 @@ public class ConstantPoolCount extends Node {
         String content = StringUtils.list2str(list, ", ");
 
         StringBuilder buf = new StringBuilder();
-        buf.append("ConstantPoolCount {");
+        buf.append("InterfacesCount {");
         buf.append(content);
         buf.append("}");
         return buf.toString();

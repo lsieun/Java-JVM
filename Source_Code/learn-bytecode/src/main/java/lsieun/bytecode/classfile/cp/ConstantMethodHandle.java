@@ -20,6 +20,7 @@ public final class ConstantMethodHandle extends Constant {
 
         this.reference_kind = ByteUtils.bytesToInt(reference_kind_bytes, 0);
         this.reference_index = ByteUtils.bytesToInt(reference_index_bytes, 0);
+        this.value = "#" + reference_index;
         super.setBytes(bytes);
     }
 

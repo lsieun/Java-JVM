@@ -1,8 +1,14 @@
 package lsieun.bytecode;
 
+import java.util.List;
+
+import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.JavaClass;
+import lsieun.bytecode.classfile.MethodInfo;
+import lsieun.bytecode.classfile.Methods;
 import lsieun.bytecode.utils.ByteDashboard;
-import lsieun.bytecode.classfile.ClassParser;
+import lsieun.bytecode.classfile.UtilityClassParser;
+import lsieun.utils.StringUtils;
 import lsieun.utils.io.FileUtils;
 import lsieun.utils.io.JarUtils;
 
@@ -28,8 +34,28 @@ public class App {
         ByteDashboard byteDashboard = new ByteDashboard(url, bytes);
         System.out.println(byteDashboard);
 
-        ClassParser classParser = new ClassParser(byteDashboard);
+        UtilityClassParser classParser = new UtilityClassParser(byteDashboard);
         JavaClass javaClass = classParser.parse();
+
+        // 打印ClassFile
+        //displayClassFile(javaClass);
+
+        displayMethodAttribute(javaClass, "testMethod:(ILjava/lang/String;)V");
+    }
+
+    public static void displayClassFile(JavaClass javaClass) {
         System.out.println(javaClass);
+    }
+
+    public static void displayMethodAttribute(JavaClass javaClass, String nameAndType) {
+        System.out.println(javaClass.getConstantPool() + StringUtils.LF);
+        Methods methods = javaClass.getMethods();
+
+        MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
+        if(methodInfo == null) return;
+        System.out.println(methodInfo + StringUtils.LF);
+
+        AttributeInfo codeAttr = methodInfo.findAttribute("Code");
+        System.out.println(codeAttr);
     }
 }

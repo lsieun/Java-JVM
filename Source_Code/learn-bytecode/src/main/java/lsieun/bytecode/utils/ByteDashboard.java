@@ -79,7 +79,7 @@ public class ByteDashboard {
         return b;
     }
 
-    public byte[] peek(int n) {
+    public byte[] peekN(int n) {
         byte[] bytes = new byte[n];
         for(int i=0; i<n; i++) {
             int idx = this.index + i;

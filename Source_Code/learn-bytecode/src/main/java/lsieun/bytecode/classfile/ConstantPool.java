@@ -128,7 +128,7 @@ public class ConstantPool extends Node {
 
                 String name = getConstantString(nameIndex, CPConst.CONSTANT_Utf8);
                 String descriptor = getConstantString(descriptorIndex, CPConst.CONSTANT_Utf8);
-                String value = name + ": " + descriptor;
+                String value = name + ":" + descriptor;
                 sub.setValue(value);
             }
             else if(tag == CPConst.CONSTANT_MethodType) {

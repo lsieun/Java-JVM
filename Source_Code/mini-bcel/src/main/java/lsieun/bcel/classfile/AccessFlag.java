@@ -43,13 +43,11 @@ public class AccessFlag {
             "synthetic", "annotation", "enum"
     };
 
-    /** @since 6.0 */
     public static final int ACCESS_NAMES_LENGTH = ACCESS_NAMES.length;
 
     /**
      * @param index
      * @return the ACCESS_NAMES entry at the given index
-     * @since 6.0
      */
     public static String getAccessName(final int index) {
         return ACCESS_NAMES[index];

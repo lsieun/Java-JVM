@@ -17,6 +17,7 @@ public final class ConstantMethodType extends Constant {
         byte[] bytes = ByteUtils.merge(tag_bytes, descriptor_index_bytes);
 
         this.descriptor_index = ByteUtils.bytesToInt(descriptor_index_bytes, 0);
+        this.value = "#" + descriptor_index;
         super.setBytes(bytes);
     }
 

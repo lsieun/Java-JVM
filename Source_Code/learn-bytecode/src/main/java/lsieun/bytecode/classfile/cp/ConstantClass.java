@@ -16,6 +16,7 @@ public final class ConstantClass extends Constant {
         byte[] bytes = ByteUtils.merge(tag_bytes, value_bytes);
 
         this.name_index = ByteUtils.bytesToInt(value_bytes, 0);
+        this.value = "#" + this.name_index;
         super.setBytes(bytes);
     }
 

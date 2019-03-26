@@ -20,6 +20,7 @@ public final class ConstantNameAndType extends Constant {
 
         this.name_index = ByteUtils.bytesToInt(name_index_bytes, 0);
         this.descriptor_index = ByteUtils.bytesToInt(descriptor_index_bytes, 0);
+        this.value = "#" + name_index + ":#" + descriptor_index;
         super.setBytes(bytes);
     }
 

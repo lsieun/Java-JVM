@@ -16,6 +16,7 @@ public final class ConstantString extends Constant {
         byte[] bytes = ByteUtils.merge(tag_bytes, value_bytes);
 
         this.string_index = ByteUtils.bytesToInt(value_bytes, 0);
+        this.value = "#" + string_index;
         super.setBytes(bytes);
     }
 

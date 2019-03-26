@@ -29,6 +29,34 @@ public interface Visitor {
 
     void visitConstantPool(ConstantPool obj);
 
+    void visitAccessFlags(AccessFlags obj);
+
+    void visitThisClass(ThisClass obj);
+
+    void visitSuperClass(SuperClass obj);
+
+    void visitInterfacesCount(InterfacesCount obj);
+
+    void visitInterfaces(Interfaces obj);
+
+    void visitFieldsCount(FieldsCount obj);
+
+    void visitFields(Fields obj);
+
+    void visitFieldInfo(FieldInfo obj);
+
+    void visitMethodsCount(MethodsCount obj);
+
+    void visitMethods(Methods obj);
+
+    void visitMethodInfo(MethodInfo obj);
+
+    void visitAttributesCount(AttributesCount obj);
+
+    void visitAttributes(Attributes obj);
+
+    void visitAttributeInfo(AttributeInfo obj);
+
     // region constant pool
     void visitConstantUtf8(ConstantUtf8 obj);
 
@@ -64,4 +92,5 @@ public interface Visitor {
 
     void visitConstantPackage(ConstantPackage obj);
     // endregion
+
 }
