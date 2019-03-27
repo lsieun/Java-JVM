@@ -2,7 +2,7 @@ package lsieun.bytecode.classfile;
 
 import lsieun.utils.StringUtils;
 
-public class JavaClass {
+public class ClassFile {
     private MagicNumber magicNumber;
     private MinorVersion minorVersion;
     private MajorVersion majorVersion;

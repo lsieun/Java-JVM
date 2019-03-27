@@ -1,18 +1,33 @@
-package lsieun.bytecode.classfile;
+package lsieun.bytecode.utils;
 
-import lsieun.bytecode.classfile.basic.JVMConst;
+import lsieun.bytecode.classfile.ClassFile;
+import lsieun.bytecode.classfile.AccessFlags;
+import lsieun.bytecode.classfile.Attributes;
+import lsieun.bytecode.classfile.AttributesCount;
+import lsieun.bytecode.classfile.ConstantPool;
+import lsieun.bytecode.classfile.ConstantPoolCount;
+import lsieun.bytecode.classfile.Fields;
+import lsieun.bytecode.classfile.FieldsCount;
+import lsieun.bytecode.classfile.Interfaces;
+import lsieun.bytecode.classfile.InterfacesCount;
+import lsieun.bytecode.classfile.MagicNumber;
+import lsieun.bytecode.classfile.MajorVersion;
+import lsieun.bytecode.classfile.Methods;
+import lsieun.bytecode.classfile.MethodsCount;
+import lsieun.bytecode.classfile.MinorVersion;
+import lsieun.bytecode.classfile.SuperClass;
+import lsieun.bytecode.classfile.ThisClass;
 import lsieun.bytecode.exceptions.ClassFormatException;
 import lsieun.bytecode.utils.ByteDashboard;
-import lsieun.utils.radix.ByteUtils;
 
-public class UtilityClassParser {
+public class ClassParser {
     private ByteDashboard byteDashboard;
 
-    public UtilityClassParser(ByteDashboard byteDashboard) {
+    public ClassParser(ByteDashboard byteDashboard) {
         this.byteDashboard = byteDashboard;
     }
 
-    public JavaClass parse() {
+    public ClassFile parse() {
         // Check magic tag of class file
         MagicNumber magicNumber = readMagicNumber();
         // Get compiler version
@@ -39,25 +54,25 @@ public class UtilityClassParser {
         AttributesCount attributesCount = readAttributesCount();
         Attributes attributes = readAttributes(attributesCount.getValue(), constantPool);
 
-        JavaClass javaClass = new JavaClass();
-        javaClass.setMagicNumber(magicNumber);
-        javaClass.setMinorVersion(minorVersion);
-        javaClass.setMajorVersion(majorVersion);
-        javaClass.setConstantPoolCount(constantPoolCount);
-        javaClass.setConstantPool(constantPool);
-        javaClass.setAccessFlags(accessFlags);
-        javaClass.setThisClass(thisClass);
-        javaClass.setSuperClass(superClass);
-        javaClass.setInterfacesCount(interfacesCount);
-        javaClass.setInterfaces(interfaces);
-        javaClass.setFieldsCount(fieldsCount);
-        javaClass.setFields(fields);
-        javaClass.setMethodsCount(methodsCount);
-        javaClass.setMethods(methods);
-        javaClass.setAttributesCount(attributesCount);
-        javaClass.setAttributes(attributes);
+        ClassFile classFile = new ClassFile();
+        classFile.setMagicNumber(magicNumber);
+        classFile.setMinorVersion(minorVersion);
+        classFile.setMajorVersion(majorVersion);
+        classFile.setConstantPoolCount(constantPoolCount);
+        classFile.setConstantPool(constantPool);
+        classFile.setAccessFlags(accessFlags);
+        classFile.setThisClass(thisClass);
+        classFile.setSuperClass(superClass);
+        classFile.setInterfacesCount(interfacesCount);
+        classFile.setInterfaces(interfaces);
+        classFile.setFieldsCount(fieldsCount);
+        classFile.setFields(fields);
+        classFile.setMethodsCount(methodsCount);
+        classFile.setMethods(methods);
+        classFile.setAttributesCount(attributesCount);
+        classFile.setAttributes(attributes);
 
-        return javaClass;
+        return classFile;
     }
 
     /**

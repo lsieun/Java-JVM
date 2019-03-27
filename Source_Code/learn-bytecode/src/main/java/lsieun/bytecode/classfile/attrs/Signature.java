@@ -10,21 +10,20 @@ import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
 
-public final class SourceFile extends AttributeInfo {
-    private final int sourcefile_index;
+public final class Signature extends AttributeInfo {
+    private final int signature_index;
     private final String value;
 
-    public SourceFile(ByteDashboard byteDashboard, ConstantPool constantPool) {
-        super(byteDashboard, constantPool);
-        byte[] sourcefile_index_bytes = super.getInfo();
-        this.sourcefile_index = ByteUtils.bytesToInt(sourcefile_index_bytes, 0);
+    public Signature(ByteDashboard byteDashboard, ConstantPool constantPool) {
+        super(byteDashboard, constantPool, true);
 
-        String value = constantPool.getConstantString(sourcefile_index, CPConst.CONSTANT_Utf8);
-        this.value = value;
+        byte[] signature_index_bytes = byteDashboard.nextN(2);
+        this.signature_index = ByteUtils.bytesToInt(signature_index_bytes, 0);
+        this.value = constantPool.getConstantString(signature_index, CPConst.CONSTANT_Utf8);
     }
 
-    public int getSourcefileIndex() {
-        return sourcefile_index;
+    public int getSignatureIndex() {
+        return signature_index;
     }
 
     public String getValue() {
@@ -36,7 +35,7 @@ public final class SourceFile extends AttributeInfo {
     public String toString() {
         List<String> list = new ArrayList();
         list.add("Value='" + this.getValue() + "'");
-        list.add("SourceFileIndex='" + this.sourcefile_index + "'");
+        list.add("SignatureIndex='" + this.signature_index + "'");
         list.add("HexCode='" + super.getHexCode() + "'");
 
         String content = StringUtils.list2str(list, ", ");

@@ -23,7 +23,16 @@ public class ExceptionTable {
         this.handler_pc = ByteUtils.bytesToInt(handler_pc_bytes, 0);
         this.catch_type = ByteUtils.bytesToInt(catch_type_bytes, 0);
 
-        String exceptionType = constantPool.getConstant(catch_type, CPConst.CONSTANT_Class).getValue();
+        String exceptionType = "";
+        if(catch_type == 0) {
+            // If the value of the 'catch_type' item is zero, this exception handler is called
+            // for all exceptions.
+            exceptionType = "All";
+        }
+        else {
+            exceptionType = constantPool.getConstant(catch_type, CPConst.CONSTANT_Class).getValue();
+        }
+
         exceptionType = exceptionType.replaceAll("/", ".");
         this.exceptionType = exceptionType;
     }

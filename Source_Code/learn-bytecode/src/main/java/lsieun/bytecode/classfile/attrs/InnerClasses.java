@@ -32,12 +32,15 @@ public final class InnerClasses extends AttributeInfo {
         List<String> list = new ArrayList();
         //list.add("Value='" + this.getValue() + "'");
 
-        List<String> innerClassList = new ArrayList();
+        List<String> innerClassStrList = new ArrayList();
+        List<Integer> innerClassIntList = new ArrayList();
         for(int i=0; i<this.inner_class_list.size(); i++) {
             InnerClass item = this.inner_class_list.get(i);
-            innerClassList.add(item.getName());
+            innerClassStrList.add(item.getName());
+            innerClassIntList.add(item.getInnerNameIndex());
         }
-        list.add("Value='" + StringUtils.list2str(innerClassList, "[","]",", ") + "'");
+        list.add("Value='" + StringUtils.list2str(innerClassStrList, "[","]",", ") + "'");
+        list.add("InnerClassIndex='" + StringUtils.list2str(innerClassIntList, "[","]",", ") + "'");
         list.add("HexCode='" + super.getHexCode() + "'");
 
         String content = StringUtils.list2str(list, ", ");

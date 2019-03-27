@@ -92,7 +92,6 @@ public abstract class Constant extends Node {
         list.add("Value='" + this.getValue() + "'");
         list.add("HexCode='" + super.getHexCode() + "'");
 
-
         String content = StringUtils.list2str(list, ", ");
 
         StringBuilder buf = new StringBuilder();

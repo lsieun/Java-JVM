@@ -28,7 +28,15 @@ public class InnerClass {
 
         this.value = "#" + inner_class_info_index + ",#" + outer_class_info_index
                    + ",#" + inner_name_index + ",#" + AccessConst.getClassAccessFlagsString(inner_class_access_flags);
-        this.name = constantPool.getConstantString(inner_name_index, CPConst.CONSTANT_Utf8);
+        if(inner_name_index == 0) {
+            // If the Class is anonymous, the value of the 'inner_name_index' item
+            // must be zero.
+            this.name = "<anonymous class>";
+        }
+        else {
+            this.name = constantPool.getConstantString(inner_name_index, CPConst.CONSTANT_Utf8);
+        }
+
     }
 
     public int getInnerClassInfoIndex() {

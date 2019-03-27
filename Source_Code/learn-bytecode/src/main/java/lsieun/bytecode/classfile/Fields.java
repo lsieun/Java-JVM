@@ -17,6 +17,23 @@ public final class Fields extends Node {
         }
     }
 
+    public List<FieldInfo> getFieldList() {
+        return field_list;
+    }
+
+    public FieldInfo findByNameAndType(String nameAndType) {
+        if(StringUtils.isBlank(nameAndType)) return null;
+
+        for(int i=0; i<this.field_list.size(); i++) {
+            FieldInfo item = this.field_list.get(i);
+            String value = item.getValue();
+            if(nameAndType.equals(value)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void accept(Visitor obj) {
         obj.visitFields(this);

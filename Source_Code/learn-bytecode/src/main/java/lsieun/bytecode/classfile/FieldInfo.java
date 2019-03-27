@@ -76,6 +76,19 @@ public final class FieldInfo extends Node {
         this.value = value;
     }
 
+    @SuppressWarnings("Duplicates")
+    public AttributeInfo findAttribute(String attrName) {
+        if(StringUtils.isBlank(attrName)) return null;
+        for(int i=0; i<this.attributes_list.size(); i++) {
+            AttributeInfo item = this.attributes_list.get(i);
+            String name = item.getName();
+            if(attrName.equals(name)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void accept(Visitor obj) {
         obj.visitFieldInfo(this);
