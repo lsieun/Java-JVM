@@ -58,6 +58,11 @@ public class ByteDashboard {
     }
     // endregion
 
+    public boolean hasNex() {
+        if(index >= start && index < stop) return true;
+        return false;
+    }
+
     public byte next() {
         byte b = this.bytes[index];
         this.index++;

@@ -5,6 +5,8 @@ import java.util.List;
 
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
+import lsieun.bytecode.classfile.basic.OpcodeConst;
+import lsieun.bytecode.classfile.basic.TypeConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
@@ -89,6 +91,8 @@ public final class Code extends AttributeInfo {
         list.add("maxStack='" + this.max_stack + "', maxLocals='" + this.max_locals + "'");
         list.add("codeLength='" + this.code_length + "'");
         list.add("code='" + HexUtils.fromBytes(this.code) + "'");
+        List<String> codeLines = code2String(this.code);
+        list.addAll(codeLines);
         // FIXME: 在这儿，处理Code代码
         list.add("");
         if(this.exception_table_list.size() > 0) {
@@ -117,8 +121,78 @@ public final class Code extends AttributeInfo {
                 List<String> lines = instance.getLines();
                 list.addAll(lines);
             }
+            else if("LocalVariableTypeTable".equals(name)) {
+                LocalVariableTypeTable instance = (LocalVariableTypeTable) item;
+                List<String> lines = instance.getLines();
+                list.addAll(lines);
+            }
             list.add("");
         }
+        return list;
+    }
+
+    public static List<String> code2String(byte[] code) {
+        ByteDashboard board = new ByteDashboard("MethodCode", code);
+
+        List<String> list = new ArrayList();
+
+        while (board.hasNex()) {
+            int index = board.getIndex();
+
+            byte b = board.next();
+            int opcode = b & 0xFF;
+            String opcodeName = OpcodeConst.getOpcodeName(opcode);
+
+
+            String operandStr = "";
+            short num = OpcodeConst.getNoOfOperands(opcode);
+            byte[] bytes = board.nextN(num);
+
+            long count = OpcodeConst.getOperandTypeCount(opcode);
+            int byteIndex = 0;
+            for(int i=0; i<count; i++) {
+
+                short operandType = OpcodeConst.getOperandType(opcode, i);
+                byte[] operand_value_bytes;
+                int operandValue = 0;
+                switch (operandType) {
+                    case TypeConst.T_BYTE:
+                        operand_value_bytes = new byte[1];
+                        operand_value_bytes[0] = bytes[byteIndex];
+                        operandValue = ByteUtils.bytesToInt(operand_value_bytes, 0);
+                        byteIndex += 1;
+                        break;
+                    case TypeConst.T_SHORT:
+                        operand_value_bytes = new byte[2];
+                        operand_value_bytes[0] = bytes[byteIndex + 0];
+                        operand_value_bytes[1] = bytes[byteIndex + 1];
+                        operandValue = ByteUtils.bytesToInt(operand_value_bytes, 0);
+                        byteIndex += 2;
+                        break;
+                    case TypeConst.T_INT:
+                        operand_value_bytes = new byte[4];
+                        operand_value_bytes[0] = bytes[byteIndex + 0];
+                        operand_value_bytes[1] = bytes[byteIndex + 1];
+                        operand_value_bytes[2] = bytes[byteIndex + 2];
+                        operand_value_bytes[3] = bytes[byteIndex + 3];
+                        operandValue = ByteUtils.bytesToInt(operand_value_bytes, 0);
+                        byteIndex += 4;
+                        break;
+                    default:
+                        for(String line : list) {
+                            System.out.println(line);
+                        }
+                        System.out.println("opcode: " + opcodeName);
+                        System.out.println("NoOfOperands: " + HexUtils.fromBytes(bytes));
+                        System.out.println("OperandTypeCount: " + count);
+                        break;
+                }
+                operandStr += " " + operandValue;
+            }
+
+            list.add(String.format("%5d: ", index) + opcodeName + " " + operandStr);
+        }
+
         return list;
     }
 

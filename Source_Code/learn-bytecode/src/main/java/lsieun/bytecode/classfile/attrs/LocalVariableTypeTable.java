@@ -10,41 +10,41 @@ import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
 
-public final class LocalVariableTable extends AttributeInfo {
-    private final int local_variable_table_length;
-    private final List<LocalVariable> local_variable_list;
+public final class LocalVariableTypeTable extends AttributeInfo {
+    private final int local_variable_type_table_length;
+    private final List<LocalVariableType> local_variable_type_list;
 
-    public LocalVariableTable(ByteDashboard byteDashboard, ConstantPool constantPool) {
+    public LocalVariableTypeTable(ByteDashboard byteDashboard, ConstantPool constantPool) {
         super(byteDashboard, constantPool, true);
 
-        byte[] local_variable_table_length_bytes = byteDashboard.nextN(2);
-        this.local_variable_table_length = ByteUtils.bytesToInt(local_variable_table_length_bytes, 0);
+        byte[] local_variable_type_table_length_bytes = byteDashboard.nextN(2);
+        this.local_variable_type_table_length = ByteUtils.bytesToInt(local_variable_type_table_length_bytes, 0);
 
-        this.local_variable_list = new ArrayList();
-        for(int i=0; i<local_variable_table_length; i++) {
-            LocalVariable item = new LocalVariable(byteDashboard, constantPool);
-            this.local_variable_list.add(item);
+        this.local_variable_type_list = new ArrayList();
+        for(int i=0; i<local_variable_type_table_length; i++) {
+            LocalVariableType item = new LocalVariableType(byteDashboard, constantPool);
+            this.local_variable_type_list.add(item);
         }
     }
 
-    public int getLocalVariableTableLength() {
-        return local_variable_table_length;
+    public int getLocalVariableTypeTableLength() {
+        return local_variable_type_table_length;
     }
 
-    public List<LocalVariable> getLocalVariableList() {
-        return local_variable_list;
+    public List<LocalVariableType> getLocalVariableTypeList() {
+        return local_variable_type_list;
     }
 
     public List<String> getLines() {
         List<String> list = new ArrayList();
 
-        Collections.sort(this.local_variable_list);
-        if(this.local_variable_list.size() > 0) {
-            list.add("LocalVariableTable:");
+        Collections.sort(this.local_variable_type_list);
+        if(this.local_variable_type_table_length > 0) {
+            list.add("LocalVariableTypeTable:");
             list.add("index  start_pc  length  name_and_type");
         }
-        for(int i=0; i<this.local_variable_list.size(); i++) {
-            LocalVariable item = this.local_variable_list.get(i);
+        for(int i=0; i<this.local_variable_type_table_length; i++) {
+            LocalVariableType item = this.local_variable_type_list.get(i);
             list.add(String.format("%5d  %8d  %6d  ",
                     item.getIndex(), item.getStartPC(), item.getLength())
                     + item.getNameAndType()

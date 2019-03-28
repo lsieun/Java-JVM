@@ -1561,16 +1561,11 @@ public class OpcodeConst {
             {}/*impdep1*/, {}/*impdep2*/
     };
 
-    /**
-     * @since 6.0
-     */
     public static short getOperandType(final int opcode, final int index) {
         return TYPE_OF_OPERANDS[opcode][index];
     }
 
-    /**
-     * @since 6.0
-     */
+
     public static long getOperandTypeCount(final int opcode) {
         return TYPE_OF_OPERANDS[opcode].length;
     }

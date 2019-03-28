@@ -59,7 +59,7 @@ public class App {
             displayClassFileAttribute(classFile);
         }
         else {
-            System.out.println("");
+            System.out.println("please change 'classfile.content.target' in config.properties files");
         }
 
 

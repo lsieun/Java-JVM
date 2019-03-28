@@ -6,6 +6,7 @@ import java.util.List;
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.utils.ByteDashboard;
+import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
 
 public final class LineNumberTable extends AttributeInfo {
@@ -46,5 +47,21 @@ public final class LineNumberTable extends AttributeInfo {
         }
 
         return list;
+    }
+
+    @Override
+    @SuppressWarnings("Duplicates")
+    public String toString() {
+        List<String> list = new ArrayList();
+        list.add("AttributeNameIndex='" + this.getAttributeNameIndex() + "'");
+        list.add("HexCode='" + super.getHexCode() + "'");
+
+        String content = StringUtils.list2str(list, ", ");
+
+        StringBuilder buf = new StringBuilder();
+        buf.append(this.getName() + " {");
+        buf.append(content);
+        buf.append("}");
+        return buf.toString();
     }
 }

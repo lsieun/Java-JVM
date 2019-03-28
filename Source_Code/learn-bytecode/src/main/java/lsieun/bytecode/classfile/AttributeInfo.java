@@ -5,10 +5,12 @@ import java.util.List;
 
 import lsieun.bytecode.classfile.attrs.Code;
 import lsieun.bytecode.classfile.attrs.ConstantValue;
+import lsieun.bytecode.classfile.attrs.Deprecated;
 import lsieun.bytecode.classfile.attrs.Exceptions;
 import lsieun.bytecode.classfile.attrs.InnerClasses;
 import lsieun.bytecode.classfile.attrs.LineNumberTable;
 import lsieun.bytecode.classfile.attrs.LocalVariableTable;
+import lsieun.bytecode.classfile.attrs.LocalVariableTypeTable;
 import lsieun.bytecode.classfile.attrs.Signature;
 import lsieun.bytecode.classfile.attrs.SourceFile;
 import lsieun.bytecode.classfile.basic.CPConst;
@@ -83,8 +85,14 @@ public class AttributeInfo extends Node {
         else if("LocalVariableTable".equals(name)) {
             instance = new LocalVariableTable(byteDashboard, constantPool);
         }
+        else if("LocalVariableTypeTable".equals(name)) {
+            instance = new LocalVariableTypeTable(byteDashboard, constantPool);
+        }
         else if("Signature".equals(name)) {
             instance = new Signature(byteDashboard, constantPool);
+        }
+        else if("Deprecated".equals(name)) {
+            instance = new Deprecated(byteDashboard, constantPool);
         }
         else if("Exceptions".equals(name)) {
             instance = new Exceptions(byteDashboard, constantPool);
