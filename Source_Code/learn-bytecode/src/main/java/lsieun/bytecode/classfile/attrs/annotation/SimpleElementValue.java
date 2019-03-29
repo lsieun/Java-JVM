@@ -4,7 +4,7 @@ import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
-public class SimpleElementValue extends ElementValue {
+public final class SimpleElementValue extends ElementValue {
     private final int const_value_index;
     private final String value;
 

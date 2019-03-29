@@ -190,7 +190,7 @@ public final class Code extends AttributeInfo {
                 operandStr += " " + operandValue;
             }
 
-            list.add(String.format("%5d: ", index) + opcodeName + " " + operandStr);
+            list.add(String.format("%5d: ", index) + opcodeName + operandStr);
         }
 
         return list;

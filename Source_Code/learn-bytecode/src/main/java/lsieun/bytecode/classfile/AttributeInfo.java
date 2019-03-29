@@ -11,6 +11,7 @@ import lsieun.bytecode.classfile.attrs.InnerClasses;
 import lsieun.bytecode.classfile.attrs.LineNumberTable;
 import lsieun.bytecode.classfile.attrs.LocalVariableTable;
 import lsieun.bytecode.classfile.attrs.LocalVariableTypeTable;
+import lsieun.bytecode.classfile.attrs.RuntimeVisibleAnnotations;
 import lsieun.bytecode.classfile.attrs.Signature;
 import lsieun.bytecode.classfile.attrs.SourceFile;
 import lsieun.bytecode.classfile.basic.CPConst;
@@ -99,6 +100,9 @@ public class AttributeInfo extends Node {
         }
         else if("ConstantValue".equals(name)) {
             instance = new ConstantValue(byteDashboard, constantPool);
+        }
+        else if("RuntimeVisibleAnnotations".equals(name)) {
+            instance = new RuntimeVisibleAnnotations(byteDashboard, constantPool);
         }
         else {
             instance = new AttributeInfo(byteDashboard, constantPool);

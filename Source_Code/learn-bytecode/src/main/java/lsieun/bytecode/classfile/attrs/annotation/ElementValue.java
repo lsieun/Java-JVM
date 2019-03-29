@@ -54,6 +54,18 @@ public abstract class ElementValue {
             case PRIMITIVE_BOOLEAN:
             case STRING:
                 return new SimpleElementValue(byteDashboard, constantPool);
+            case ENUM_CONSTANT:
+                return new EnumElementValue(byteDashboard, constantPool);
+            case CLASS:
+                return new ClassElementValue(byteDashboard, constantPool);
+            case ANNOTATION:
+                // FIXME:考虑注解是否在Runtime时可见，即isRuntimeVisible
+                return new AnnotationElementValue(byteDashboard, constantPool);
+            case ARRAY:
+                return new ArrayElementValue(byteDashboard, constantPool);
+
+            default:
+                throw new RuntimeException("Unexpected element value kind in annotation: " + tag);
         }
     }
 }
