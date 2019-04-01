@@ -112,9 +112,11 @@ public final class Code extends AttributeInfo {
             AttributeInfo item = this.attributes_list.get(i);
             String name = item.getName();
             if("LineNumberTable".equals(name)) {
-                LineNumberTable instance = (LineNumberTable) item;
-                List<String> lines = instance.getLines();
-                list.addAll(lines);
+                //FIXME: temp change
+                continue;
+//                LineNumberTable instance = (LineNumberTable) item;
+//                List<String> lines = instance.getLines();
+//                list.addAll(lines);
             }
             else if("LocalVariableTable".equals(name)) {
                 LocalVariableTable instance = (LocalVariableTable) item;
@@ -138,11 +140,12 @@ public final class Code extends AttributeInfo {
 
         while (board.hasNex()) {
             int index = board.getIndex();
+            List<Byte> byteList = new ArrayList();
 
             byte b = board.next();
             int opcode = b & 0xFF;
             String opcodeName = OpcodeConst.getOpcodeName(opcode);
-
+            byteList.add(b);
 
             String operandStr = "";
             short num = OpcodeConst.getNoOfOperands(opcode);
@@ -161,6 +164,7 @@ public final class Code extends AttributeInfo {
                         operand_value_bytes[0] = bytes[byteIndex];
                         operandValue = ByteUtils.bytesToInt(operand_value_bytes, 0);
                         byteIndex += 1;
+                        byteList.add(operand_value_bytes[0]);
                         break;
                     case TypeConst.T_SHORT:
                         operand_value_bytes = new byte[2];
@@ -168,6 +172,8 @@ public final class Code extends AttributeInfo {
                         operand_value_bytes[1] = bytes[byteIndex + 1];
                         operandValue = ByteUtils.bytesToInt(operand_value_bytes, 0);
                         byteIndex += 2;
+                        byteList.add(operand_value_bytes[0]);
+                        byteList.add(operand_value_bytes[1]);
                         break;
                     case TypeConst.T_INT:
                         operand_value_bytes = new byte[4];
@@ -177,6 +183,11 @@ public final class Code extends AttributeInfo {
                         operand_value_bytes[3] = bytes[byteIndex + 3];
                         operandValue = ByteUtils.bytesToInt(operand_value_bytes, 0);
                         byteIndex += 4;
+                        byteList.add(operand_value_bytes[0]);
+                        byteList.add(operand_value_bytes[1]);
+                        byteList.add(operand_value_bytes[2]);
+                        byteList.add(operand_value_bytes[3]);
+
                         break;
                     default:
                         for(String line : list) {
@@ -190,7 +201,7 @@ public final class Code extends AttributeInfo {
                 operandStr += " " + operandValue;
             }
 
-            list.add(String.format("%5d: ", index) + opcodeName + operandStr);
+            list.add(String.format("%5d: %-16s", index, (opcodeName + operandStr)) + "// " + HexUtils.fromBytes(byteList));
         }
 
         return list;
@@ -201,7 +212,8 @@ public final class Code extends AttributeInfo {
     public String toString() {
         List<String> list = new ArrayList();
         for(String line : getLines()) {
-            list.add("    " + line + StringUtils.LF);
+            //list.add("    " + line + StringUtils.LF);
+            list.add(line + StringUtils.LF);
         }
 //        list.add("    maxStack='" + this.max_stack + "', maxLocals='" + this.max_locals + "'" + StringUtils.LF);
 //        list.add("    codeLength='" + this.code_length + "'" + StringUtils.LF);

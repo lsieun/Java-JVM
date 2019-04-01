@@ -108,7 +108,7 @@ public final class MethodInfo extends Node {
             attr_list.add(name);
         }
         list.add("Attrs='" + StringUtils.list2str(attr_list, "[","]",",") + "'");
-        //list.add("HexCode='" + super.getHexCode() + "'");
+        list.add("HexCode='" + super.getHexCode() + "'");
 
         String content = StringUtils.list2str(list, ", ");
 

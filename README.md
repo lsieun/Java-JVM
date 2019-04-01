@@ -2,6 +2,8 @@
 
 :pig: JVM相关内容
 
+- [Java Language and Virtual Machine Specifications](https://docs.oracle.com/javase/specs/)
+
 ## 编写文章
 
 - 要问自己是否可以把文章可以写的更简单、明了吗？
