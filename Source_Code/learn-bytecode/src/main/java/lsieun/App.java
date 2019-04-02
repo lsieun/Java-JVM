@@ -86,7 +86,7 @@ public class App {
         }
 
         // 其他字段
-        System.out.println("Other Fields:");
+        System.out.println("Usable Fields:");
         for(FieldInfo item : fields.getFieldList()) {
             System.out.println(item);
         }
@@ -108,7 +108,7 @@ public class App {
         }
 
         // 其他方法
-        System.out.println("Other Methods:");
+        System.out.println("Usable Methods:");
         for(MethodInfo item : methods.getMethodList()) {
             System.out.println(item);
         }
