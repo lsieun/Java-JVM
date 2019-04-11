@@ -29,11 +29,11 @@ Program analysis, generation and transformation are useful techniques. All these
 
 In the case of **Java** they can be used on **Java source code** or on **compiled Java classes**.
 
-> 作者有话说：修改Java代码的两种方式，一是修改Java source code，另一种是修改compiled Java classes。
+> 作者有话说：修改Java代码的两种方式，一种方式是修改Java source code，另一种方式是修改compiled Java classes。
 
 The ASM library was designed to work on **compiled Java classes**.
 
-> 作者有话说：The ASM library的目标，不是修改Java source code，而是修改compiled Java classes。
+> 作者有话说：The ASM library修改的目标，不是Java source code，而是compiled Java classes。
 
 **One of the advantages** of working on **compiled classes** is that, obviously, the source code is not needed. Program transformations can therefore be used on any applications, including closed source and commercial ones.
 
