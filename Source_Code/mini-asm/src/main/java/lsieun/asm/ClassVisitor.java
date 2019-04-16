@@ -10,38 +10,15 @@ package lsieun.asm;
  *
  */
 public abstract class ClassVisitor {
-    /**
-     * The ASM API version implemented by this visitor. The value of this field must be one of {@link
-     * Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
-     */
-    protected final int api;
-
     /** The class visitor to which this visitor must delegate method calls. May be {@literal null}. */
     protected ClassVisitor cv;
 
     /**
      * Constructs a new {@link ClassVisitor}.
      *
-     * @param api the ASM API version implemented by this visitor. Must be one of {@link
-     *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
+     * @param classVisitor the class visitor to which this visitor must delegate method calls. May be null.
      */
-    public ClassVisitor(final int api) {
-        this(api, null);
-    }
-
-    /**
-     * Constructs a new {@link ClassVisitor}.
-     *
-     * @param api the ASM API version implemented by this visitor. Must be one of {@link
-     *     Opcodes#ASM4}, {@link Opcodes#ASM5}, {@link Opcodes#ASM6} or {@link Opcodes#ASM7}.
-     * @param classVisitor the class visitor to which this visitor must delegate method calls. May be
-     *     null.
-     */
-    public ClassVisitor(final int api, final ClassVisitor classVisitor) {
-        if (api != Opcodes.ASM7 && api != Opcodes.ASM6 && api != Opcodes.ASM5 && api != Opcodes.ASM4) {
-            throw new IllegalArgumentException("Unsupported api " + api);
-        }
-        this.api = api;
+    public ClassVisitor(final ClassVisitor classVisitor) {
         this.cv = classVisitor;
     }
 
@@ -88,61 +65,6 @@ public abstract class ClassVisitor {
     }
 
     /**
-     * Visit the module corresponding to the class.
-     *
-     * @param name the fully qualified name (using dots) of the module.
-     * @param access the module access flags, among {@code ACC_OPEN}, {@code ACC_SYNTHETIC} and {@code
-     *     ACC_MANDATED}.
-     * @param version the module version, or {@literal null}.
-     * @return a visitor to visit the module values, or {@literal null} if this visitor is not
-     *     interested in visiting this module.
-     */
-    public ModuleVisitor visitModule(final String name, final int access, final String version) {
-        if (api < Opcodes.ASM6) {
-            throw new UnsupportedOperationException("This feature requires ASM6");
-        }
-        if (cv != null) {
-            return cv.visitModule(name, access, version);
-        }
-        return null;
-    }
-
-    /**
-     * Visits the nest host class of the class. A nest is a set of classes of the same package that
-     * share access to their private members. One of these classes, called the host, lists the other
-     * members of the nest, which in turn should link to the host of their nest. This method must be
-     * called only once and only if the visited class is a non-host member of a nest. A class is
-     * implicitly its own nest, so it's invalid to call this method with the visited class name as
-     * argument.
-     *
-     * @param nestHost the internal name of the host class of the nest.
-     */
-    public void visitNestHost(final String nestHost) {
-        if (api < Opcodes.ASM7) {
-            throw new UnsupportedOperationException("This feature requires ASM7");
-        }
-        if (cv != null) {
-            cv.visitNestHost(nestHost);
-        }
-    }
-
-    /**
-     * Visits the enclosing class of the class. This method must be called only if the class has an
-     * enclosing class.
-     *
-     * @param owner internal name of the enclosing class of the class.
-     * @param name the name of the method that contains the class, or {@literal null} if the class is
-     *     not enclosed in a method of its enclosing class.
-     * @param descriptor the descriptor of the method that contains the class, or {@literal null} if
-     *     the class is not enclosed in a method of its enclosing class.
-     */
-    public void visitOuterClass(final String owner, final String name, final String descriptor) {
-        if (cv != null) {
-            cv.visitOuterClass(owner, name, descriptor);
-        }
-    }
-
-    /**
      * Visits an annotation of the class.
      *
      * @param descriptor the class descriptor of the annotation class.
@@ -158,32 +80,6 @@ public abstract class ClassVisitor {
     }
 
     /**
-     * Visits an annotation on a type in the class signature.
-     *
-     * @param typeRef a reference to the annotated type. The sort of this type reference must be
-     *     {@link TypeReference#CLASS_TYPE_PARAMETER}, {@link
-     *     TypeReference#CLASS_TYPE_PARAMETER_BOUND} or {@link TypeReference#CLASS_EXTENDS}. See
-     *     {@link TypeReference}.
-     * @param typePath the path to the annotated type argument, wildcard bound, array element type, or
-     *     static inner type within 'typeRef'. May be {@literal null} if the annotation targets
-     *     'typeRef' as a whole.
-     * @param descriptor the class descriptor of the annotation class.
-     * @param visible {@literal true} if the annotation is visible at runtime.
-     * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
-     *     interested in visiting this annotation.
-     */
-    public AnnotationVisitor visitTypeAnnotation(
-            final int typeRef, final TypePath typePath, final String descriptor, final boolean visible) {
-        if (api < Opcodes.ASM5) {
-            throw new UnsupportedOperationException("This feature requires ASM5");
-        }
-        if (cv != null) {
-            return cv.visitTypeAnnotation(typeRef, typePath, descriptor, visible);
-        }
-        return null;
-    }
-
-    /**
      * Visits a non standard attribute of the class.
      *
      * @param attribute an attribute.
@@ -191,43 +87,6 @@ public abstract class ClassVisitor {
     public void visitAttribute(final Attribute attribute) {
         if (cv != null) {
             cv.visitAttribute(attribute);
-        }
-    }
-
-    /**
-     * Visits a member of the nest. A nest is a set of classes of the same package that share access
-     * to their private members. One of these classes, called the host, lists the other members of the
-     * nest, which in turn should link to the host of their nest. This method must be called only if
-     * the visited class is the host of a nest. A nest host is implicitly a member of its own nest, so
-     * it's invalid to call this method with the visited class name as argument.
-     *
-     * @param nestMember the internal name of a nest member.
-     */
-    public void visitNestMember(final String nestMember) {
-        if (api < Opcodes.ASM7) {
-            throw new UnsupportedOperationException("This feature requires ASM7");
-        }
-        if (cv != null) {
-            cv.visitNestMember(nestMember);
-        }
-    }
-
-    /**
-     * Visits information about an inner class. This inner class is not necessarily a member of the
-     * class being visited.
-     *
-     * @param name the internal name of an inner class (see {@link Type#getInternalName()}).
-     * @param outerName the internal name of the class to which the inner class belongs (see {@link
-     *     Type#getInternalName()}). May be {@literal null} for not member classes.
-     * @param innerName the (simple) name of the inner class inside its enclosing class. May be
-     *     {@literal null} for anonymous inner classes.
-     * @param access the access flags of the inner class as originally declared in the enclosing
-     *     class.
-     */
-    public void visitInnerClass(
-            final String name, final String outerName, final String innerName, final int access) {
-        if (cv != null) {
-            cv.visitInnerClass(name, outerName, innerName, access);
         }
     }
 
