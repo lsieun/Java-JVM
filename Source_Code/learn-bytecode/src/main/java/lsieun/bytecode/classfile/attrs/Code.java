@@ -1,6 +1,7 @@
 package lsieun.bytecode.classfile.attrs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lsieun.bytecode.classfile.AttributeInfo;
@@ -147,6 +148,79 @@ public final class Code extends AttributeInfo {
             String opcodeName = OpcodeConst.getOpcodeName(opcode);
             byteList.add(b);
 
+            if(opcode == 170) {
+                //tableswitch
+                int ceiling = getCeiling(index+1, 4);
+                int pad_num = ceiling - (index + 1);
+                // pad
+                if(pad_num > 0) {
+                    byte[] padBytes = board.nextN(pad_num);
+                    addArray2List(byteList, padBytes);
+                }
+                //
+                byte[] defaultByte_bytes = board.nextN(4);
+                byte[] lowByte_bytes = board.nextN(4);
+                byte[] highByte_bytes = board.nextN(4);
+
+                addArray2List(byteList, defaultByte_bytes);
+                addArray2List(byteList, lowByte_bytes);
+                addArray2List(byteList, highByte_bytes);
+
+                int defaultByte = ByteUtils.bytesToInt(defaultByte_bytes, 0);
+                int lowByte = ByteUtils.bytesToInt(lowByte_bytes, 0);
+                int highByte = ByteUtils.bytesToInt(highByte_bytes, 0);
+                String jumpStr = "[" + pad_num + "] " + defaultByte + " " + lowByte + "-" + highByte + ": ";
+                List<String> offsetList = new ArrayList();
+
+                for(int i=lowByte; i<=highByte; i++) {
+                    byte[] offset_bytes = board.nextN(4);
+                    int offset = ByteUtils.bytesToInt(offset_bytes, 0);
+                    addArray2List(byteList, offset_bytes);
+                    offsetList.add(String.valueOf(offset));
+                }
+                jumpStr += StringUtils.list2str(offsetList, ",");
+
+                list.add(String.format("%5d: %-16s", index, (opcodeName + jumpStr)) + "// " + HexUtils.fromBytes(byteList));
+                continue;
+            }
+            else if(opcode == 171) {
+                //lookupswitch
+                int ceiling = getCeiling(index+1, 4);
+                int pad_num = ceiling - (index + 1);
+                // pad
+                if(pad_num > 0) {
+                    byte[] padBytes = board.nextN(pad_num);
+                    addArray2List(byteList, padBytes);
+                }
+                //
+                byte[] defaultByte_bytes = board.nextN(4);
+                byte[] npairs_bytes = board.nextN(4);
+
+                addArray2List(byteList, defaultByte_bytes);
+                addArray2List(byteList, npairs_bytes);
+
+                int defaultByte = ByteUtils.bytesToInt(defaultByte_bytes, 0);
+                int npairs = ByteUtils.bytesToInt(npairs_bytes, 0);
+
+                String jumpStr = "[" + pad_num + "] " + defaultByte + " " + npairs + ": ";
+                List<String> offsetPairList = new ArrayList();
+                for(int i=0; i<npairs; i++) {
+                    byte[] caseValue_bytes = board.nextN(4);
+                    byte[] offset_bytes = board.nextN(4);
+                    int caseValue = ByteUtils.bytesToInt(caseValue_bytes, 0);
+                    int offset = ByteUtils.bytesToInt(offset_bytes, 0);
+
+                    addArray2List(byteList, caseValue_bytes);
+                    addArray2List(byteList, offset_bytes);
+                    offsetPairList.add(caseValue + ":" + offset);
+                }
+                jumpStr += StringUtils.list2str(offsetPairList, ",");
+
+                list.add(String.format("%5d: %-16s", index, (opcodeName + jumpStr)) + "// " + HexUtils.fromBytes(byteList));
+
+                continue;
+            }
+
             String operandStr = "";
             short num = OpcodeConst.getNoOfOperands(opcode);
             byte[] bytes = board.nextN(num);
@@ -205,6 +279,23 @@ public final class Code extends AttributeInfo {
         }
 
         return list;
+    }
+
+    private static void addArray2List(List<Byte> list, byte[] bytes) {
+        if(list == null) return;
+        if(bytes == null || bytes.length < 1) return;
+        for(int i=0; i<bytes.length; i++) {
+            byte b = bytes[i];
+            list.add(b);
+        }
+    }
+
+    private static int getCeiling(int index, int base) {
+        int quotient = index / base;
+        int remainder = index % base;
+        if(remainder == 0) return index;
+        int newIndex = (quotient + 1) * base;
+        return newIndex;
     }
 
     @Override
