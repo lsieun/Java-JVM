@@ -162,4 +162,17 @@ public interface Opcodes {
     int MULTIANEWARRAY = 197; // visitMultiANewArrayInsn
     int IFNULL = 198; // visitJumpInsn
     int IFNONNULL = 199; // -
+
+    // Possible values for the reference_kind field of CONSTANT_MethodHandle_info structures.
+    // See https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.4.8.
+
+    int H_GETFIELD = 1;
+    int H_GETSTATIC = 2;
+    int H_PUTFIELD = 3;
+    int H_PUTSTATIC = 4;
+    int H_INVOKEVIRTUAL = 5;
+    int H_INVOKESTATIC = 6;
+    int H_INVOKESPECIAL = 7;
+    int H_NEWINVOKESPECIAL = 8;
+    int H_INVOKEINTERFACE = 9;
 }

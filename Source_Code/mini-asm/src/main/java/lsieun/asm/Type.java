@@ -155,6 +155,21 @@ public final class Type {
     }
 
     /**
+     * Returns the descriptor corresponding to this type.
+     *
+     * @return the descriptor corresponding to this type.
+     */
+    public String getDescriptor() {
+        if (sort == OBJECT) {
+            return valueBuffer.substring(valueBegin - 1, valueEnd + 1);
+        } else if (sort == INTERNAL) {
+            return 'L' + valueBuffer.substring(valueBegin, valueEnd) + ';';
+        } else {
+            return valueBuffer.substring(valueBegin, valueEnd);
+        }
+    }
+
+    /**
      * Computes the size of the arguments and of the return value of a method.
      *
      * @param methodDescriptor a method descriptor.

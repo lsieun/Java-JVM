@@ -40,75 +40,16 @@ public abstract class MethodVisitor {
     // -----------------------------------------------------------------------------------------------
 
     /**
-     * Visits the default value of this annotation interface method.
+     * Visits a parameter of this method.
      *
-     * @return a visitor to the visit the actual default value of this annotation interface method, or
-     *     {@literal null} if this visitor is not interested in visiting this default value. The
-     *     'name' parameters passed to the methods of this annotation visitor are ignored. Moreover,
-     *     exacly one visit method must be called on this annotation visitor, followed by visitEnd.
+     * @param name parameter name or {@literal null} if none is provided.
+     * @param access the parameter's access flags, only {@code ACC_FINAL}, {@code ACC_SYNTHETIC}
+     *     or/and {@code ACC_MANDATED} are allowed (see {@link Opcodes}).
      */
-    public AnnotationVisitor visitAnnotationDefault() {
+    public void visitParameter(final String name, final int access) {
         if (mv != null) {
-            return mv.visitAnnotationDefault();
+            mv.visitParameter(name, access);
         }
-        return null;
-    }
-
-    /**
-     * Visits an annotation of this method.
-     *
-     * @param descriptor the class descriptor of the annotation class.
-     * @param visible {@literal true} if the annotation is visible at runtime.
-     * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
-     *     interested in visiting this annotation.
-     */
-    public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
-        if (mv != null) {
-            return mv.visitAnnotation(descriptor, visible);
-        }
-        return null;
-    }
-
-    /**
-     * Visits the number of method parameters that can have annotations. By default (i.e. when this
-     * method is not called), all the method parameters defined by the method descriptor can have
-     * annotations.
-     *
-     * @param parameterCount the number of method parameters than can have annotations. This number
-     *     must be less or equal than the number of parameter types in the method descriptor. It can
-     *     be strictly less when a method has synthetic parameters and when these parameters are
-     *     ignored when computing parameter indices for the purpose of parameter annotations (see
-     *     https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.18).
-     * @param visible {@literal true} to define the number of method parameters that can have
-     *     annotations visible at runtime, {@literal false} to define the number of method parameters
-     *     that can have annotations invisible at runtime.
-     */
-    public void visitAnnotableParameterCount(final int parameterCount, final boolean visible) {
-        if (mv != null) {
-            mv.visitAnnotableParameterCount(parameterCount, visible);
-        }
-    }
-
-    /**
-     * Visits an annotation of a parameter this method.
-     *
-     * @param parameter the parameter index. This index must be strictly smaller than the number of
-     *     parameters in the method descriptor, and strictly smaller than the parameter count
-     *     specified in {@link #visitAnnotableParameterCount}. Important note: <i>a parameter index i
-     *     is not required to correspond to the i'th parameter descriptor in the method
-     *     descriptor</i>, in particular in case of synthetic parameters (see
-     *     https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-4.html#jvms-4.7.18).
-     * @param descriptor the class descriptor of the annotation class.
-     * @param visible {@literal true} if the annotation is visible at runtime.
-     * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
-     *     interested in visiting this annotation.
-     */
-    public AnnotationVisitor visitParameterAnnotation(
-            final int parameter, final String descriptor, final boolean visible) {
-        if (mv != null) {
-            return mv.visitParameterAnnotation(parameter, descriptor, visible);
-        }
-        return null;
     }
 
     /**
@@ -126,6 +67,180 @@ public abstract class MethodVisitor {
     public void visitCode() {
         if (mv != null) {
             mv.visitCode();
+        }
+    }
+
+    /**
+     * Visits a zero operand instruction.
+     *
+     * @param opcode the opcode of the instruction to be visited. This opcode is either NOP,
+     *     ACONST_NULL, ICONST_M1, ICONST_0, ICONST_1, ICONST_2, ICONST_3, ICONST_4, ICONST_5,
+     *     LCONST_0, LCONST_1, FCONST_0, FCONST_1, FCONST_2, DCONST_0, DCONST_1, IALOAD, LALOAD,
+     *     FALOAD, DALOAD, AALOAD, BALOAD, CALOAD, SALOAD, IASTORE, LASTORE, FASTORE, DASTORE,
+     *     AASTORE, BASTORE, CASTORE, SASTORE, POP, POP2, DUP, DUP_X1, DUP_X2, DUP2, DUP2_X1, DUP2_X2,
+     *     SWAP, IADD, LADD, FADD, DADD, ISUB, LSUB, FSUB, DSUB, IMUL, LMUL, FMUL, DMUL, IDIV, LDIV,
+     *     FDIV, DDIV, IREM, LREM, FREM, DREM, INEG, LNEG, FNEG, DNEG, ISHL, LSHL, ISHR, LSHR, IUSHR,
+     *     LUSHR, IAND, LAND, IOR, LOR, IXOR, LXOR, I2L, I2F, I2D, L2I, L2F, L2D, F2I, F2L, F2D, D2I,
+     *     D2L, D2F, I2B, I2C, I2S, LCMP, FCMPL, FCMPG, DCMPL, DCMPG, IRETURN, LRETURN, FRETURN,
+     *     DRETURN, ARETURN, RETURN, ARRAYLENGTH, ATHROW, MONITORENTER, or MONITOREXIT.
+     */
+    public void visitInsn(final int opcode) {
+        if (mv != null) {
+            mv.visitInsn(opcode);
+        }
+    }
+
+    /**
+     * Visits an instruction with a single int operand.
+     *
+     * @param opcode the opcode of the instruction to be visited. This opcode is either BIPUSH, SIPUSH
+     *     or NEWARRAY.
+     * @param operand the operand of the instruction to be visited.<br>
+     *     When opcode is BIPUSH, operand value should be between Byte.MIN_VALUE and Byte.MAX_VALUE.
+     *     <br>
+     *     When opcode is SIPUSH, operand value should be between Short.MIN_VALUE and Short.MAX_VALUE.
+     *     <br>
+     *     When opcode is NEWARRAY, operand value should be one of {@link Opcodes#T_BOOLEAN}, {@link
+     *     Opcodes#T_CHAR}, {@link Opcodes#T_FLOAT}, {@link Opcodes#T_DOUBLE}, {@link Opcodes#T_BYTE},
+     *     {@link Opcodes#T_SHORT}, {@link Opcodes#T_INT} or {@link Opcodes#T_LONG}.
+     */
+    public void visitIntInsn(final int opcode, final int operand) {
+        if (mv != null) {
+            mv.visitIntInsn(opcode, operand);
+        }
+    }
+
+    /**
+     * Visits a local variable instruction. A local variable instruction is an instruction that loads
+     * or stores the value of a local variable.
+     *
+     * @param opcode the opcode of the local variable instruction to be visited. This opcode is either
+     *     ILOAD, LLOAD, FLOAD, DLOAD, ALOAD, ISTORE, LSTORE, FSTORE, DSTORE, ASTORE or RET.
+     * @param var the operand of the instruction to be visited. This operand is the index of a local
+     *     variable.
+     */
+    public void visitVarInsn(final int opcode, final int var) {
+        if (mv != null) {
+            mv.visitVarInsn(opcode, var);
+        }
+    }
+
+    /**
+     * Visits a type instruction. A type instruction is an instruction that takes the internal name of
+     * a class as parameter.
+     *
+     * @param opcode the opcode of the type instruction to be visited. This opcode is either NEW,
+     *     ANEWARRAY, CHECKCAST or INSTANCEOF.
+     * @param type the operand of the instruction to be visited. This operand must be the internal
+     *     name of an object or array class (see {@link Type#getInternalName()}).
+     */
+    public void visitTypeInsn(final int opcode, final String type) {
+        if (mv != null) {
+            mv.visitTypeInsn(opcode, type);
+        }
+    }
+
+    /**
+     * Visits a field instruction. A field instruction is an instruction that loads or stores the
+     * value of a field of an object.
+     *
+     * @param opcode the opcode of the type instruction to be visited. This opcode is either
+     *     GETSTATIC, PUTSTATIC, GETFIELD or PUTFIELD.
+     * @param owner the internal name of the field's owner class (see {@link Type#getInternalName()}).
+     * @param name the field's name.
+     * @param descriptor the field's descriptor (see {@link Type}).
+     */
+    public void visitFieldInsn(
+            final int opcode, final String owner, final String name, final String descriptor) {
+        if (mv != null) {
+            mv.visitFieldInsn(opcode, owner, name, descriptor);
+        }
+    }
+
+    /**
+     * Visits a method instruction. A method instruction is an instruction that invokes a method.
+     *
+     * @param opcode the opcode of the type instruction to be visited. This opcode is either
+     *     INVOKEVIRTUAL, INVOKESPECIAL, INVOKESTATIC or INVOKEINTERFACE.
+     * @param owner the internal name of the method's owner class (see {@link
+     *     Type#getInternalName()}).
+     * @param name the method's name.
+     * @param descriptor the method's descriptor (see {@link Type}).
+     * @param isInterface if the method's owner class is an interface.
+     */
+    public void visitMethodInsn(
+            final int opcode,
+            final String owner,
+            final String name,
+            final String descriptor,
+            final boolean isInterface) {
+        if (mv != null) {
+            mv.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------
+    // Special instructions
+    // -----------------------------------------------------------------------------------------------
+
+    /**
+     * Visits a LDC instruction. Note that new constant types may be added in future versions of the
+     * Java Virtual Machine. To easily detect new constant types, implementations of this method
+     * should check for unexpected constant types, like this:
+     *
+     * <pre>
+     * if (cst instanceof Integer) {
+     *     // ...
+     * } else if (cst instanceof Float) {
+     *     // ...
+     * } else if (cst instanceof Long) {
+     *     // ...
+     * } else if (cst instanceof Double) {
+     *     // ...
+     * } else if (cst instanceof String) {
+     *     // ...
+     * } else if (cst instanceof Type) {
+     *     int sort = ((Type) cst).getSort();
+     *     if (sort == Type.OBJECT) {
+     *         // ...
+     *     } else if (sort == Type.ARRAY) {
+     *         // ...
+     *     } else if (sort == Type.METHOD) {
+     *         // ...
+     *     } else {
+     *         // throw an exception
+     *     }
+     * } else if (cst instanceof Handle) {
+     *     // ...
+     * } else if (cst instanceof ConstantDynamic) {
+     *     // ...
+     * } else {
+     *     // throw an exception
+     * }
+     * </pre>
+     *
+     * @param value the constant to be loaded on the stack. This parameter must be a non null {@link
+     *     Integer}, a {@link Float}, a {@link Long}, a {@link Double}, a {@link String}, a {@link
+     *     Type} of OBJECT or ARRAY sort for {@code .class} constants, for classes whose version is
+     *     49, a {@link Type} of METHOD sort for MethodType, a {@link Handle} for MethodHandle
+     *     constants, for classes whose version is 51 or a {@link ConstantDynamic} for a constant
+     *     dynamic for classes whose version is 55.
+     */
+    public void visitLdcInsn(final Object value) {
+        if (mv != null) {
+            mv.visitLdcInsn(value);
+        }
+    }
+
+    /**
+     * Visits an IINC instruction.
+     *
+     * @param var index of the local variable to be incremented.
+     * @param increment amount to increment the local variable by.
+     */
+    public void visitIincInsn(final int var, final int increment) {
+        if (mv != null) {
+            mv.visitIincInsn(var, increment);
         }
     }
 

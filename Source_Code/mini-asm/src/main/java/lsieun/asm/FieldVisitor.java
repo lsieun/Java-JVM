@@ -21,32 +21,6 @@ public abstract class FieldVisitor {
     }
 
     /**
-     * Visits an annotation of the field.
-     *
-     * @param descriptor the class descriptor of the annotation class.
-     * @param visible {@literal true} if the annotation is visible at runtime.
-     * @return a visitor to visit the annotation values, or {@literal null} if this visitor is not
-     *     interested in visiting this annotation.
-     */
-    public AnnotationVisitor visitAnnotation(final String descriptor, final boolean visible) {
-        if (fv != null) {
-            return fv.visitAnnotation(descriptor, visible);
-        }
-        return null;
-    }
-
-    /**
-     * Visits a non standard attribute of the field.
-     *
-     * @param attribute an attribute.
-     */
-    public void visitAttribute(final Attribute attribute) {
-        if (fv != null) {
-            fv.visitAttribute(attribute);
-        }
-    }
-
-    /**
      * Visits the end of the field. This method, which is the last one to be called, is used to inform
      * the visitor that all the annotations and attributes of the field have been visited.
      */

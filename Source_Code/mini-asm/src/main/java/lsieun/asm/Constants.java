@@ -1,6 +1,6 @@
 package lsieun.asm;
 
-final class Constants {
+final class Constants implements Opcodes {
     // The ClassFile attribute names, in the order they are defined in
     // https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-4.html#jvms-4.7-300.
 
@@ -32,4 +32,60 @@ final class Constants {
     static final String MODULE_MAIN_CLASS = "ModuleMainClass";
     static final String NEST_HOST = "NestHost";
     static final String NEST_MEMBERS = "NestMembers";
+
+    // ASM specific access flags.
+    // WARNING: the 16 least significant bits must NOT be used, to avoid conflicts with standard
+    // access flags, and also to make sure that these flags are automatically filtered out when
+    // written in class files (because access flags are stored using 16 bits only).
+
+    static final int ACC_CONSTRUCTOR = 0x40000; // method access flag.
+
+    // The JVM opcode values which are not part of the ASM public API.
+    // See https://docs.oracle.com/javase/specs/jvms/se9/html/jvms-6.html.
+
+    static final int LDC_W = 19;
+    static final int LDC2_W = 20;
+    static final int ILOAD_0 = 26;
+    static final int ILOAD_1 = 27;
+    static final int ILOAD_2 = 28;
+    static final int ILOAD_3 = 29;
+    static final int LLOAD_0 = 30;
+    static final int LLOAD_1 = 31;
+    static final int LLOAD_2 = 32;
+    static final int LLOAD_3 = 33;
+    static final int FLOAD_0 = 34;
+    static final int FLOAD_1 = 35;
+    static final int FLOAD_2 = 36;
+    static final int FLOAD_3 = 37;
+    static final int DLOAD_0 = 38;
+    static final int DLOAD_1 = 39;
+    static final int DLOAD_2 = 40;
+    static final int DLOAD_3 = 41;
+    static final int ALOAD_0 = 42;
+    static final int ALOAD_1 = 43;
+    static final int ALOAD_2 = 44;
+    static final int ALOAD_3 = 45;
+    static final int ISTORE_0 = 59;
+    static final int ISTORE_1 = 60;
+    static final int ISTORE_2 = 61;
+    static final int ISTORE_3 = 62;
+    static final int LSTORE_0 = 63;
+    static final int LSTORE_1 = 64;
+    static final int LSTORE_2 = 65;
+    static final int LSTORE_3 = 66;
+    static final int FSTORE_0 = 67;
+    static final int FSTORE_1 = 68;
+    static final int FSTORE_2 = 69;
+    static final int FSTORE_3 = 70;
+    static final int DSTORE_0 = 71;
+    static final int DSTORE_1 = 72;
+    static final int DSTORE_2 = 73;
+    static final int DSTORE_3 = 74;
+    static final int ASTORE_0 = 75;
+    static final int ASTORE_1 = 76;
+    static final int ASTORE_2 = 77;
+    static final int ASTORE_3 = 78;
+    static final int WIDE = 196;
+    static final int GOTO_W = 200;
+    static final int JSR_W = 201;
 }
