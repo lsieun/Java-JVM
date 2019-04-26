@@ -24,16 +24,11 @@ public class App {
         System.out.println(className);
         String[] interfaces = cr.getInterfaces();
         System.out.println(Arrays.toString(interfaces));
-
-        int i = 10;
-        while(i-->1) {
-            System.out.println(i);
-        }
     }
 
 
 
-    static byte[] readStream(final InputStream inputStream, final boolean close) throws IOException {
+    public static byte[] readStream(final InputStream inputStream, final boolean close) throws IOException {
         if (inputStream == null) {
             throw new IOException("Class not found");
         }
@@ -53,7 +48,7 @@ public class App {
         }
     }
 
-    static InputStream getInputStream(String className) throws FileNotFoundException {
+    public static InputStream getInputStream(String className) throws FileNotFoundException {
         String dir = App.class.getResource("/").getPath();
         String filepath = dir + className.replace('.', File.separatorChar) + ".class";
 
@@ -61,7 +56,7 @@ public class App {
         return in;
     }
 
-    static InputStream getInputStream2(String className) {
+    public static InputStream getInputStream2(String className) {
         InputStream in = ClassLoader.getSystemResourceAsStream(className.replace('.', '/') + ".class");
         return in;
     }

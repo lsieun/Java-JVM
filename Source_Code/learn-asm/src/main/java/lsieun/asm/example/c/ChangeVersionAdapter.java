@@ -1,7 +1,9 @@
 package lsieun.asm.example.c;
 
 import static org.objectweb.asm.Opcodes.ASM6;
+import static org.objectweb.asm.Opcodes.V1_6;
 import static org.objectweb.asm.Opcodes.V1_7;
+import static org.objectweb.asm.Opcodes.V9;
 
 import org.objectweb.asm.ClassVisitor;
 
@@ -16,6 +18,6 @@ public class ChangeVersionAdapter extends ClassVisitor {
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        cv.visit(V1_7, access, name, signature, superName, interfaces);
+        super.visit(V9, access, name, signature, superName, interfaces);
     }
 }

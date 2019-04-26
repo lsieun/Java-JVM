@@ -94,6 +94,8 @@ public class ClassWriter extends ClassVisitor {
      */
     private MethodWriter lastMethod;
 
+    /** The signature_index field of the Signature attribute, or 0. */
+    private int signatureIndex;
 
     /**
      * The source_file_index field of the SourceFile attribute, or 0.
@@ -116,10 +118,9 @@ public class ClassWriter extends ClassVisitor {
     /**
      * Constructs a new {@link ClassVisitor}.
      *
-     * @param classVisitor the class visitor to which this visitor must delegate method calls. May be null.
      */
-    public ClassWriter(ClassVisitor classVisitor) {
-        super(classVisitor);
+    public ClassWriter() {
+        super(null);
         this.symbolTable = new SymbolTable(this);
     }
 
@@ -134,6 +135,9 @@ public class ClassWriter extends ClassVisitor {
         this.version = version;
         this.accessFlags = access;
         this.thisClass = symbolTable.setMajorVersionAndClassName(version & 0xFFFF, name);
+        if (signature != null) {
+            this.signatureIndex = symbolTable.addConstantUtf8(signature);
+        }
         this.superClass = superName == null ? 0 : symbolTable.addConstantClass(superName).index;
         if (interfaces != null && interfaces.length > 0) {
             interfaceCount = interfaces.length;
