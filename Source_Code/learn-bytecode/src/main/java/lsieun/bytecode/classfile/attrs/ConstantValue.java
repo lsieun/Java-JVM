@@ -5,7 +5,7 @@ import java.util.List;
 
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
-import lsieun.bytecode.classfile.basic.CPConst;
+import lsieun.bytecode.classfile.Visitor;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
@@ -28,6 +28,11 @@ public final class ConstantValue extends AttributeInfo {
 
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public void accept(Visitor obj) {
+        obj.visitConstantValue(this);
     }
 
     @Override

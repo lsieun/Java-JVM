@@ -14,7 +14,7 @@ public final class FieldInfo extends Node {
     private final int name_index;
     private final int descriptor_index;
     private final int attributes_count;
-    private final List<AttributeInfo> attributes_list;
+    private final Attributes attributes;
     private String value;
 
     public FieldInfo(ByteDashboard byteDashboard, ConstantPool constantPool) {
@@ -33,10 +33,9 @@ public final class FieldInfo extends Node {
 
         byte[] bytes = ByteUtils.merge(access_flags_bytes, name_index_bytes, descriptor_index_bytes, attributes_count_bytes);
 
-        this.attributes_list = new ArrayList();
+        this.attributes = new Attributes(byteDashboard, attributes_count, constantPool);
         for(int i=0; i<attributes_count; i++) {
-            AttributeInfo attr = AttributeInfo.read(byteDashboard, constantPool);
-            this.attributes_list.add(attr);
+            AttributeInfo attr = attributes.getEntries()[i];
             bytes = ByteUtils.merge(bytes, attr.getBytes());
         }
 
@@ -64,8 +63,8 @@ public final class FieldInfo extends Node {
         return attributes_count;
     }
 
-    public List<AttributeInfo> getAttributesList() {
-        return attributes_list;
+    public Attributes getAttributes() {
+        return attributes;
     }
 
     public String getValue() {
@@ -79,8 +78,8 @@ public final class FieldInfo extends Node {
     @SuppressWarnings("Duplicates")
     public AttributeInfo findAttribute(String attrName) {
         if(StringUtils.isBlank(attrName)) return null;
-        for(int i=0; i<this.attributes_list.size(); i++) {
-            AttributeInfo item = this.attributes_list.get(i);
+        for(int i=0; i<attributes.getEntries().length; i++) {
+            AttributeInfo item = attributes.getEntries()[i];
             String name = item.getName();
             if(attrName.equals(name)) {
                 return item;

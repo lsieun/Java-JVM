@@ -5,6 +5,7 @@ import java.util.List;
 
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
+import lsieun.bytecode.classfile.Visitor;
 import lsieun.bytecode.classfile.attrs.annotation.AnnotationEntry;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
@@ -25,6 +26,11 @@ public final class RuntimeVisibleAnnotations extends AttributeInfo {
             AnnotationEntry item = new AnnotationEntry(byteDashboard, constantPool);
             this.annotation_list.add(item);
         }
+    }
+
+    @Override
+    public void accept(Visitor obj) {
+        obj.visitRuntimeVisibleAnnotations(this);
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.List;
 
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
+import lsieun.bytecode.classfile.Visitor;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
@@ -24,6 +25,11 @@ public final class InnerClasses extends AttributeInfo {
             InnerClass item = new InnerClass(byteDashboard, constantPool);
             this.inner_class_list.add(item);
         }
+    }
+
+    @Override
+    public void accept(Visitor obj) {
+        obj.visitInnerClasses(this);
     }
 
     @Override

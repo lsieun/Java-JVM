@@ -5,6 +5,7 @@ import java.util.List;
 
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
+import lsieun.bytecode.classfile.Visitor;
 import lsieun.bytecode.classfile.basic.CPConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
@@ -29,6 +30,11 @@ public final class SourceFile extends AttributeInfo {
 
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public void accept(Visitor obj) {
+        obj.visitSourceFile(this);
     }
 
     @Override

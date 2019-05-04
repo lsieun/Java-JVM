@@ -6,6 +6,7 @@ import java.util.List;
 
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
+import lsieun.bytecode.classfile.Visitor;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
@@ -33,6 +34,11 @@ public final class LocalVariableTypeTable extends AttributeInfo {
 
     public List<LocalVariableType> getLocalVariableTypeList() {
         return local_variable_type_list;
+    }
+
+    @Override
+    public void accept(Visitor obj) {
+        obj.visitLocalVariableTypeTable(this);
     }
 
     public List<String> getLines() {

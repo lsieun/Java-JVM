@@ -1,5 +1,17 @@
 package lsieun.bytecode.classfile;
 
+import lsieun.bytecode.classfile.attrs.Code;
+import lsieun.bytecode.classfile.attrs.ConstantValue;
+import lsieun.bytecode.classfile.attrs.Deprecated;
+import lsieun.bytecode.classfile.attrs.Exceptions;
+import lsieun.bytecode.classfile.attrs.InnerClasses;
+import lsieun.bytecode.classfile.attrs.LineNumberTable;
+import lsieun.bytecode.classfile.attrs.LocalVariableTable;
+import lsieun.bytecode.classfile.attrs.LocalVariableTypeTable;
+import lsieun.bytecode.classfile.attrs.RuntimeVisibleAnnotations;
+import lsieun.bytecode.classfile.attrs.Signature;
+import lsieun.bytecode.classfile.attrs.SourceFile;
+import lsieun.bytecode.classfile.attrs.StackMapTable;
 import lsieun.bytecode.classfile.cp.Constant;
 import lsieun.bytecode.classfile.cp.ConstantClass;
 import lsieun.bytecode.classfile.cp.ConstantDouble;
@@ -98,4 +110,29 @@ public interface Visitor {
     void visitConstantPackage(ConstantPackage obj);
     // endregion
 
+    // region attributes
+    void visitCode(Code obj);
+
+    void visitConstantValue(ConstantValue obj);
+
+    void visitDeprecated(Deprecated obj);
+
+    void visitExceptions(Exceptions obj);
+
+    void visitInnerClasses(InnerClasses obj);
+
+    void visitLineNumberTable(LineNumberTable obj);
+
+    void visitLocalVariableTable(LocalVariableTable obj);
+
+    void visitLocalVariableTypeTable(LocalVariableTypeTable obj);
+
+    void visitRuntimeVisibleAnnotations(RuntimeVisibleAnnotations obj);
+
+    void visitSignature(Signature obj);
+
+    void visitSourceFile(SourceFile obj);
+
+    void visitStackMapTable(StackMapTable obj);
+    // endregion
 }

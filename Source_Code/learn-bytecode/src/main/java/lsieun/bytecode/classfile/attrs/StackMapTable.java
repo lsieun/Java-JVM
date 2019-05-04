@@ -5,6 +5,7 @@ import java.util.List;
 
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
+import lsieun.bytecode.classfile.Visitor;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
@@ -19,5 +20,10 @@ public final class StackMapTable extends AttributeInfo {
         byte[] number_of_entries_bytes = byteDashboard.nextN(2);
         this.number_of_entries = ByteUtils.bytesToInt(number_of_entries_bytes, 0);
         this.stack_map_list = new ArrayList();
+    }
+
+    @Override
+    public void accept(Visitor obj) {
+        obj.visitStackMapTable(this);
     }
 }

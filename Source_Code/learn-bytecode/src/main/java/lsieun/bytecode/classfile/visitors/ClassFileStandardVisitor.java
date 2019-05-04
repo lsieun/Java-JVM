@@ -24,6 +24,18 @@ import lsieun.bytecode.classfile.MinorVersion;
 import lsieun.bytecode.classfile.SuperClass;
 import lsieun.bytecode.classfile.ThisClass;
 import lsieun.bytecode.classfile.Visitor;
+import lsieun.bytecode.classfile.attrs.Code;
+import lsieun.bytecode.classfile.attrs.ConstantValue;
+import lsieun.bytecode.classfile.attrs.Deprecated;
+import lsieun.bytecode.classfile.attrs.Exceptions;
+import lsieun.bytecode.classfile.attrs.InnerClasses;
+import lsieun.bytecode.classfile.attrs.LineNumberTable;
+import lsieun.bytecode.classfile.attrs.LocalVariableTable;
+import lsieun.bytecode.classfile.attrs.LocalVariableTypeTable;
+import lsieun.bytecode.classfile.attrs.RuntimeVisibleAnnotations;
+import lsieun.bytecode.classfile.attrs.Signature;
+import lsieun.bytecode.classfile.attrs.SourceFile;
+import lsieun.bytecode.classfile.attrs.StackMapTable;
 import lsieun.bytecode.classfile.basic.CPConst;
 import lsieun.bytecode.classfile.cp.Constant;
 import lsieun.bytecode.classfile.cp.ConstantClass;
@@ -182,8 +194,8 @@ public class ClassFileStandardVisitor implements Visitor {
 
     @Override
     public void visitFieldInfo(FieldInfo obj) {
-        List<AttributeInfo> attributesList = obj.getAttributesList();
-        String attrNames = AttributeInfo.getAttributesName(attributesList);
+        Attributes attributes = obj.getAttributes();
+        String attrNames = attributes.getAttributesName();
 
         String line = String.format("    FieldInfo {Value='%s', AccessFlags='%s', Attrs='%s', HexCode='%s'}",
                 obj.getValue(),
@@ -211,8 +223,8 @@ public class ClassFileStandardVisitor implements Visitor {
 
     @Override
     public void visitMethodInfo(MethodInfo obj) {
-        List<AttributeInfo> attributesList = obj.getAttributesList();
-        String attrNames = AttributeInfo.getAttributesName(attributesList);
+        Attributes attributes = obj.getAttributes();
+        String attrNames = attributes.getAttributesName();
 
         String line = String.format("    MethodInfo {Value='%s', AccessFlags='%s', Attrs='%s'}",
                 obj.getValue(),
@@ -343,7 +355,69 @@ public class ClassFileStandardVisitor implements Visitor {
     public void visitConstantPackage(ConstantPackage obj) {
         visitConstant(obj);
     }
+
     // endregion
 
 
+    // region attributes
+    @Override
+    public void visitCode(Code obj) {
+
+    }
+
+    @Override
+    public void visitConstantValue(ConstantValue obj) {
+
+    }
+
+    @Override
+    public void visitDeprecated(Deprecated obj) {
+
+    }
+
+    @Override
+    public void visitExceptions(Exceptions obj) {
+
+    }
+
+    @Override
+    public void visitInnerClasses(InnerClasses obj) {
+
+    }
+
+    @Override
+    public void visitLineNumberTable(LineNumberTable obj) {
+
+    }
+
+    @Override
+    public void visitLocalVariableTable(LocalVariableTable obj) {
+
+    }
+
+    @Override
+    public void visitLocalVariableTypeTable(LocalVariableTypeTable obj) {
+
+    }
+
+    @Override
+    public void visitRuntimeVisibleAnnotations(RuntimeVisibleAnnotations obj) {
+
+    }
+
+    @Override
+    public void visitSignature(Signature obj) {
+
+    }
+
+    @Override
+    public void visitSourceFile(SourceFile obj) {
+
+    }
+
+    @Override
+    public void visitStackMapTable(StackMapTable obj) {
+
+    }
+    // endregion
 }

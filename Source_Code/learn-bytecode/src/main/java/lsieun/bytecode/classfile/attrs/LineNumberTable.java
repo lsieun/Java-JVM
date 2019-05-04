@@ -5,8 +5,8 @@ import java.util.List;
 
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
+import lsieun.bytecode.classfile.Visitor;
 import lsieun.bytecode.utils.ByteDashboard;
-import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
 
 public final class LineNumberTable extends AttributeInfo {
@@ -34,34 +34,8 @@ public final class LineNumberTable extends AttributeInfo {
         return line_number_list;
     }
 
-    public List<String> getLines() {
-        List<String> list = new ArrayList();
-
-        if(this.line_number_list.size() > 0) {
-            list.add("LineNumberTable:");
-            list.add("start_pc  line_number");
-        }
-        for(int i=0; i<this.line_number_list.size(); i++) {
-            LineNumber item = this.line_number_list.get(i);
-            list.add(String.format("%8d  %11d", item.getStartPC(), item.getLineNumber()));
-        }
-
-        return list;
-    }
-
     @Override
-    @SuppressWarnings("Duplicates")
-    public String toString() {
-        List<String> list = new ArrayList();
-        list.add("AttributeNameIndex='" + this.getAttributeNameIndex() + "'");
-        list.add("HexCode='" + super.getHexCode() + "'");
-
-        String content = StringUtils.list2str(list, ", ");
-
-        StringBuilder buf = new StringBuilder();
-        buf.append(this.getName() + " {");
-        buf.append(content);
-        buf.append("}");
-        return buf.toString();
+    public void accept(Visitor obj) {
+        obj.visitLineNumberTable(this);
     }
 }

@@ -109,7 +109,7 @@ public class App {
             System.out.println(fieldInfo + StringUtils.LF);
             System.out.println("=================================================" + StringUtils.LF);
 
-            displayAttributes(fieldInfo.getAttributesList());
+            //displayAttributes(fieldInfo.getAttributesList());
         }
 
         // 其他字段
