@@ -43,20 +43,4 @@ public final class Interfaces extends Node {
     public void accept(Visitor obj) {
         obj.visitInterfaces(this);
     }
-
-    @Override
-    @SuppressWarnings("Duplicates")
-    public String toString() {
-        List<String> list = new ArrayList();
-        list.add("HexCode='" + super.getHexCode() + "'");
-        list.add("Value='" + this.getValue() + "'");
-
-        String content = StringUtils.list2str(list, ", ");
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("Interfaces {");
-        buf.append(content);
-        buf.append("}");
-        return buf.toString();
-    }
 }

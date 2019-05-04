@@ -9,8 +9,6 @@ public final class ConstantDynamic extends Constant {
     private final int bootstrap_method_attr_index;
     private final int name_and_type_index;
 
-    private String value;
-
     ConstantDynamic(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_Dynamic);
         byte[] tag_bytes = byteDashboard.nextN(1);
@@ -29,16 +27,6 @@ public final class ConstantDynamic extends Constant {
 
     public int getNameAndTypeIndex() {
         return name_and_type_index;
-    }
-
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @Override

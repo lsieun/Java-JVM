@@ -1,31 +1,28 @@
 package lsieun.bytecode.classfile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
 
 public final class Fields extends Node {
-    private final List<FieldInfo> field_list;
+    private final FieldInfo[] entries;
 
     public Fields(ByteDashboard byteDashboard, int count, ConstantPool constantPool) {
-        this.field_list = new ArrayList();
+        this.entries = new FieldInfo[count];
         for(int i=0; i<count; i++) {
             FieldInfo fieldInfo = new FieldInfo(byteDashboard, constantPool);
-            this.field_list.add(fieldInfo);
+            this.entries[i] = fieldInfo;
         }
     }
 
-    public List<FieldInfo> getFieldList() {
-        return field_list;
+    public FieldInfo[] getEntries() {
+        return entries;
     }
 
     public FieldInfo findByNameAndType(String nameAndType) {
         if(StringUtils.isBlank(nameAndType)) return null;
 
-        for(int i=0; i<this.field_list.size(); i++) {
-            FieldInfo item = this.field_list.get(i);
+        for(int i = 0; i<entries.length; i++) {
+            FieldInfo item = this.entries[i];
             String value = item.getValue();
             if(nameAndType.equals(value)) {
                 return item;
@@ -37,24 +34,5 @@ public final class Fields extends Node {
     @Override
     public void accept(Visitor obj) {
         obj.visitFields(this);
-    }
-
-    @Override
-    @SuppressWarnings("Duplicates")
-    public String toString() {
-        List<String> list = new ArrayList();
-
-        for(int i=0; i<this.field_list.size(); i++) {
-            FieldInfo item = this.field_list.get(i);
-            list.add("    " + item + StringUtils.LF);
-        }
-
-        String content = StringUtils.list2str(list, "");
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("Fields {" + StringUtils.LF);
-        buf.append(content);
-        buf.append("}");
-        return buf.toString();
     }
 }

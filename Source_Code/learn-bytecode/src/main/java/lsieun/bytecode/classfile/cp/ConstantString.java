@@ -7,7 +7,6 @@ import lsieun.utils.radix.ByteUtils;
 
 public final class ConstantString extends Constant {
     private final int string_index;
-    private String value;
 
     ConstantString(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_String);
@@ -16,22 +15,12 @@ public final class ConstantString extends Constant {
         byte[] bytes = ByteUtils.merge(tag_bytes, value_bytes);
 
         this.string_index = ByteUtils.bytesToInt(value_bytes, 0);
-        this.value = "#" + string_index;
+        super.setValue("#" + string_index);
         super.setBytes(bytes);
     }
 
     public int getStringIndex() {
         return string_index;
-    }
-
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @Override

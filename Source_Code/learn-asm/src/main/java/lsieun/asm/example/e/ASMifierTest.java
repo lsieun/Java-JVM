@@ -18,7 +18,7 @@ public class ASMifierTest {
 
         // 下面的代码是来源于{@code org.objectweb.asm.util.Printer#main}
         int parsingOptions = 0;
-        String className = "java.io.Serializable";
+        String className = "lsieun.asm.sample.HelloWorld";
         Printer printer = new ASMifier();
         TraceClassVisitor traceClassVisitor = new TraceClassVisitor(null, printer, new PrintWriter(System.out));
         new ClassReader(className).accept(traceClassVisitor, parsingOptions);

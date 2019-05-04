@@ -2,7 +2,7 @@ package lsieun.bytecode.classfile;
 
 import lsieun.utils.StringUtils;
 
-public class ClassFile {
+public class ClassFile extends Node {
     private MagicNumber magicNumber;
     private MinorVersion minorVersion;
     private MajorVersion majorVersion;
@@ -151,6 +151,12 @@ public class ClassFile {
 
     // endregion
 
+
+    @Override
+    public void accept(Visitor obj) {
+        obj.visitClassFile(this);
+    }
+
     @Override
     public String toString() {
         StringBuilder buff = new StringBuilder();
@@ -173,4 +179,5 @@ public class ClassFile {
         .append(attributes + StringUtils.LF);
         return buff.toString();
     }
+
 }

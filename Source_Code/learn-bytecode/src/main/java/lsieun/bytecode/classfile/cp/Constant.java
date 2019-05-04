@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lsieun.bytecode.classfile.Node;
+import lsieun.bytecode.classfile.Visitor;
 import lsieun.bytecode.classfile.basic.CPConst;
 import lsieun.bytecode.exceptions.ClassFormatException;
 import lsieun.bytecode.utils.ByteDashboard;
@@ -12,6 +13,7 @@ import lsieun.utils.StringUtils;
 public abstract class Constant extends Node {
     private final byte tag;
     private int index;
+    private String value;
 
     Constant(final byte tag) {
         this.tag = tag;
@@ -29,9 +31,13 @@ public abstract class Constant extends Node {
         this.index = index;
     }
 
-    public abstract String getValue();
+    public String getValue() {
+        return value;
+    }
 
-    public abstract void setValue(String value);
+    public void setValue(String value) {
+        this.value = value;
+    }
 
     // FIXME: 2,要进行混合，
     //  Class->Utf8
@@ -86,19 +92,7 @@ public abstract class Constant extends Node {
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
-    public String toString() {
-        List<String> list = new ArrayList();
-        list.add("Value='" + this.getValue() + "'");
-        list.add("HexCode='" + super.getHexCode() + "'");
-
-        String content = StringUtils.list2str(list, ", ");
-
-        StringBuilder buf = new StringBuilder();
-        buf.append(String.format("|%03d|", this.index) + " ");
-        buf.append(CPConst.getConstantName(this.tag) + " {");
-        buf.append(content);
-        buf.append("}");
-        return buf.toString();
+    public void accept(Visitor obj) {
+        obj.visitConstant(this);
     }
 }

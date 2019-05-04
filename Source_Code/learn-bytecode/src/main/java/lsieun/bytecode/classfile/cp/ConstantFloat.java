@@ -6,7 +6,7 @@ import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
 public final class ConstantFloat extends Constant {
-    private final Float value;
+    private final Float floatValue;
 
     ConstantFloat(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_Float);
@@ -14,18 +14,13 @@ public final class ConstantFloat extends Constant {
         byte[] value_bytes = byteDashboard.nextN(4);
         byte[] bytes = ByteUtils.merge(tag_bytes, value_bytes);
 
-        this.value = ByteUtils.toFloat(value_bytes);
+        this.floatValue = ByteUtils.toFloat(value_bytes);
+        super.setValue(String.valueOf(this.floatValue));
         super.setBytes(bytes);
     }
 
-    @Override
-    public String getValue() {
-        return String.valueOf(this.value);
-    }
-
-    @Override
-    public void setValue(String value) {
-        // do nothing
+    public Float getFloatValue() {
+        return floatValue;
     }
 
     @Override

@@ -9,8 +9,6 @@ public final class ConstantNameAndType extends Constant {
     private final int name_index;
     private final int descriptor_index;
 
-    private String value;
-
     ConstantNameAndType(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_NameAndType);
         byte[] tag_bytes = byteDashboard.nextN(1);
@@ -20,7 +18,7 @@ public final class ConstantNameAndType extends Constant {
 
         this.name_index = ByteUtils.bytesToInt(name_index_bytes, 0);
         this.descriptor_index = ByteUtils.bytesToInt(descriptor_index_bytes, 0);
-        this.value = "#" + name_index + ":#" + descriptor_index;
+        super.setValue("#" + name_index + ":#" + descriptor_index);
         super.setBytes(bytes);
     }
 
@@ -30,16 +28,6 @@ public final class ConstantNameAndType extends Constant {
 
     public int getDescriptorIndex() {
         return descriptor_index;
-    }
-
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @Override

@@ -2,7 +2,10 @@
 
 :pig: JVM相关内容
 
+## Reference
+
 - [Java Language and Virtual Machine Specifications](https://docs.oracle.com/javase/specs/)
+- [Java™ Platform, Standard Edition 8 API Specification](https://docs.oracle.com/javase/8/docs/api/)
 
 ## 编写文章
 
@@ -40,4 +43,31 @@ git commit -m "<message>"
 # 类别为“琐事”，范围是“IDE开发工具”，描述是“清除不需要的文件”
 git commit -m "chore(ide):remove unnecessary files"
 ```
+
+## 标题
+
+学习目标：
+
+示例代码：
+
+```java
+
+```
+
+输出结果：
+
+```txt
+
+```
+
+## 注释
+
+- <sub>【注：】</sub>
+- <sub><font color="red">【注：】</font></sub>
+- <sub><font color="blue">【注：】</font></sub>
+- <sub><font color="green">【注：】</font></sub>
+
+## Summing-up
+
+知识整理
 

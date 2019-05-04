@@ -1,9 +1,7 @@
 package lsieun.bytecode.classfile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lsieun.bytecode.classfile.basic.CPConst;
 import lsieun.bytecode.classfile.cp.Constant;
@@ -25,21 +23,17 @@ import lsieun.utils.StringUtils;
 
 public class ConstantPool extends Node {
     private final int count;
-    private List<Constant> constant_pool;
-    private Map<Integer, Constant> index_constant_map;
+    private final Constant[] entries;
 
     public ConstantPool(final ByteDashboard byteDashboard, int count) {
         this.count = count;
-        this.constant_pool = new ArrayList();
-        this.index_constant_map = new HashMap();
+        this.entries = new Constant[count];
 
         for(int i=1; i<count; i++) {
             Constant item = Constant.readConstant(byteDashboard);
             item.setIndex(i);
 
-            this.constant_pool.add(item);
-            this.index_constant_map.put(i, item);
-
+            this.entries[i] = item;
             /* Quote from the JVM specification:
              * "All eight byte constants take up two spots in the constant pool.
              * If this is the n'th byte in the constant pool, then the next item
@@ -54,14 +48,23 @@ public class ConstantPool extends Node {
         }
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public Constant[] getEntries() {
+        return entries;
+    }
+
     public void merge() {
         List<Constant> list1 = new ArrayList();
         List<Constant> list2 = new ArrayList();
         List<Constant> list3 = new ArrayList();
         List<Constant> list4 = new ArrayList();
 
-        for(int i=0; i<this.constant_pool.size(); i++) {
-            Constant item = this.constant_pool.get(i);
+        for(int i = 0; i<entries.length; i++) {
+            Constant item = entries[i];
+            if(item == null) continue;
             byte tag = item.getTag();
 
             if(tag == CPConst.CONSTANT_Utf8 ||
@@ -236,11 +239,11 @@ public class ConstantPool extends Node {
 
 
     public Constant getConstant(final int index) {
-        if (index >= this.count || index < 0) {
+        if (index >= count || index < 0) {
             throw new ClassFormatException("Invalid constant pool reference: " + index
                     + ". Constant pool size is: " + this.count);
         }
-        return this.index_constant_map.get(index);
+        return entries[index];
     }
 
     public Constant getConstant(final int index, final byte tag) throws ClassFormatException {
@@ -270,8 +273,8 @@ public class ConstantPool extends Node {
     public String toString() {
         List<String> list = new ArrayList();
 
-        for(int i=0; i<this.constant_pool.size(); i++) {
-            Constant item = this.constant_pool.get(i);
+        for(int i = 0; i<entries.length; i++) {
+            Constant item = entries[i];
             list.add("    " + item + StringUtils.LF);
         }
 

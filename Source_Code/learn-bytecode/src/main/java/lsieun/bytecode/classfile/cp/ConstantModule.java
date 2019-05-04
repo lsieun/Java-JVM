@@ -8,8 +8,6 @@ import lsieun.utils.radix.ByteUtils;
 public final class ConstantModule extends Constant {
     private final int name_index;
 
-    private String value;
-
     ConstantModule(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_Module);
         byte[] tag_bytes = byteDashboard.nextN(1);
@@ -22,16 +20,6 @@ public final class ConstantModule extends Constant {
 
     public int getNameIndex() {
         return name_index;
-    }
-
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @Override

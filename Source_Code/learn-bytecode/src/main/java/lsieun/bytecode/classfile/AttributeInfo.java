@@ -64,6 +64,21 @@ public class AttributeInfo extends Node {
         return name;
     }
 
+    public static String getAttributesName(List<AttributeInfo> attributesList) {
+        List<String> attr_list = new ArrayList();
+        for(int i=0; i<attributesList.size(); i++) {
+            AttributeInfo item = attributesList.get(i);
+            String name = item.getName();
+            attr_list.add(name);
+        }
+
+        String attrNames = StringUtils.list2str(attr_list, "[", "]", ",");
+        if(attrNames == null) {
+            attrNames = "[]";
+        }
+        return attrNames;
+    }
+
     public static AttributeInfo read(ByteDashboard byteDashboard, ConstantPool constantPool) {
         byte[] attribute_name_index_bytes = byteDashboard.peekN(2);
         int attributeNameIndex = ByteUtils.bytesToInt(attribute_name_index_bytes, 0);
@@ -115,23 +130,6 @@ public class AttributeInfo extends Node {
     @Override
     public void accept(Visitor obj) {
         obj.visitAttributeInfo(this);
-    }
-
-    @Override
-    @SuppressWarnings("Duplicates")
-    public String toString() {
-        List<String> list = new ArrayList();
-        list.add("Name='" + this.getName() + "'");
-        list.add("AttributeNameIndex='" + this.getAttributeNameIndex() + "'");
-        list.add("HexCode='" + super.getHexCode() + "'");
-
-        String content = StringUtils.list2str(list, ", ");
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("AttributeInfo {");
-        buf.append(content);
-        buf.append("}");
-        return buf.toString();
     }
 
 }

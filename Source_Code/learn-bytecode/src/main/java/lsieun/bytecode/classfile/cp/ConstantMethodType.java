@@ -8,8 +8,6 @@ import lsieun.utils.radix.ByteUtils;
 public final class ConstantMethodType extends Constant {
     private final int descriptor_index;
 
-    private String value;
-
     ConstantMethodType(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_MethodType);
         byte[] tag_bytes = byteDashboard.nextN(1);
@@ -17,22 +15,12 @@ public final class ConstantMethodType extends Constant {
         byte[] bytes = ByteUtils.merge(tag_bytes, descriptor_index_bytes);
 
         this.descriptor_index = ByteUtils.bytesToInt(descriptor_index_bytes, 0);
-        this.value = "#" + descriptor_index;
+        super.setValue("#" + descriptor_index);
         super.setBytes(bytes);
     }
 
     public int getDescriptorIndex() {
         return descriptor_index;
-    }
-
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @Override

@@ -1,9 +1,5 @@
 package lsieun.bytecode.classfile;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
 
 public final class InterfacesCount extends Node {
@@ -21,21 +17,5 @@ public final class InterfacesCount extends Node {
     @Override
     public void accept(Visitor obj) {
         obj.visitInterfacesCount(this);
-    }
-
-    @Override
-    @SuppressWarnings("Duplicates")
-    public String toString() {
-        List<String> list = new ArrayList();
-        list.add("HexCode='" + super.getHexCode() + "'");
-        list.add("Value='" + this.getValue() + "'");
-
-        String content = StringUtils.list2str(list, ", ");
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("InterfacesCount {");
-        buf.append(content);
-        buf.append("}");
-        return buf.toString();
     }
 }

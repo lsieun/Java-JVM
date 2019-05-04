@@ -9,8 +9,6 @@ public final class ConstantMethodref extends Constant {
     private final int class_index;
     private final int name_and_type_index;
 
-    private String value;
-
     ConstantMethodref(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_Methodref);
         byte[] tag_bytes = byteDashboard.nextN(1);
@@ -20,7 +18,7 @@ public final class ConstantMethodref extends Constant {
 
         this.class_index = ByteUtils.bytesToInt(class_index_bytes, 0);
         this.name_and_type_index = ByteUtils.bytesToInt(name_and_type_index_bytes, 0);
-        this.value = "#" + class_index + ".#" + name_and_type_index;
+        super.setValue("#" + class_index + ".#" + name_and_type_index);
         super.setBytes(bytes);
     }
 
@@ -30,16 +28,6 @@ public final class ConstantMethodref extends Constant {
 
     public int getNameAndTypeIndex() {
         return name_and_type_index;
-    }
-
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @Override

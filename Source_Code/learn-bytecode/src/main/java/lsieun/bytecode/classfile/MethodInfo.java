@@ -94,28 +94,4 @@ public final class MethodInfo extends Node {
         obj.visitMethodInfo(this);
     }
 
-    @Override
-    @SuppressWarnings("Duplicates")
-    public String toString() {
-        List<String> list = new ArrayList();
-        list.add("Value='" + this.getValue() + "'");
-        list.add("AccessFlags='" + this.getAccessFlagsString() + "'");
-
-        List<String> attr_list = new ArrayList();
-        for(int i=0; i<this.attributes_list.size(); i++) {
-            AttributeInfo item = this.attributes_list.get(i);
-            String name = item.getName();
-            attr_list.add(name);
-        }
-        list.add("Attrs='" + StringUtils.list2str(attr_list, "[","]",",") + "'");
-        list.add("HexCode='" + super.getHexCode() + "'");
-
-        String content = StringUtils.list2str(list, ", ");
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("MethodInfo {");
-        buf.append(content);
-        buf.append("}");
-        return buf.toString();
-    }
 }

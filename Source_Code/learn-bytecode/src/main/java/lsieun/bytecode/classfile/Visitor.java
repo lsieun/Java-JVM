@@ -1,5 +1,6 @@
 package lsieun.bytecode.classfile;
 
+import lsieun.bytecode.classfile.cp.Constant;
 import lsieun.bytecode.classfile.cp.ConstantClass;
 import lsieun.bytecode.classfile.cp.ConstantDouble;
 import lsieun.bytecode.classfile.cp.ConstantDynamic;
@@ -19,6 +20,8 @@ import lsieun.bytecode.classfile.cp.ConstantString;
 import lsieun.bytecode.classfile.cp.ConstantUtf8;
 
 public interface Visitor {
+    void visitClassFile(ClassFile obj);
+
     void visitMagicNumber(MagicNumber obj);
 
     void visitMinorVersion(MinorVersion obj);
@@ -58,6 +61,8 @@ public interface Visitor {
     void visitAttributeInfo(AttributeInfo obj);
 
     // region constant pool
+    void visitConstant(Constant obj);
+
     void visitConstantUtf8(ConstantUtf8 obj);
 
     void visitConstantInteger(ConstantInteger obj);

@@ -9,7 +9,7 @@ import lsieun.utils.radix.ByteUtils;
 
 public final class ConstantUtf8 extends Constant {
     private final int length;
-    private final String value;
+    private final String utf8Value;
 
 
     ConstantUtf8(ByteDashboard byteDashboard) {
@@ -21,7 +21,8 @@ public final class ConstantUtf8 extends Constant {
         byte[] bytes = ByteUtils.merge(tag_bytes, length_bytes, utf_bytes);
 
         this.length = length;
-        this.value = new String(utf_bytes, StandardCharsets.UTF_8);
+        this.utf8Value = new String(utf_bytes, StandardCharsets.UTF_8);
+        super.setValue(utf8Value);
         super.setBytes(bytes);
     }
 
@@ -29,14 +30,8 @@ public final class ConstantUtf8 extends Constant {
         return length;
     }
 
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        // do nothing
+    public String getUtf8Value() {
+        return utf8Value;
     }
 
     @Override

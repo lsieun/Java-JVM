@@ -6,7 +6,7 @@ import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
 public final class ConstantDouble extends Constant {
-    private final Double value;
+    private final Double doubleValue;
 
     ConstantDouble(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_Double);
@@ -14,18 +14,13 @@ public final class ConstantDouble extends Constant {
         byte[] value_bytes = byteDashboard.nextN(8);
         byte[] bytes = ByteUtils.merge(tag_bytes, value_bytes);
 
-        this.value = ByteUtils.toDouble(value_bytes);
+        this.doubleValue = ByteUtils.toDouble(value_bytes);
+        super.setValue(String.valueOf(this.doubleValue));
         super.setBytes(bytes);
     }
 
-    @Override
-    public String getValue() {
-        return String.valueOf(this.value);
-    }
-
-    @Override
-    public void setValue(String value) {
-        // do nothing
+    public Double getDoubleValue() {
+        return doubleValue;
     }
 
     @Override

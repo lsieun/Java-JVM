@@ -9,8 +9,6 @@ public final class ConstantMethodHandle extends Constant {
     private final int reference_kind;
     private final int reference_index;
 
-    private String value;
-
     ConstantMethodHandle(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_MethodHandle);
         byte[] tag_bytes = byteDashboard.nextN(1);
@@ -20,7 +18,7 @@ public final class ConstantMethodHandle extends Constant {
 
         this.reference_kind = ByteUtils.bytesToInt(reference_kind_bytes, 0);
         this.reference_index = ByteUtils.bytesToInt(reference_index_bytes, 0);
-        this.value = "#" + reference_index;
+        super.setValue("#" + reference_index);
         super.setBytes(bytes);
     }
 
@@ -30,16 +28,6 @@ public final class ConstantMethodHandle extends Constant {
 
     public int getReferenceIndex() {
         return reference_index;
-    }
-
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @Override

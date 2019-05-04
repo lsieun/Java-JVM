@@ -1,10 +1,10 @@
 package lsieun.bytecode.classfile.attrs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import lsieun.bytecode.classfile.AttributeInfo;
+import lsieun.bytecode.classfile.Attributes;
 import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.classfile.basic.OpcodeConst;
 import lsieun.bytecode.classfile.basic.TypeConst;
@@ -13,6 +13,7 @@ import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
 import lsieun.utils.radix.HexUtils;
 
+@SuppressWarnings("Duplicates")
 public final class Code extends AttributeInfo {
     private final int max_stack;
     private final int max_locals;
@@ -21,7 +22,8 @@ public final class Code extends AttributeInfo {
     private final int exception_table_length;
     private final List<ExceptionTable> exception_table_list;
     private final int attributes_count;
-    private final List<AttributeInfo> attributes_list;
+    //private final List<AttributeInfo> attributes_list;
+    private final Attributes attributes;
 
     public Code(ByteDashboard byteDashboard, ConstantPool constantPool) {
         super(byteDashboard, constantPool, true);
@@ -48,11 +50,13 @@ public final class Code extends AttributeInfo {
         // 第三部分
         byte[] attributes_count_bytes = byteDashboard.nextN(2);
         this.attributes_count = ByteUtils.bytesToInt(attributes_count_bytes, 0);
-        this.attributes_list = new ArrayList();
-        for(int i=0; i<attributes_count; i++) {
-            AttributeInfo item = AttributeInfo.read(byteDashboard, constantPool);
-            this.attributes_list.add(item);
-        }
+        //FIXME: delete code
+//        this.attributes_list = new ArrayList();
+//        for(int i=0; i<attributes_count; i++) {
+//            AttributeInfo item = AttributeInfo.read(byteDashboard, constantPool);
+//            this.attributes_list.add(item);
+//        }
+        this.attributes = new Attributes(byteDashboard, this.attributes_count, constantPool);
     }
 
     public int getMaxStack() {
@@ -83,8 +87,13 @@ public final class Code extends AttributeInfo {
         return attributes_count;
     }
 
-    public List<AttributeInfo> getAttributesList() {
-        return attributes_list;
+    //FIXME: delete code
+//    public List<AttributeInfo> getAttributesList() {
+//        return attributes_list;
+//    }
+
+    public Attributes getAttributes() {
+        return attributes;
     }
 
     public List<String> getLines() {
@@ -109,8 +118,8 @@ public final class Code extends AttributeInfo {
         }
         list.add("");
 
-        for(int i=0; i<this.attributes_list.size(); i++) {
-            AttributeInfo item = this.attributes_list.get(i);
+        for(int i=0; i<this.attributes.getEntries().length; i++) {
+            AttributeInfo item = this.attributes.getEntries()[i];
             String name = item.getName();
             if("LineNumberTable".equals(name)) {
                 //FIXME: temp change
@@ -320,8 +329,8 @@ public final class Code extends AttributeInfo {
 //        list.add("HexCode='" + super.getHexCode() + "'");
 
         list.add("    Attributes:" + StringUtils.LF);
-        for(int i=0; i<this.attributes_list.size(); i++) {
-            AttributeInfo item = this.attributes_list.get(i);
+        for(int i=0; i<this.attributes.getEntries().length; i++) {
+            AttributeInfo item = this.attributes.getEntries()[i];
             String name = item.getName();
             list.add("    " + item.toString() + StringUtils.LF);
         }

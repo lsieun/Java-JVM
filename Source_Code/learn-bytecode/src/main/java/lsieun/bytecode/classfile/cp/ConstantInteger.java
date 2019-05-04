@@ -6,7 +6,7 @@ import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
 public final class ConstantInteger extends Constant {
-    private final Integer value;
+    private final Integer intValue;
 
     ConstantInteger(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_Integer);
@@ -14,18 +14,13 @@ public final class ConstantInteger extends Constant {
         byte[] value_bytes = byteDashboard.nextN(4);
         byte[] bytes = ByteUtils.merge(tag_bytes, value_bytes);
 
-        this.value = ByteUtils.toInt(value_bytes);
+        this.intValue = ByteUtils.toInt(value_bytes);
+        super.setValue(String.valueOf(this.intValue));
         super.setBytes(bytes);
     }
 
-    @Override
-    public String getValue() {
-        return String.valueOf(this.value);
-    }
-
-    @Override
-    public void setValue(String value) {
-        // do nothing
+    public Integer getIntValue() {
+        return intValue;
     }
 
     @Override

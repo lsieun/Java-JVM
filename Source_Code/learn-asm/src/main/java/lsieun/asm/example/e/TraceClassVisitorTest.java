@@ -15,10 +15,11 @@ import org.objectweb.asm.util.TraceClassVisitor;
 @SuppressWarnings("Duplicates")
 public class TraceClassVisitorTest {
     public static void main(String[] args) {
-        ClassWriter cw = new ClassWriter(0);
+        //ClassWriter cw = new ClassWriter(0);
 
         PrintWriter printWriter = new PrintWriter(System.out);
-        TraceClassVisitor cv = new TraceClassVisitor(cw, printWriter);
+        //TraceClassVisitor cv = new TraceClassVisitor(cw, printWriter);
+        TraceClassVisitor cv = new TraceClassVisitor(null, printWriter);
         cv.visit(V1_5, ACC_PUBLIC+ACC_ABSTRACT+ACC_INTERFACE, "pkg/Comparable",
                 null, "java/lang/Object", new String[]{"java/io/Serializable"});
         cv.visitField(ACC_PUBLIC+ACC_FINAL+ACC_STATIC, "LESS", "I",
@@ -30,6 +31,6 @@ public class TraceClassVisitorTest {
         cv.visitMethod(ACC_PUBLIC+ACC_ABSTRACT, "compareTo", "(Ljava/lang/Object;)I",
                 null, null).visitEnd();
         cv.visitEnd();
-        byte[] bytes = cw.toByteArray();
+        //byte[] bytes = cw.toByteArray();
     }
 }
