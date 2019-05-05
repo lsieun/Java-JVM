@@ -6,7 +6,10 @@ import lsieun.bytecode.classfile.Attributes;
 import lsieun.bytecode.classfile.ClassFile;
 import lsieun.bytecode.classfile.FieldInfo;
 import lsieun.bytecode.classfile.Fields;
+import lsieun.bytecode.classfile.attrs.Code;
+import lsieun.bytecode.classfile.visitors.AttributeStandardVisitor;
 import lsieun.bytecode.classfile.visitors.ClassFileStandardVisitor;
+import lsieun.bytecode.classfile.visitors.FieldStandardVisitor;
 import lsieun.bytecode.classfile.visitors.MethodStandardVisitor;
 import lsieun.bytecode.utils.ClassParser;
 import lsieun.bytecode.classfile.AttributeInfo;
@@ -71,95 +74,95 @@ public class App {
             String methodSignature = PropertyUtils.getProperty("classfile.content.method.signature");
             displayMethod(classFile, methodSignature);
         }
-        else if("Attribute".equalsIgnoreCase(target)) {
-            displayClassFileAttribute(classFile);
+        else if("ClassFileAttribute".equalsIgnoreCase(target)) {
+            String attrName = PropertyUtils.getProperty("classfile.content.attribute.name");
+            displayClassFileAttribute(classFile, attrName);
         }
         else if("FieldAttribute".equalsIgnoreCase(target)) {
-            // TODO
+            String fieldSignature = PropertyUtils.getProperty("classfile.content.field.signature");
+            String attrName = PropertyUtils.getProperty("classfile.content.attribute.name");
+            displayFieldAttribute(classFile, fieldSignature, attrName);
         }
         else if("MethodAttribute".equalsIgnoreCase(target)) {
-            // TODO
+            String methodSignature = PropertyUtils.getProperty("classfile.content.method.signature");
+            String attrName = PropertyUtils.getProperty("classfile.content.attribute.name");
+            displayMethodAttribute(classFile, methodSignature, attrName);
         }
         else if("CodeAttribute".equalsIgnoreCase(target)) {
-            // TODOMethod
+            String methodSignature = PropertyUtils.getProperty("classfile.content.method.signature");
+            String attrName = PropertyUtils.getProperty("classfile.content.attribute.name");
+            displayCodeAttribute(classFile, methodSignature, attrName);
         }
         else {
             System.out.println("please change 'classfile.content.target' in config.properties files");
         }
-
-
-        //displayMethod(classFile, "testMethod:(ILjava/lang/String;)V");
     }
 
     // region display methods
     public static void displayClassFile(ClassFile classFile) {
+        System.out.println("=================================================" + StringUtils.LF);
         ClassFileStandardVisitor visitor = new ClassFileStandardVisitor();
         classFile.accept(visitor);
     }
 
     public static void displayField(ClassFile classFile, String nameAndType) {
         System.out.println("=================================================" + StringUtils.LF);
-        System.out.println(classFile.getConstantPool() + StringUtils.LF);
-        System.out.println("=================================================" + StringUtils.LF);
-        Fields fields = classFile.getFields();
-
-        // 当前字段
-        FieldInfo fieldInfo = fields.findByNameAndType(nameAndType);
-        if(fieldInfo != null) {
-            System.out.println(fieldInfo + StringUtils.LF);
-            System.out.println("=================================================" + StringUtils.LF);
-
-            //displayAttributes(fieldInfo.getAttributesList());
-        }
-
-        // 其他字段
-        System.out.println("Available Fields:");
-        for(FieldInfo item : fields.getEntries()) {
-            System.out.println(item);
-        }
+        FieldStandardVisitor visitor = new FieldStandardVisitor(nameAndType);
+        classFile.accept(visitor);
     }
 
     public static void displayMethod(ClassFile classFile, String nameAndType) {
+        System.out.println("=================================================" + StringUtils.LF);
         MethodStandardVisitor visitor = new MethodStandardVisitor(nameAndType);
         classFile.accept(visitor);
-//        System.out.println("=================================================" + StringUtils.LF);
-//        System.out.println(classFile.getConstantPool() + StringUtils.LF);
-//        System.out.println("=================================================" + StringUtils.LF);
-//        Methods methods = classFile.getMethods();
-//
-//        // 当前方法
-//        MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
-//        if(methodInfo != null) {
-//            System.out.println(methodInfo + StringUtils.LF);
-//            System.out.println("=================================================" + StringUtils.LF);
-//
-//            displayAttributes(methodInfo.getAttributesList());
-//        }
-//
-//        // 其他方法
-//        System.out.println("Available Methods:");
-//        for(MethodInfo item : methods.getEntries()) {
-//            System.out.println(item);
-//        }
     }
 
-    public static void displayClassFileAttribute(ClassFile classFile) {
-        System.out.println("=================================================" + StringUtils.LF);
-        System.out.println(classFile.getConstantPool() + StringUtils.LF);
+    public static void displayClassFileAttribute(ClassFile classFile, String attrName) {
         System.out.println("=================================================" + StringUtils.LF);
         Attributes attributes = classFile.getAttributes();
-        // FIXME: 这里要修改
-        //List<AttributeInfo> attributeList = attributes.getEntries();
-        //displayAttributes(attributeList);
+        displayAttribute(attributes, attrName);
     }
 
-    public static void displayAttributes(List<AttributeInfo> list) {
-        if(list == null || list.size() < 1) return;
-
-        for(AttributeInfo item : list) {
-            System.out.println(item);
-        }
+    public static void displayFieldAttribute(ClassFile classFile, String nameAndType, String attrName) {
         System.out.println("=================================================" + StringUtils.LF);
+        Fields fields = classFile.getFields();
+        FieldInfo fieldInfo = fields.findByNameAndType(nameAndType);
+        if(fieldInfo != null) {
+            Attributes attributes = fieldInfo.getAttributes();
+            displayAttribute(attributes, attrName);
+        }
+    }
+
+    public static void displayMethodAttribute(ClassFile classFile, String nameAndType, String attrName) {
+        System.out.println("=================================================" + StringUtils.LF);
+        Methods methods = classFile.getMethods();
+        MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
+        if(methodInfo != null) {
+            Attributes attributes = methodInfo.getAttributes();
+            displayAttribute(attributes, attrName);
+        }
+    }
+
+    public static void displayCodeAttribute(ClassFile classFile, String nameAndType, String attrName) {
+        System.out.println("=================================================" + StringUtils.LF);
+        Methods methods = classFile.getMethods();
+        MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
+        if(methodInfo == null) return;
+
+        Attributes attributes = methodInfo.getAttributes();
+        AttributeInfo attributeInfo = attributes.findAttribute("Code");
+        if(attributeInfo == null) return;
+
+        Code code = (Code) attributeInfo;
+        displayAttribute(code.getAttributes(), attrName);
+    }
+
+    public static void displayAttribute(Attributes attributes, String attrName) {
+        AttributeInfo attributeInfo = attributes.findAttribute(attrName);
+        if(attributeInfo != null) {
+            AttributeStandardVisitor visitor = new AttributeStandardVisitor(true);
+            attributeInfo.accept(visitor);
+        }
     }
     // endregion
 }

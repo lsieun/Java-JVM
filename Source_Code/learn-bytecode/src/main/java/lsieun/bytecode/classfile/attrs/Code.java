@@ -10,7 +10,6 @@ import lsieun.bytecode.classfile.Visitor;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
-@SuppressWarnings("Duplicates")
 public final class Code extends AttributeInfo {
     private final int max_stack;
     private final int max_locals;
@@ -19,7 +18,6 @@ public final class Code extends AttributeInfo {
     private final int exception_table_length;
     private final List<ExceptionTable> exception_table_list;
     private final int attributes_count;
-    //private final List<AttributeInfo> attributes_list;
     private final Attributes attributes;
 
     public Code(ByteDashboard byteDashboard, ConstantPool constantPool) {

@@ -1,8 +1,5 @@
 package lsieun.bytecode.classfile.visitors;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lsieun.bytecode.classfile.AccessFlags;
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.Attributes;
@@ -23,45 +20,12 @@ import lsieun.bytecode.classfile.MethodsCount;
 import lsieun.bytecode.classfile.MinorVersion;
 import lsieun.bytecode.classfile.SuperClass;
 import lsieun.bytecode.classfile.ThisClass;
-import lsieun.bytecode.classfile.Visitor;
-import lsieun.bytecode.classfile.attrs.Code;
-import lsieun.bytecode.classfile.attrs.ConstantValue;
-import lsieun.bytecode.classfile.attrs.Deprecated;
-import lsieun.bytecode.classfile.attrs.Exceptions;
-import lsieun.bytecode.classfile.attrs.InnerClasses;
-import lsieun.bytecode.classfile.attrs.LineNumberTable;
-import lsieun.bytecode.classfile.attrs.LocalVariableTable;
-import lsieun.bytecode.classfile.attrs.LocalVariableTypeTable;
-import lsieun.bytecode.classfile.attrs.RuntimeVisibleAnnotations;
-import lsieun.bytecode.classfile.attrs.Signature;
 import lsieun.bytecode.classfile.attrs.SourceFile;
-import lsieun.bytecode.classfile.attrs.StackMapTable;
-import lsieun.bytecode.classfile.basic.CPConst;
-import lsieun.bytecode.classfile.cp.Constant;
-import lsieun.bytecode.classfile.cp.ConstantClass;
-import lsieun.bytecode.classfile.cp.ConstantDouble;
-import lsieun.bytecode.classfile.cp.ConstantDynamic;
-import lsieun.bytecode.classfile.cp.ConstantFieldref;
-import lsieun.bytecode.classfile.cp.ConstantFloat;
-import lsieun.bytecode.classfile.cp.ConstantInteger;
-import lsieun.bytecode.classfile.cp.ConstantInterfaceMethodref;
-import lsieun.bytecode.classfile.cp.ConstantInvokeDynamic;
-import lsieun.bytecode.classfile.cp.ConstantLong;
-import lsieun.bytecode.classfile.cp.ConstantMethodHandle;
-import lsieun.bytecode.classfile.cp.ConstantMethodType;
-import lsieun.bytecode.classfile.cp.ConstantMethodref;
-import lsieun.bytecode.classfile.cp.ConstantModule;
-import lsieun.bytecode.classfile.cp.ConstantNameAndType;
-import lsieun.bytecode.classfile.cp.ConstantPackage;
-import lsieun.bytecode.classfile.cp.ConstantString;
-import lsieun.bytecode.classfile.cp.ConstantUtf8;
-import lsieun.utils.StringUtils;
 
-public class ClassFileStandardVisitor implements Visitor {
+public class ClassFileStandardVisitor extends AbstractVisitor {
 
     @Override
     public void visitClassFile(ClassFile obj) {
-        System.out.println("\n");
         MagicNumber magicNumber = obj.getMagicNumber();
         magicNumber.accept(this);
 
@@ -133,17 +97,6 @@ public class ClassFileStandardVisitor implements Visitor {
     public void visitConstantPoolCount(ConstantPoolCount obj) {
         String line = String.format("ConstantPoolCount {HexCode='%s', Value='%d'}", obj.getHexCode(), obj.getValue());
         System.out.println(line);
-    }
-
-    @Override
-    public void visitConstantPool(ConstantPool obj) {
-        System.out.println("ConstantPool {");
-        for(int i=0; i<obj.getEntries().length; i++) {
-            Constant item = obj.getEntries()[i];
-            if(item == null) continue;
-            item.accept(this);
-        }
-        System.out.println("}");
     }
 
     @Override
@@ -241,12 +194,14 @@ public class ClassFileStandardVisitor implements Visitor {
 
     @Override
     public void visitAttributes(Attributes obj) {
-        System.out.println("Attributes {");
-        for(int i = 0; i<obj.getEntries().length; i++) {
-            AttributeInfo item = obj.getEntries()[i];
-            item.accept(this);
+        AttributeInfo[] entries = obj.getEntries();
+        if(entries != null && entries.length > 0) {
+            System.out.println("Attributes {");
+            for(AttributeInfo item : entries) {
+                item.accept(this);
+            }
+            System.out.println("}");
         }
-        System.out.println("}");
     }
 
     @Override
@@ -258,166 +213,17 @@ public class ClassFileStandardVisitor implements Visitor {
                 obj.getHexCode());
         System.out.println(line);
     }
-
-    // region constant pool
+    // region attributes
 
     @Override
-    public void visitConstant(Constant obj) {
-        String line = String.format("    |%03d| %s {Value='%s', HexCode='%s'}",
-                obj.getIndex(),
-                CPConst.getConstantName(obj.getTag()),
+    public void visitSourceFile(SourceFile obj) {
+        String line = String.format("    %s {Value='%s', SourceFileIndex='%d', HexCode='%s'}",
+                obj.getName(),
                 obj.getValue(),
+                obj.getSourcefileIndex(),
                 obj.getHexCode());
         System.out.println(line);
     }
 
-    @Override
-    public void visitConstantUtf8(ConstantUtf8 obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantInteger(ConstantInteger obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantFloat(ConstantFloat obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantLong(ConstantLong obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantDouble(ConstantDouble obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantClass(ConstantClass obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantString(ConstantString obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantFieldref(ConstantFieldref obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantMethodref(ConstantMethodref obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantInterfaceMethodref(ConstantInterfaceMethodref obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantNameAndType(ConstantNameAndType obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantMethodHandle(ConstantMethodHandle obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantMethodType(ConstantMethodType obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantDynamic(ConstantDynamic obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantInvokeDynamic(ConstantInvokeDynamic obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantModule(ConstantModule obj) {
-        visitConstant(obj);
-    }
-
-    @Override
-    public void visitConstantPackage(ConstantPackage obj) {
-        visitConstant(obj);
-    }
-
-    // endregion
-
-
-    // region attributes
-    @Override
-    public void visitCode(Code obj) {
-
-    }
-
-    @Override
-    public void visitConstantValue(ConstantValue obj) {
-
-    }
-
-    @Override
-    public void visitDeprecated(Deprecated obj) {
-
-    }
-
-    @Override
-    public void visitExceptions(Exceptions obj) {
-
-    }
-
-    @Override
-    public void visitInnerClasses(InnerClasses obj) {
-
-    }
-
-    @Override
-    public void visitLineNumberTable(LineNumberTable obj) {
-
-    }
-
-    @Override
-    public void visitLocalVariableTable(LocalVariableTable obj) {
-
-    }
-
-    @Override
-    public void visitLocalVariableTypeTable(LocalVariableTypeTable obj) {
-
-    }
-
-    @Override
-    public void visitRuntimeVisibleAnnotations(RuntimeVisibleAnnotations obj) {
-
-    }
-
-    @Override
-    public void visitSignature(Signature obj) {
-
-    }
-
-    @Override
-    public void visitSourceFile(SourceFile obj) {
-
-    }
-
-    @Override
-    public void visitStackMapTable(StackMapTable obj) {
-
-    }
     // endregion
 }

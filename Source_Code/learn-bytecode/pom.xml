@@ -4,6 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!--
+    作者有话说：
+        程序代码有两方面主要问题：从功能角度来说 和 从代码设计角度来说。
+        （一）程序代码是不完善的、简陋的，它并不能处理所有需要探讨的情况、问题。
+        （二）程序的代码是“糟糕”的。在编写代码时，代码的编写思路尽量靠近ClassFile的文件格式，有许多地方没有进行代码优化。
+            例如：FieldsCount和Fields这两个类可以合成一个类来表示，但为了操持与ClassFile的文件格式保持一致，就使用了两个类。
+    -->
     <groupId>lsieun</groupId>
     <artifactId>learn-bytecode</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -18,12 +25,12 @@
 
     <dependencies>
         <dependency>
+            <!-- https://github.com/lsieun/lsieun-utils -->
             <groupId>lsieun</groupId>
             <artifactId>lsieun-utils</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
