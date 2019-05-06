@@ -9,12 +9,12 @@ import lsieun.bytecode.classfile.ClassFile;
 import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.classfile.MethodInfo;
 import lsieun.bytecode.classfile.Methods;
-import lsieun.bytecode.classfile.attrs.Code;
-import lsieun.bytecode.classfile.attrs.ExceptionTable;
-import lsieun.bytecode.classfile.attrs.LineNumber;
-import lsieun.bytecode.classfile.attrs.LineNumberTable;
-import lsieun.bytecode.classfile.attrs.LocalVariable;
-import lsieun.bytecode.classfile.attrs.LocalVariableTable;
+import lsieun.bytecode.classfile.attrs.method.Code;
+import lsieun.bytecode.classfile.attrs.method.ExceptionTable;
+import lsieun.bytecode.classfile.attrs.code.LineNumber;
+import lsieun.bytecode.classfile.attrs.code.LineNumberTable;
+import lsieun.bytecode.classfile.attrs.code.LocalVariable;
+import lsieun.bytecode.classfile.attrs.code.LocalVariableTable;
 import lsieun.bytecode.utils.InstructionParser;
 import lsieun.utils.radix.HexUtils;
 

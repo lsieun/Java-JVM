@@ -20,7 +20,7 @@ import lsieun.bytecode.classfile.MethodsCount;
 import lsieun.bytecode.classfile.MinorVersion;
 import lsieun.bytecode.classfile.SuperClass;
 import lsieun.bytecode.classfile.ThisClass;
-import lsieun.bytecode.classfile.attrs.SourceFile;
+import lsieun.bytecode.classfile.attrs.classfile.SourceFile;
 
 public class ClassFileStandardVisitor extends AbstractVisitor {
 

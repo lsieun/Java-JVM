@@ -1,17 +1,17 @@
 package lsieun.bytecode.classfile;
 
-import lsieun.bytecode.classfile.attrs.Code;
-import lsieun.bytecode.classfile.attrs.ConstantValue;
+import lsieun.bytecode.classfile.attrs.method.Code;
+import lsieun.bytecode.classfile.attrs.field.ConstantValue;
 import lsieun.bytecode.classfile.attrs.Deprecated;
-import lsieun.bytecode.classfile.attrs.Exceptions;
-import lsieun.bytecode.classfile.attrs.InnerClasses;
-import lsieun.bytecode.classfile.attrs.LineNumberTable;
-import lsieun.bytecode.classfile.attrs.LocalVariableTable;
-import lsieun.bytecode.classfile.attrs.LocalVariableTypeTable;
+import lsieun.bytecode.classfile.attrs.method.Exceptions;
+import lsieun.bytecode.classfile.attrs.classfile.InnerClasses;
+import lsieun.bytecode.classfile.attrs.code.LineNumberTable;
+import lsieun.bytecode.classfile.attrs.code.LocalVariableTable;
+import lsieun.bytecode.classfile.attrs.code.LocalVariableTypeTable;
 import lsieun.bytecode.classfile.attrs.RuntimeVisibleAnnotations;
 import lsieun.bytecode.classfile.attrs.Signature;
-import lsieun.bytecode.classfile.attrs.SourceFile;
-import lsieun.bytecode.classfile.attrs.StackMapTable;
+import lsieun.bytecode.classfile.attrs.classfile.SourceFile;
+import lsieun.bytecode.classfile.attrs.code.StackMapTable;
 import lsieun.bytecode.classfile.cp.Constant;
 import lsieun.bytecode.classfile.cp.ConstantClass;
 import lsieun.bytecode.classfile.cp.ConstantDouble;

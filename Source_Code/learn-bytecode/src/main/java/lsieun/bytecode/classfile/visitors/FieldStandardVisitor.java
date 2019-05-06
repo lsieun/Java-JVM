@@ -5,7 +5,7 @@ import lsieun.bytecode.classfile.ClassFile;
 import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.classfile.FieldInfo;
 import lsieun.bytecode.classfile.Fields;
-import lsieun.bytecode.classfile.attrs.ConstantValue;
+import lsieun.bytecode.classfile.attrs.field.ConstantValue;
 
 public class FieldStandardVisitor extends AbstractVisitor {
     private String nameAndType;

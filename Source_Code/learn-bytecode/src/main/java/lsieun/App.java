@@ -1,21 +1,19 @@
 package lsieun;
 
-import java.util.List;
-
+import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.Attributes;
 import lsieun.bytecode.classfile.ClassFile;
 import lsieun.bytecode.classfile.FieldInfo;
 import lsieun.bytecode.classfile.Fields;
-import lsieun.bytecode.classfile.attrs.Code;
+import lsieun.bytecode.classfile.MethodInfo;
+import lsieun.bytecode.classfile.Methods;
+import lsieun.bytecode.classfile.attrs.method.Code;
 import lsieun.bytecode.classfile.visitors.AttributeStandardVisitor;
 import lsieun.bytecode.classfile.visitors.ClassFileStandardVisitor;
 import lsieun.bytecode.classfile.visitors.FieldStandardVisitor;
 import lsieun.bytecode.classfile.visitors.MethodStandardVisitor;
-import lsieun.bytecode.utils.ClassParser;
-import lsieun.bytecode.classfile.AttributeInfo;
-import lsieun.bytecode.classfile.MethodInfo;
-import lsieun.bytecode.classfile.Methods;
 import lsieun.bytecode.utils.ByteDashboard;
+import lsieun.bytecode.utils.ClassParser;
 import lsieun.bytecode.utils.PropertyUtils;
 import lsieun.utils.StringUtils;
 import lsieun.utils.io.FileUtils;
@@ -114,13 +112,14 @@ public class App {
     public static void displayMethod(ClassFile classFile, String nameAndType) {
         System.out.println("=================================================" + StringUtils.LF);
         MethodStandardVisitor visitor = new MethodStandardVisitor(nameAndType);
+        //MethodRawVisitor visitor = new MethodRawVisitor(nameAndType);
         classFile.accept(visitor);
     }
 
     public static void displayClassFileAttribute(ClassFile classFile, String attrName) {
         System.out.println("=================================================" + StringUtils.LF);
         Attributes attributes = classFile.getAttributes();
-        displayAttribute(attributes, attrName);
+        displayAttribute(classFile, attributes, attrName);
     }
 
     public static void displayFieldAttribute(ClassFile classFile, String nameAndType, String attrName) {
@@ -129,7 +128,7 @@ public class App {
         FieldInfo fieldInfo = fields.findByNameAndType(nameAndType);
         if(fieldInfo != null) {
             Attributes attributes = fieldInfo.getAttributes();
-            displayAttribute(attributes, attrName);
+            displayAttribute(classFile, attributes, attrName);
         }
     }
 
@@ -139,7 +138,7 @@ public class App {
         MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
         if(methodInfo != null) {
             Attributes attributes = methodInfo.getAttributes();
-            displayAttribute(attributes, attrName);
+            displayAttribute(classFile, attributes, attrName);
         }
     }
 
@@ -154,13 +153,14 @@ public class App {
         if(attributeInfo == null) return;
 
         Code code = (Code) attributeInfo;
-        displayAttribute(code.getAttributes(), attrName);
+        displayAttribute(classFile, code.getAttributes(), attrName);
     }
 
-    public static void displayAttribute(Attributes attributes, String attrName) {
+    public static void displayAttribute(ClassFile classFile, Attributes attributes, String attrName) {
         AttributeInfo attributeInfo = attributes.findAttribute(attrName);
         if(attributeInfo != null) {
             AttributeStandardVisitor visitor = new AttributeStandardVisitor(true);
+            classFile.accept(visitor);
             attributeInfo.accept(visitor);
         }
     }

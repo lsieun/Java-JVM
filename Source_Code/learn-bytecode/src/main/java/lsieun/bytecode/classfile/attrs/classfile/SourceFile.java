@@ -1,4 +1,4 @@
-package lsieun.bytecode.classfile.attrs;
+package lsieun.bytecode.classfile.attrs.classfile;
 
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;

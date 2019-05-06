@@ -1,4 +1,4 @@
-package lsieun.bytecode.classfile.attrs;
+package lsieun.bytecode.classfile.attrs.method;
 
 import java.util.ArrayList;
 import java.util.List;

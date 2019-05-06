@@ -2,10 +2,11 @@ package lsieun.bytecode.classfile.visitors;
 
 import java.util.List;
 
-import lsieun.bytecode.classfile.attrs.Code;
-import lsieun.bytecode.classfile.attrs.ConstantValue;
-import lsieun.bytecode.classfile.attrs.LineNumberTable;
-import lsieun.bytecode.classfile.attrs.SourceFile;
+import lsieun.bytecode.classfile.ClassFile;
+import lsieun.bytecode.classfile.attrs.method.Code;
+import lsieun.bytecode.classfile.attrs.field.ConstantValue;
+import lsieun.bytecode.classfile.attrs.code.LineNumberTable;
+import lsieun.bytecode.classfile.attrs.classfile.SourceFile;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.bytecode.utils.InstructionParser;
 import lsieun.utils.radix.ByteUtils;
@@ -19,6 +20,13 @@ public class AttributeStandardVisitor extends AbstractVisitor {
 
     public AttributeStandardVisitor(boolean verbose) {
         this.verbose = verbose;
+    }
+
+    @Override
+    public void visitClassFile(ClassFile obj) {
+        if(verbose) {
+            obj.getConstantPool().accept(this);
+        }
     }
 
     // region ClassFile/Field/Method

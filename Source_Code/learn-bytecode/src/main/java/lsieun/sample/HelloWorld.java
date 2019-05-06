@@ -8,6 +8,7 @@ public class HelloWorld implements Serializable, Cloneable {
     private long longValue;
     private static final double doubleValue = 3.1415926;
 
+    @Deprecated
     public static void testSimple() {
         try {
             Thread.sleep(10);
