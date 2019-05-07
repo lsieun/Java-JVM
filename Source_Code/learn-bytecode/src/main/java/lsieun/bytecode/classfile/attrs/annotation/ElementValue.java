@@ -41,7 +41,7 @@ public abstract class ElementValue {
     }
 
     public static ElementValue readElementValue(final ByteDashboard byteDashboard, final ConstantPool constantPool) {
-        final byte tag = byteDashboard.next();
+        final byte tag = byteDashboard.peek();
 
         switch (tag) {
             case PRIMITIVE_BYTE:

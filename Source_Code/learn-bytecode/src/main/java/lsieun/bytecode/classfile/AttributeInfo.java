@@ -1,5 +1,6 @@
 package lsieun.bytecode.classfile;
 
+import lsieun.bytecode.classfile.attrs.code.StackMapTable;
 import lsieun.bytecode.classfile.attrs.method.Code;
 import lsieun.bytecode.classfile.attrs.field.ConstantValue;
 import lsieun.bytecode.classfile.attrs.Deprecated;
@@ -100,6 +101,9 @@ public class AttributeInfo extends Node {
         }
         else if("RuntimeVisibleAnnotations".equals(name)) {
             instance = new RuntimeVisibleAnnotations(byteDashboard, constantPool);
+        }
+        else if("StackMapTable".equals(name)) {
+            instance = new StackMapTable(byteDashboard, constantPool);
         }
         else {
             instance = new AttributeInfo(byteDashboard, constantPool);

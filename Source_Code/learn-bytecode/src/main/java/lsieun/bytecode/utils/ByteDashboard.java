@@ -1,5 +1,7 @@
 package lsieun.bytecode.utils;
 
+import lsieun.utils.radix.ByteUtils;
+
 /**
  * ByteDashboard的本质就是将一个<code>byte[]</code>放到一个类里面，那么，这么做的目的是什么呢？就是为了“好玩”！<br/><br/>
  * <p>
@@ -115,6 +117,85 @@ public class ByteDashboard {
         }
         return bytes;
     }
+
+    // region nextXXX
+    /**
+     * 这里不保留符号（正负的符号）
+     * @return
+     */
+    public int nextByte() {
+        byte[] bytes = nextN(1);
+        return ByteUtils.bytesToInt(bytes, 0);
+    }
+
+    public int nextShort() {
+        byte[] bytes = nextN(2);
+        return ByteUtils.bytesToInt(bytes, 0);
+    }
+
+    public int nextInt() {
+        byte[] bytes = nextN(4);
+        return ByteUtils.bytesToInt(bytes, 0);
+    }
+    // endregion
+
+    // region peekXXX
+    public int peekByte() {
+        byte[] bytes = peekN(1);
+        return ByteUtils.bytesToInt(bytes, 0);
+    }
+
+    public int peekShort() {
+        byte[] bytes = peekN(2);
+        return ByteUtils.bytesToInt(bytes, 0);
+    }
+
+    public int peekInt() {
+        byte[] bytes = peekN(4);
+        return ByteUtils.bytesToInt(bytes, 0);
+    }
+
+    public int peekByte(int offset) {
+        byte[] bytes = peekN(offset, 1);
+        return ByteUtils.bytesToInt(bytes, 0);
+    }
+
+    public int peekShort(int offset) {
+        byte[] bytes = peekN(offset, 2);
+        return ByteUtils.bytesToInt(bytes, 0);
+    }
+
+    public int peekInt(int offset) {
+        byte[] bytes = peekN(offset, 4);
+        return ByteUtils.bytesToInt(bytes, 0);
+    }
+    // endregion
+
+    // region readXXX
+    /**
+     * 这里保留符号（正负的符号）
+     * @return
+     */
+    public byte readByte() {
+        byte b = next();
+        return b;
+    }
+
+    public short readShort() {
+        byte[] bytes = nextN(2);
+        return ByteUtils.toShort(bytes);
+    }
+
+    public int readInt() {
+        byte[] bytes = nextN(4);
+        return ByteUtils.toInt(bytes);
+    }
+
+    public long readLong() {
+        byte[] bytes = nextN(8);
+        return ByteUtils.toLong(bytes);
+    }
+    // endregion
 
     public void reset() {
         this.index = this.start;

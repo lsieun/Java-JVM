@@ -1,25 +1,32 @@
 package lsieun.bytecode.classfile.attrs.code;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.classfile.Visitor;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
-// FIXME: 这里还没有处理
 public final class StackMapTable extends AttributeInfo {
     private final int number_of_entries;
-    private final List<StackMap> stack_map_list;
+    private final StackMapFrame[] entries;
 
     public StackMapTable(ByteDashboard byteDashboard, ConstantPool constantPool) {
         super(byteDashboard, constantPool, true);
 
         byte[] number_of_entries_bytes = byteDashboard.nextN(2);
         this.number_of_entries = ByteUtils.bytesToInt(number_of_entries_bytes, 0);
-        this.stack_map_list = new ArrayList();
+        this.entries = new StackMapFrame[number_of_entries];
+        for(int i=0; i<number_of_entries; i++) {
+            this.entries[i] = new StackMapFrame(byteDashboard, constantPool);
+        }
+    }
+
+    public int getNumberOfEntries() {
+        return number_of_entries;
+    }
+
+    public StackMapFrame[] getEntries() {
+        return entries;
     }
 
     @Override

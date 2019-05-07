@@ -33,7 +33,7 @@ public final class Attributes extends Node {
         return null;
     }
 
-    public String getAttributesName() {
+    public String getAttributeNames() {
         List<String> attr_list = new ArrayList();
         for(int i=0; i<entries.length; i++) {
             AttributeInfo item = entries[i];
@@ -41,7 +41,7 @@ public final class Attributes extends Node {
             attr_list.add(name);
         }
 
-        String attrNames = StringUtils.list2str(attr_list, "[", "]", ",");
+        String attrNames = StringUtils.list2str(attr_list, "[", "]", ", ");
         if(attrNames == null) {
             attrNames = "[]";
         }

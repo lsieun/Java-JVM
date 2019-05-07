@@ -26,6 +26,8 @@
   - [4.6. same_frame_extended](#46-sameframeextended)
   - [4.7. append_frame](#47-appendframe)
   - [4.8. full_frame](#48-fullframe)
+- [Examples](#examples)
+  - [append_frame example](#appendframe-example)
 
 <!-- /TOC -->
 
@@ -309,6 +311,26 @@ full_frame {
     verification_type_info locals[number_of_locals];
     u2 number_of_stack_items;
     verification_type_info stack[number_of_stack_items];
+}
+```
+
+## Examples
+
+### append_frame example
+
+```java
+public class HelloWorld {
+    public static void testSimple() {
+        boolean flag = true;
+        int a = 0;
+        Object obj = null;
+        if(flag) {
+            a = 1;
+        }
+        else {
+            a = 2;
+        }
+    }
 }
 ```
 

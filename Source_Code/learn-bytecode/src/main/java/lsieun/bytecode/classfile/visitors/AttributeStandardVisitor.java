@@ -3,10 +3,14 @@ package lsieun.bytecode.classfile.visitors;
 import java.util.List;
 
 import lsieun.bytecode.classfile.ClassFile;
+import lsieun.bytecode.classfile.attrs.code.StackMapFrame;
+import lsieun.bytecode.classfile.attrs.code.StackMapTable;
+import lsieun.bytecode.classfile.attrs.code.StackMapType;
 import lsieun.bytecode.classfile.attrs.method.Code;
 import lsieun.bytecode.classfile.attrs.field.ConstantValue;
 import lsieun.bytecode.classfile.attrs.code.LineNumberTable;
 import lsieun.bytecode.classfile.attrs.classfile.SourceFile;
+import lsieun.bytecode.classfile.basic.StackMapConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.bytecode.utils.InstructionParser;
 import lsieun.utils.radix.ByteUtils;
@@ -148,52 +152,5 @@ public class AttributeStandardVisitor extends AbstractVisitor {
 
     // endregion
 
-    // region Code
 
-    @Override
-    public void visitLineNumberTable(LineNumberTable obj) {
-        String name = obj.getName();
-        String hexCode = obj.getHexCode();
-        byte[] bytes = obj.getBytes();
-
-        System.out.println(name);
-        System.out.printf("HexCode: %s\n", hexCode);
-
-        ByteDashboard byteDashboard = new ByteDashboard("LineNumberTable", bytes);
-        int attribute_length = processAttributeHeader(byteDashboard);
-
-        byte[] line_number_table_length_bytes = byteDashboard.nextN(2);
-        int line_number_table_length = ByteUtils.bytesToInt(line_number_table_length_bytes, 0);
-        System.out.printf("line_number_table_length: %s (%d)\n", HexUtils.fromBytes(line_number_table_length_bytes), line_number_table_length);
-
-        if(line_number_table_length > 0) {
-            System.out.println("line_number_table:");
-            for (int i = 0; i < line_number_table_length; i++) {
-                byte[] start_pc_bytes = byteDashboard.nextN(2);
-                int start_pc = ByteUtils.bytesToInt(start_pc_bytes, 0);
-                byte[] line_number_bytes = byteDashboard.nextN(2);
-                int line_number = ByteUtils.bytesToInt(line_number_bytes, 0);
-                System.out.printf("    start_pc: %s(%d) line_number: %s(%d)\n",
-                        HexUtils.fromBytes(start_pc_bytes),
-                        start_pc,
-                        HexUtils.fromBytes(line_number_bytes),
-                        line_number);
-            }
-        }
-    }
-
-    // endregion
-
-    // region private methods
-    private int processAttributeHeader(ByteDashboard byteDashboard) {
-        byte[] attribute_name_index_bytes = byteDashboard.nextN(2);
-        int attribute_name_index = ByteUtils.bytesToInt(attribute_name_index_bytes, 0);
-        System.out.printf("attribute_name_index: %s (%d)\n", HexUtils.fromBytes(attribute_name_index_bytes), attribute_name_index);
-
-        byte[] attribute_length_bytes = byteDashboard.nextN(4);
-        int attribute_length = ByteUtils.bytesToInt(attribute_length_bytes, 0);
-        System.out.printf("attribte_length: %s (%d)\n", HexUtils.fromBytes(attribute_length_bytes), attribute_length);
-        return attribute_length;
-    }
-    // endregion
 }

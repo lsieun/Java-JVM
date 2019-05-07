@@ -1,5 +1,8 @@
 package lsieun.bytecode.classfile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.StringUtils;
 
@@ -16,6 +19,15 @@ public final class Methods extends Node {
 
     public MethodInfo[] getEntries() {
         return entries;
+    }
+
+    public String getMethodNames() {
+        List<String> list = new ArrayList();
+        for(MethodInfo item : entries) {
+            String value = item.getValue();
+            list.add(value);
+        }
+        return StringUtils.list2str(list, ", ");
     }
 
     public MethodInfo findByNameAndType(String nameAndType) {

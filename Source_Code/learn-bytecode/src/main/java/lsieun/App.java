@@ -1,5 +1,7 @@
 package lsieun;
 
+import java.io.InputStream;
+
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.Attributes;
 import lsieun.bytecode.classfile.ClassFile;
@@ -10,6 +12,7 @@ import lsieun.bytecode.classfile.Methods;
 import lsieun.bytecode.classfile.attrs.method.Code;
 import lsieun.bytecode.classfile.visitors.AttributeStandardVisitor;
 import lsieun.bytecode.classfile.visitors.ClassFileStandardVisitor;
+import lsieun.bytecode.classfile.visitors.CodeAttributeVisitor;
 import lsieun.bytecode.classfile.visitors.FieldStandardVisitor;
 import lsieun.bytecode.classfile.visitors.MethodStandardVisitor;
 import lsieun.bytecode.utils.ByteDashboard;
@@ -36,17 +39,28 @@ public class App {
         String url = null;
         byte[] bytes = null;
 
-        final String useJar = PropertyUtils.getProperty("classfile.source.use.jar");
-        if ("true".equalsIgnoreCase(useJar)) {
-            String jarPath = PropertyUtils.getProperty("classfile.source.jar.path");
-            String entryName = PropertyUtils.getProperty("classfile.source.jar.entry.name");
+        final String type = PropertyUtils.getProperty("bytecode.source.type");
+        if ("jar".equalsIgnoreCase(type)) {
+            String jarPath = PropertyUtils.getProperty("bytecode.source.jar.path");
+            String entryName = PropertyUtils.getProperty("bytecode.source.jar.entry.name");
             url = "jar:file:" + jarPath + "!/" + entryName;
             bytes = JarUtils.readBytes(jarPath, entryName);
-        } else {
-            String rootPath = PropertyUtils.getRootPath();
-            String filepath = rootPath + PropertyUtils.getProperty("classfile.source.file.path.relative");
+        }
+        else if ("filepath".equalsIgnoreCase(type)) {
+            String filepath = PropertyUtils.getProperty("bytecode.source.file.filepath");
             url = "file://" + filepath;
             bytes = FileUtils.readBytes(filepath);
+        }
+        else if ("classname".equalsIgnoreCase(type)){
+            String classname = PropertyUtils.getProperty("bytecode.source.class.fqcn");
+            String filepath = FileUtils.getFilePath(App.class, classname);
+            url = "file://" + filepath;
+            bytes = FileUtils.readBytes(filepath);
+        }
+        else {
+            String classname = PropertyUtils.getProperty("bytecode.source.classloader.fqcn");
+            InputStream in = FileUtils.getInputStream(classname);
+            bytes = FileUtils.readStream(in, true);
         }
 
         if(bytes == null) {
@@ -60,39 +74,39 @@ public class App {
 
     public static void display(ClassFile classFile) {
         // 打印ClassFile
-        String target = PropertyUtils.getProperty("classfile.content.target");
+        String target = PropertyUtils.getProperty("bytecode.target.name");
         if("ClassFile".equalsIgnoreCase(target)) {
             displayClassFile(classFile);
         }
         else if("Field".equalsIgnoreCase(target)) {
-            String fieldSignature = PropertyUtils.getProperty("classfile.content.field.signature");
+            String fieldSignature = PropertyUtils.getProperty("bytecode.content.field.signature");
             displayField(classFile, fieldSignature);
         }
         else if("Method".equalsIgnoreCase(target)) {
-            String methodSignature = PropertyUtils.getProperty("classfile.content.method.signature");
+            String methodSignature = PropertyUtils.getProperty("bytecode.content.method.signature");
             displayMethod(classFile, methodSignature);
         }
         else if("ClassFileAttribute".equalsIgnoreCase(target)) {
-            String attrName = PropertyUtils.getProperty("classfile.content.attribute.name");
+            String attrName = PropertyUtils.getProperty("bytecode.content.classfile.attribute.name");
             displayClassFileAttribute(classFile, attrName);
         }
         else if("FieldAttribute".equalsIgnoreCase(target)) {
-            String fieldSignature = PropertyUtils.getProperty("classfile.content.field.signature");
-            String attrName = PropertyUtils.getProperty("classfile.content.attribute.name");
+            String fieldSignature = PropertyUtils.getProperty("bytecode.content.field.signature");
+            String attrName = PropertyUtils.getProperty("bytecode.content.field.attribute.name");
             displayFieldAttribute(classFile, fieldSignature, attrName);
         }
         else if("MethodAttribute".equalsIgnoreCase(target)) {
-            String methodSignature = PropertyUtils.getProperty("classfile.content.method.signature");
-            String attrName = PropertyUtils.getProperty("classfile.content.attribute.name");
+            String methodSignature = PropertyUtils.getProperty("bytecode.content.method.signature");
+            String attrName = PropertyUtils.getProperty("bytecode.content.method.attribute.name");
             displayMethodAttribute(classFile, methodSignature, attrName);
         }
         else if("CodeAttribute".equalsIgnoreCase(target)) {
-            String methodSignature = PropertyUtils.getProperty("classfile.content.method.signature");
-            String attrName = PropertyUtils.getProperty("classfile.content.attribute.name");
+            String methodSignature = PropertyUtils.getProperty("bytecode.content.method.signature");
+            String attrName = PropertyUtils.getProperty("bytecode.content.code.attribute.name");
             displayCodeAttribute(classFile, methodSignature, attrName);
         }
         else {
-            System.out.println("please change 'classfile.content.target' in config.properties files");
+            System.out.println("please change 'bytecode.target.name' in config.properties files");
         }
     }
 
@@ -119,7 +133,7 @@ public class App {
     public static void displayClassFileAttribute(ClassFile classFile, String attrName) {
         System.out.println("=================================================" + StringUtils.LF);
         Attributes attributes = classFile.getAttributes();
-        displayAttribute(classFile, attributes, attrName);
+        displayAttribute(attributes, attrName);
     }
 
     public static void displayFieldAttribute(ClassFile classFile, String nameAndType, String attrName) {
@@ -128,7 +142,7 @@ public class App {
         FieldInfo fieldInfo = fields.findByNameAndType(nameAndType);
         if(fieldInfo != null) {
             Attributes attributes = fieldInfo.getAttributes();
-            displayAttribute(classFile, attributes, attrName);
+            displayAttribute(attributes, attrName);
         }
     }
 
@@ -138,7 +152,15 @@ public class App {
         MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
         if(methodInfo != null) {
             Attributes attributes = methodInfo.getAttributes();
-            displayAttribute(classFile, attributes, attrName);
+            displayAttribute(attributes, attrName);
+        }
+    }
+
+    private static void displayAttribute(Attributes attributes, String attrName) {
+        AttributeInfo attributeInfo = attributes.findAttribute(attrName);
+        if(attributeInfo != null) {
+            AttributeStandardVisitor visitor = new AttributeStandardVisitor(true);
+            attributeInfo.accept(visitor);
         }
     }
 
@@ -146,23 +168,32 @@ public class App {
         System.out.println("=================================================" + StringUtils.LF);
         Methods methods = classFile.getMethods();
         MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
-        if(methodInfo == null) return;
+        if(methodInfo == null) {
+            System.out.println("Can not find Method: " + nameAndType);
+            System.out.println("Available Methods: " + methods.getMethodNames());
+            return;
+        }
 
         Attributes attributes = methodInfo.getAttributes();
         AttributeInfo attributeInfo = attributes.findAttribute("Code");
-        if(attributeInfo == null) return;
-
-        Code code = (Code) attributeInfo;
-        displayAttribute(classFile, code.getAttributes(), attrName);
-    }
-
-    public static void displayAttribute(ClassFile classFile, Attributes attributes, String attrName) {
-        AttributeInfo attributeInfo = attributes.findAttribute(attrName);
-        if(attributeInfo != null) {
-            AttributeStandardVisitor visitor = new AttributeStandardVisitor(true);
-            classFile.accept(visitor);
-            attributeInfo.accept(visitor);
+        if(attributeInfo == null) {
+            System.out.println("Can not find Code Attribute");
+            return;
         }
+
+        CodeAttributeVisitor visitor = new CodeAttributeVisitor();
+        Code code = (Code) attributeInfo;
+        code.accept(visitor);
+
+        Attributes codeAttributes = code.getAttributes();
+        AttributeInfo subAttribute = codeAttributes.findAttribute(attrName);
+        if(subAttribute == null) { 
+            System.out.println("Can not find Attribute: " + attrName);
+            System.out.println("Available Attributes: " + codeAttributes.getAttributeNames());
+            return;
+        }
+        subAttribute.accept(visitor);
     }
+
     // endregion
 }

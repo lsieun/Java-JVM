@@ -35,7 +35,7 @@ public class FieldStandardVisitor extends AbstractVisitor {
             System.out.println("\nAvailable Fields:");
             for(FieldInfo item : entries) {
                 Attributes attributes = item.getAttributes();
-                String attrNames = attributes.getAttributesName();
+                String attrNames = attributes.getAttributeNames();
 
                 String line = String.format("    Field='%s', AccessFlags='%s', Attrs='%s'",
                         item.getValue(),
@@ -49,7 +49,7 @@ public class FieldStandardVisitor extends AbstractVisitor {
     @Override
     public void visitFieldInfo(FieldInfo obj) {
         Attributes attributes = obj.getAttributes();
-        String attrNames = attributes.getAttributesName();
+        String attrNames = attributes.getAttributeNames();
 
         String line = String.format("\nFieldInfo {\n    Name='%s'\n    AccessFlags='%s'\n    Attrs='%s'\n    HexCode='%s'\n}",
                 obj.getValue(),

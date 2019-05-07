@@ -148,7 +148,7 @@ public class ClassFileStandardVisitor extends AbstractVisitor {
     @Override
     public void visitFieldInfo(FieldInfo obj) {
         Attributes attributes = obj.getAttributes();
-        String attrNames = attributes.getAttributesName();
+        String attrNames = attributes.getAttributeNames();
 
         String line = String.format("    FieldInfo {Value='%s', AccessFlags='%s', Attrs='%s', HexCode='%s'}",
                 obj.getValue(),
@@ -177,7 +177,7 @@ public class ClassFileStandardVisitor extends AbstractVisitor {
     @Override
     public void visitMethodInfo(MethodInfo obj) {
         Attributes attributes = obj.getAttributes();
-        String attrNames = attributes.getAttributesName();
+        String attrNames = attributes.getAttributeNames();
 
         String line = String.format("    MethodInfo {Value='%s', AccessFlags='%s', Attrs='%s'}",
                 obj.getValue(),

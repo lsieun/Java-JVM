@@ -9,12 +9,16 @@ import lsieun.bytecode.classfile.ClassFile;
 import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.classfile.MethodInfo;
 import lsieun.bytecode.classfile.Methods;
+import lsieun.bytecode.classfile.attrs.code.StackMapFrame;
+import lsieun.bytecode.classfile.attrs.code.StackMapTable;
+import lsieun.bytecode.classfile.attrs.code.StackMapType;
 import lsieun.bytecode.classfile.attrs.method.Code;
 import lsieun.bytecode.classfile.attrs.method.ExceptionTable;
 import lsieun.bytecode.classfile.attrs.code.LineNumber;
 import lsieun.bytecode.classfile.attrs.code.LineNumberTable;
 import lsieun.bytecode.classfile.attrs.code.LocalVariable;
 import lsieun.bytecode.classfile.attrs.code.LocalVariableTable;
+import lsieun.bytecode.classfile.basic.StackMapConst;
 import lsieun.bytecode.utils.InstructionParser;
 import lsieun.utils.radix.HexUtils;
 
@@ -46,12 +50,20 @@ public class MethodStandardVisitor extends AbstractVisitor {
             System.out.println("\nAvailable Methods:");
             for(MethodInfo item : entries) {
                 Attributes attributes = item.getAttributes();
-                String attrNames = attributes.getAttributesName();
+                String attrNames = attributes.getAttributeNames();
 
-                String line = String.format("    Method='%s', AccessFlags='%s', Attrs='%s'",
+                String codeAttrs = "";
+                AttributeInfo codeAttribute = attributes.findAttribute("Code");
+                if(codeAttribute != null) {
+                    Code code = (Code) codeAttribute;
+                    codeAttrs = code.getAttributes().getAttributeNames();
+                }
+
+                String line = String.format("    Method='%s', AccessFlags='%s', Attrs='%s' CodeAttrs='%s'",
                         item.getValue(),
                         item.getAccessFlagsString(),
-                        attrNames);
+                        attrNames,
+                        codeAttrs);
                 System.out.println(line);
             }
         }
@@ -61,7 +73,7 @@ public class MethodStandardVisitor extends AbstractVisitor {
     @Override
     public void visitMethodInfo(MethodInfo obj) {
         Attributes attributes = obj.getAttributes();
-        String attrNames = attributes.getAttributesName();
+        String attrNames = attributes.getAttributeNames();
 
         String line = String.format("\nMethodInfo {\n    MethodName='%s'\n    AccessFlags='%s'\n    Attrs='%s'\n}",
                 obj.getValue(),
@@ -89,16 +101,27 @@ public class MethodStandardVisitor extends AbstractVisitor {
         int maxLocals = obj.getMaxLocals();
         int codeLength = obj.getCodeLength();
         byte[] bytes = obj.getCode();
+        Attributes attributes = obj.getAttributes();
 
-        String line = String.format("\nCode {\nmax_stack='%d', max_locals='%d'\ncode_length='%d'\ncode='%s'",
-                maxStack, maxLocals, codeLength, HexUtils.fromBytes(bytes));
-        System.out.println(line);
+//        String line = String.format("\nCode {\nmax_stack='%d', max_locals='%d'\ncode_length='%d'\ncode='%s'",
+//                maxStack, maxLocals, codeLength, HexUtils.fromBytes(bytes));
+//        System.out.println(line);
+        System.out.printf("Code {\n");
+        System.out.printf("max_stack='%d', max_locals='%d'\n", maxStack, maxLocals);
+        System.out.printf("code_length='%d'\n", codeLength);
+        String attributesName = attributes.getAttributeNames();
+        System.out.printf("attributes='%s'\n\n", attributesName);
+        System.out.printf("code='%s'\n", HexUtils.fromBytes(bytes));
 
         // instruction
         List<String> codeLines = InstructionParser.bytes2Lines(bytes);
-        for(String instruction : codeLines) {
-            System.out.println(instruction);
+        if(codeLines != null && codeLines.size() > 0) {
+
+            for(String instruction : codeLines) {
+                System.out.println(instruction);
+            }
         }
+
 
         // exception table
         List<ExceptionTable> exceptionTableList = obj.getExceptionTableList();
@@ -117,7 +140,7 @@ public class MethodStandardVisitor extends AbstractVisitor {
             }
         }
 
-        Attributes attributes = obj.getAttributes();
+
         AttributeInfo localVariableTable = attributes.findAttribute("LocalVariableTable");
         if(localVariableTable != null) {
             localVariableTable.accept(this);
@@ -133,8 +156,6 @@ public class MethodStandardVisitor extends AbstractVisitor {
             stackMapTable.accept(this);
         }
 
-        String attributesName = attributes.getAttributesName();
-        System.out.println("\nattributes: " + attributesName);
 
         System.out.println("}");
     }
@@ -173,5 +194,52 @@ public class MethodStandardVisitor extends AbstractVisitor {
         }
 
     }
+
+    @Override
+    public void visitStackMapTable(StackMapTable obj) {
+        String name = obj.getName();
+        StackMapFrame[] entries = obj.getEntries();
+
+        if(entries != null && entries.length > 0) {
+            System.out.println("\nStackMapTable:");
+            for(StackMapFrame entry : entries) {
+                int frame_type = entry.getFrameType();
+                int byte_code_offset = entry.getByteCodeOffset();
+                StackMapType[] types_of_locals = entry.getTypesOfLocals();
+                StackMapType[] types_of_stack_items = entry.getTypesOfStackItems();
+
+                final StringBuilder buf = new StringBuilder(64);
+                buf.append("    ");
+                if (frame_type >= StackMapConst.SAME_FRAME && frame_type <= StackMapConst.SAME_FRAME_MAX) {
+                    buf.append("SAME");
+                } else if (frame_type >= StackMapConst.SAME_LOCALS_1_STACK_ITEM_FRAME &&
+                        frame_type <= StackMapConst.SAME_LOCALS_1_STACK_ITEM_FRAME_MAX) {
+                    buf.append("SAME_LOCALS_1_STACK");
+                } else if (frame_type == StackMapConst.SAME_LOCALS_1_STACK_ITEM_FRAME_EXTENDED) {
+                    buf.append("SAME_LOCALS_1_STACK_EXTENDED");
+                } else if (frame_type >= StackMapConst.CHOP_FRAME && frame_type <= StackMapConst.CHOP_FRAME_MAX) {
+                    buf.append("CHOP ").append(String.valueOf(251-frame_type));
+                } else if (frame_type == StackMapConst.SAME_FRAME_EXTENDED) {
+                    buf.append("SAME_EXTENDED");
+                } else if (frame_type >= StackMapConst.APPEND_FRAME && frame_type <= StackMapConst.APPEND_FRAME_MAX) {
+                    buf.append("APPEND ").append(String.valueOf(frame_type-251));
+                } else if (frame_type == StackMapConst.FULL_FRAME) {
+                    buf.append("FULL");
+                } else {
+                    buf.append("UNKNOWN (").append(frame_type).append(")");
+                }
+                buf.append(" {offset_delta=").append(byte_code_offset);
+                if (types_of_locals.length > 0) {
+                    buf.append(", " + entry.getLocalsString());
+                }
+                if (types_of_stack_items.length > 0) {
+                    buf.append(", " + entry.getStackItemsString());
+                }
+                buf.append("}");
+                System.out.println(buf);
+            }
+        }
+    }
+
     // endregion
 }
