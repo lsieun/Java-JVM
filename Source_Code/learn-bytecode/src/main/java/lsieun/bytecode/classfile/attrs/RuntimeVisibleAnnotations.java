@@ -13,7 +13,7 @@ import lsieun.utils.radix.ByteUtils;
 
 public final class RuntimeVisibleAnnotations extends AttributeInfo {
     private final int num_annotations;
-    private final List<AnnotationEntry> annotation_list;
+    private final AnnotationEntry[] annotations;
 
     public RuntimeVisibleAnnotations(ByteDashboard byteDashboard, ConstantPool constantPool) {
         super(byteDashboard, constantPool, true);
@@ -21,11 +21,19 @@ public final class RuntimeVisibleAnnotations extends AttributeInfo {
         byte[] num_annotations_bytes = byteDashboard.nextN(2);
         this.num_annotations = ByteUtils.bytesToInt(num_annotations_bytes, 0);
 
-        this.annotation_list = new ArrayList();
+        this.annotations = new AnnotationEntry[num_annotations];
         for(int i=0; i<num_annotations; i++) {
             AnnotationEntry item = new AnnotationEntry(byteDashboard, constantPool);
-            this.annotation_list.add(item);
+            this.annotations[i] = item;
         }
+    }
+
+    public int getNumAnnotations() {
+        return num_annotations;
+    }
+
+    public AnnotationEntry[] getAnnotations() {
+        return annotations;
     }
 
     @Override
@@ -40,7 +48,7 @@ public final class RuntimeVisibleAnnotations extends AttributeInfo {
 
         List<String> annotation_str_list = new ArrayList();
         for(int i=0; i<num_annotations; i++) {
-            AnnotationEntry item = this.annotation_list.get(i);
+            AnnotationEntry item = annotations[i];
             String value = item.getValue();
             annotation_str_list.add(value);
         }

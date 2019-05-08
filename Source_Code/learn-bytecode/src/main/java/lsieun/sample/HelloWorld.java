@@ -1,7 +1,11 @@
 package lsieun.sample;
 
+import java.io.IOException;
+
+@Deprecated
 public class HelloWorld {
-    public static void testSimple() {
+    @Deprecated
+    public static void testSimple() throws IOException {
         boolean flag = true;
         int a = 0;
         double d = 0;

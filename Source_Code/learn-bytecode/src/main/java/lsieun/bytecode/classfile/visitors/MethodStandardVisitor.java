@@ -84,16 +84,6 @@ public class MethodStandardVisitor extends AbstractVisitor {
         attributes.accept(this);
     }
 
-    @Override
-    public void visitAttributeInfo(AttributeInfo obj) {
-        String line = String.format("\n%s {attribute_name_index='%s', attribute_length='%d', HexCode='%s'}",
-                obj.getName(),
-                obj.getAttributeNameIndex(),
-                obj.getAttributeLength(),
-                obj.getHexCode());
-        System.out.println(line);
-    }
-
     // region attributes
     @Override
     public void visitCode(Code obj) {
@@ -103,9 +93,6 @@ public class MethodStandardVisitor extends AbstractVisitor {
         byte[] bytes = obj.getCode();
         Attributes attributes = obj.getAttributes();
 
-//        String line = String.format("\nCode {\nmax_stack='%d', max_locals='%d'\ncode_length='%d'\ncode='%s'",
-//                maxStack, maxLocals, codeLength, HexUtils.fromBytes(bytes));
-//        System.out.println(line);
         System.out.printf("Code {\n");
         System.out.printf("max_stack='%d', max_locals='%d'\n", maxStack, maxLocals);
         System.out.printf("code_length='%d'\n", codeLength);
@@ -157,7 +144,7 @@ public class MethodStandardVisitor extends AbstractVisitor {
         }
 
 
-        System.out.println("}");
+        System.out.println("}\n");
     }
 
     @Override

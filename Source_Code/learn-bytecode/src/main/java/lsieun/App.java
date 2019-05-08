@@ -10,9 +10,12 @@ import lsieun.bytecode.classfile.Fields;
 import lsieun.bytecode.classfile.MethodInfo;
 import lsieun.bytecode.classfile.Methods;
 import lsieun.bytecode.classfile.attrs.method.Code;
-import lsieun.bytecode.classfile.visitors.AttributeStandardVisitor;
+import lsieun.bytecode.classfile.visitors.AttributeClassFileVisitor;
+import lsieun.bytecode.classfile.visitors.AttributeFieldVisitor;
+import lsieun.bytecode.classfile.visitors.AttributeMethodVisitor;
+import lsieun.bytecode.classfile.visitors.AttributeVisitor;
 import lsieun.bytecode.classfile.visitors.ClassFileStandardVisitor;
-import lsieun.bytecode.classfile.visitors.CodeAttributeVisitor;
+import lsieun.bytecode.classfile.visitors.AttributeCodeVisitor;
 import lsieun.bytecode.classfile.visitors.FieldStandardVisitor;
 import lsieun.bytecode.classfile.visitors.MethodStandardVisitor;
 import lsieun.bytecode.utils.ByteDashboard;
@@ -133,7 +136,11 @@ public class App {
     public static void displayClassFileAttribute(ClassFile classFile, String attrName) {
         System.out.println("=================================================" + StringUtils.LF);
         Attributes attributes = classFile.getAttributes();
-        displayAttribute(attributes, attrName);
+        AttributeInfo attributeInfo = attributes.findAttribute(attrName);
+        if(attributeInfo != null) {
+            AttributeClassFileVisitor visitor = new AttributeClassFileVisitor();
+            attributeInfo.accept(visitor);
+        }
     }
 
     public static void displayFieldAttribute(ClassFile classFile, String nameAndType, String attrName) {
@@ -142,7 +149,11 @@ public class App {
         FieldInfo fieldInfo = fields.findByNameAndType(nameAndType);
         if(fieldInfo != null) {
             Attributes attributes = fieldInfo.getAttributes();
-            displayAttribute(attributes, attrName);
+            AttributeInfo attributeInfo = attributes.findAttribute(attrName);
+            if(attributeInfo != null) {
+                AttributeFieldVisitor visitor = new AttributeFieldVisitor();
+                attributeInfo.accept(visitor);
+            }
         }
     }
 
@@ -152,16 +163,16 @@ public class App {
         MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
         if(methodInfo != null) {
             Attributes attributes = methodInfo.getAttributes();
-            displayAttribute(attributes, attrName);
+            AttributeInfo attributeInfo = attributes.findAttribute(attrName);
+            if(attributeInfo != null) {
+                AttributeMethodVisitor visitor = new AttributeMethodVisitor();
+                attributeInfo.accept(visitor);
+            }
         }
     }
 
     private static void displayAttribute(Attributes attributes, String attrName) {
-        AttributeInfo attributeInfo = attributes.findAttribute(attrName);
-        if(attributeInfo != null) {
-            AttributeStandardVisitor visitor = new AttributeStandardVisitor(true);
-            attributeInfo.accept(visitor);
-        }
+
     }
 
     public static void displayCodeAttribute(ClassFile classFile, String nameAndType, String attrName) {
@@ -181,17 +192,17 @@ public class App {
             return;
         }
 
-        CodeAttributeVisitor visitor = new CodeAttributeVisitor();
-        Code code = (Code) attributeInfo;
-        code.accept(visitor);
 
+        Code code = (Code) attributeInfo;
         Attributes codeAttributes = code.getAttributes();
         AttributeInfo subAttribute = codeAttributes.findAttribute(attrName);
-        if(subAttribute == null) { 
+        if(subAttribute == null) {
             System.out.println("Can not find Attribute: " + attrName);
             System.out.println("Available Attributes: " + codeAttributes.getAttributeNames());
             return;
         }
+
+        AttributeCodeVisitor visitor = new AttributeCodeVisitor();
         subAttribute.accept(visitor);
     }
 

@@ -21,18 +21,18 @@ import lsieun.bytecode.classfile.MinorVersion;
 import lsieun.bytecode.classfile.SuperClass;
 import lsieun.bytecode.classfile.ThisClass;
 import lsieun.bytecode.classfile.Visitor;
-import lsieun.bytecode.classfile.attrs.method.Code;
-import lsieun.bytecode.classfile.attrs.field.ConstantValue;
 import lsieun.bytecode.classfile.attrs.Deprecated;
-import lsieun.bytecode.classfile.attrs.method.Exceptions;
+import lsieun.bytecode.classfile.attrs.RuntimeVisibleAnnotations;
+import lsieun.bytecode.classfile.attrs.Signature;
 import lsieun.bytecode.classfile.attrs.classfile.InnerClasses;
+import lsieun.bytecode.classfile.attrs.classfile.SourceFile;
 import lsieun.bytecode.classfile.attrs.code.LineNumberTable;
 import lsieun.bytecode.classfile.attrs.code.LocalVariableTable;
 import lsieun.bytecode.classfile.attrs.code.LocalVariableTypeTable;
-import lsieun.bytecode.classfile.attrs.RuntimeVisibleAnnotations;
-import lsieun.bytecode.classfile.attrs.Signature;
-import lsieun.bytecode.classfile.attrs.classfile.SourceFile;
 import lsieun.bytecode.classfile.attrs.code.StackMapTable;
+import lsieun.bytecode.classfile.attrs.field.ConstantValue;
+import lsieun.bytecode.classfile.attrs.method.Code;
+import lsieun.bytecode.classfile.attrs.method.Exceptions;
 import lsieun.bytecode.classfile.basic.CPConst;
 import lsieun.bytecode.classfile.cp.Constant;
 import lsieun.bytecode.classfile.cp.ConstantClass;
@@ -53,10 +53,11 @@ import lsieun.bytecode.classfile.cp.ConstantPackage;
 import lsieun.bytecode.classfile.cp.ConstantString;
 import lsieun.bytecode.classfile.cp.ConstantUtf8;
 import lsieun.bytecode.utils.ByteDashboard;
-import lsieun.utils.radix.ByteUtils;
 import lsieun.utils.radix.HexUtils;
 
-public class AbstractVisitor implements Visitor {
+public abstract class AbstractVisitor implements Visitor {
+
+    // region ClassFile
     public void visitClassFile(ClassFile obj){
         // do nothing
     }
@@ -145,8 +146,20 @@ public class AbstractVisitor implements Visitor {
     }
 
     public void visitAttributeInfo(AttributeInfo obj){
-        // do nothing
+        byte[] bytes = obj.getBytes();
+        ByteDashboard byteDashboard = new ByteDashboard("AttributeInfo", bytes);
+        byte[] attribute_name_index_bytes = byteDashboard.nextN(2);
+        byte[] attribute_length_bytes = byteDashboard.nextN(4);
+
+
+        String line = String.format("%s {name_index='0x%s'(%d), length='0x%s'(%d), HexCode='%s'}",
+                obj.getName(),
+                HexUtils.fromBytes(attribute_name_index_bytes), obj.getAttributeNameIndex(),
+                HexUtils.fromBytes(attribute_length_bytes), obj.getAttributeLength(),
+                obj.getHexCode());
+        System.out.println(line);
     }
+    // endregion
 
     // region constant pool
     public void visitConstant(Constant obj){
@@ -277,17 +290,5 @@ public class AbstractVisitor implements Visitor {
     }
     // endregion
 
-    // region common methods
 
-    protected int processAttributeHeader(ByteDashboard byteDashboard) {
-        byte[] attribute_name_index_bytes = byteDashboard.nextN(2);
-        int attribute_name_index = ByteUtils.bytesToInt(attribute_name_index_bytes, 0);
-        System.out.printf("attribute_name_index='0x%s' (%d)\n", HexUtils.fromBytes(attribute_name_index_bytes), attribute_name_index);
-
-        byte[] attribute_length_bytes = byteDashboard.nextN(4);
-        int attribute_length = ByteUtils.bytesToInt(attribute_length_bytes, 0);
-        System.out.printf("attribte_length='0x%s' (%d)\n", HexUtils.fromBytes(attribute_length_bytes), attribute_length);
-        return attribute_length;
-    }
-    // endregion
 }

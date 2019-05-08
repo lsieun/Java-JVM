@@ -21,6 +21,8 @@ import lsieun.bytecode.classfile.MinorVersion;
 import lsieun.bytecode.classfile.SuperClass;
 import lsieun.bytecode.classfile.ThisClass;
 import lsieun.bytecode.classfile.attrs.classfile.SourceFile;
+import lsieun.bytecode.utils.ByteDashboard;
+import lsieun.utils.radix.HexUtils;
 
 public class ClassFileStandardVisitor extends AbstractVisitor {
 
@@ -197,6 +199,7 @@ public class ClassFileStandardVisitor extends AbstractVisitor {
         AttributeInfo[] entries = obj.getEntries();
         if(entries != null && entries.length > 0) {
             System.out.println("Attributes {");
+            System.out.println("    // 囿于打印空间，“多而易乱”，因此各个属性只打印“重要”信息");
             for(AttributeInfo item : entries) {
                 item.accept(this);
             }
@@ -204,22 +207,18 @@ public class ClassFileStandardVisitor extends AbstractVisitor {
         }
     }
 
-    @Override
-    public void visitAttributeInfo(AttributeInfo obj) {
-        String line = String.format("    %s {attribute_name_index='%s', attribute_length='%d', HexCode='%s'}",
-                obj.getName(),
-                obj.getAttributeNameIndex(),
-                obj.getAttributeLength(),
-                obj.getHexCode());
-        System.out.println(line);
-    }
     // region attributes
 
     @Override
     public void visitSourceFile(SourceFile obj) {
-        String line = String.format("    %s {Value='%s', SourceFileIndex='%d', HexCode='%s'}",
+        byte[] bytes = obj.getBytes();
+        ByteDashboard byteDashboard = new ByteDashboard("AttributeInfo", bytes);
+        byte[] sourcefile_index_bytes = byteDashboard.peekN(6, 2);
+
+        String line = String.format("    %s {Value='%s', sourcefile_index='%s'(%d), HexCode='%s'}",
                 obj.getName(),
                 obj.getValue(),
+                HexUtils.fromBytes(sourcefile_index_bytes),
                 obj.getSourcefileIndex(),
                 obj.getHexCode());
         System.out.println(line);

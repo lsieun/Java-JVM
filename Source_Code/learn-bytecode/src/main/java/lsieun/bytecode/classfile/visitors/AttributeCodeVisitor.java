@@ -1,47 +1,13 @@
 package lsieun.bytecode.classfile.visitors;
 
-import java.util.List;
-
 import lsieun.bytecode.classfile.attrs.code.LineNumberTable;
 import lsieun.bytecode.classfile.attrs.code.StackMapTable;
-import lsieun.bytecode.classfile.attrs.method.Code;
 import lsieun.bytecode.classfile.basic.StackMapConst;
 import lsieun.bytecode.utils.ByteDashboard;
-import lsieun.bytecode.utils.InstructionParser;
 import lsieun.utils.radix.ByteUtils;
 import lsieun.utils.radix.HexUtils;
 
-public class CodeAttributeVisitor extends AbstractVisitor {
-    @Override
-    public void visitCode(Code obj) {
-        String hexCode = obj.getHexCode();
-        byte[] bytes = obj.getBytes();
-        System.out.printf("Code Attribute:\n%s\n\n", HexUtils.getPrettyFormat(hexCode));
-
-        ByteDashboard byteDashboard = new ByteDashboard("Code_Attribute", bytes);
-        int attribute_length = processAttributeHeader(byteDashboard);
-
-        byte[] max_stack_bytes = byteDashboard.nextN(2);
-        int max_stack = ByteUtils.bytesToInt(max_stack_bytes, 0);
-        System.out.printf("max_stack='%s' (%d)\n", HexUtils.fromBytes(max_stack_bytes), max_stack);
-
-        byte[] max_locals_bytes = byteDashboard.nextN(2);
-        int max_locals = ByteUtils.bytesToInt(max_locals_bytes, 0);
-        System.out.printf("max_locals='%s' (%d)\n", HexUtils.fromBytes(max_locals_bytes), max_locals);
-
-        byte[] code_length_bytes = byteDashboard.nextN(4);
-        int code_length = ByteUtils.bytesToInt(code_length_bytes, 0);
-        System.out.printf("code_length='%s' (%d)\n", HexUtils.fromBytes(code_length_bytes), code_length);
-
-        byte[] code_bytes = byteDashboard.nextN(code_length);
-        System.out.printf("code='%s'\n", HexUtils.fromBytes(code_bytes));
-        List<String> lines = InstructionParser.bytes2Lines(code_bytes);
-
-        for(String line : lines) {
-            System.out.println(line);
-        }
-        System.out.println();
-    }
+public class AttributeCodeVisitor extends AttributeVisitor {
 
     // region Code
 
