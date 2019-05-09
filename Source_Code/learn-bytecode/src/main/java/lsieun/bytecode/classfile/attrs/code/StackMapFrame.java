@@ -1,7 +1,7 @@
 package lsieun.bytecode.classfile.attrs.code;
 
 import lsieun.bytecode.classfile.ConstantPool;
-import lsieun.bytecode.classfile.basic.StackMapConst;
+import lsieun.bytecode.generic.cnst.StackMapConst;
 import lsieun.bytecode.exceptions.ClassFormatException;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;

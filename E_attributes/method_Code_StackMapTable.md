@@ -2,39 +2,160 @@
 
 <!-- TOC -->
 
-- [1. Position](#1-position)
-- [2. StackMapTable_attribute](#2-stackmaptableattribute)
-  - [2.1. stack map frame](#21-stack-map-frame)
-  - [2.2. 定性描述](#22-%E5%AE%9A%E6%80%A7%E6%8F%8F%E8%BF%B0)
-  - [2.3. 定量表达](#23-%E5%AE%9A%E9%87%8F%E8%A1%A8%E8%BE%BE)
-- [3. verification_type_info](#3-verificationtypeinfo)
-  - [3.1. Top_variable_info](#31-topvariableinfo)
-  - [3.2. Integer_variable_info](#32-integervariableinfo)
-  - [3.3. Float_variable_info](#33-floatvariableinfo)
-  - [3.4. Null_variable_info](#34-nullvariableinfo)
-  - [3.5. UninitializedThis_variable_info](#35-uninitializedthisvariableinfo)
-  - [3.6. Object_variable_info](#36-objectvariableinfo)
-  - [3.7. Uninitialized_variable_info](#37-uninitializedvariableinfo)
-  - [3.8. Long_variable_info](#38-longvariableinfo)
-  - [3.9. Double_variable_info](#39-doublevariableinfo)
-- [4. stack_map_frame](#4-stackmapframe)
-  - [4.1. same_frame](#41-sameframe)
-  - [4.2. same_locals_1_stack_item_frame](#42-samelocals1stackitemframe)
-  - [4.3. reserved](#43-reserved)
-  - [4.4. same_locals_1_stack_item_frame_extended](#44-samelocals1stackitemframeextended)
-  - [4.5. chop_frame](#45-chopframe)
-  - [4.6. same_frame_extended](#46-sameframeextended)
-  - [4.7. append_frame](#47-appendframe)
-  - [4.8. full_frame](#48-fullframe)
-- [Examples](#examples)
-  - [append_frame example](#appendframe-example)
-  - [full_frame example](#fullframe-example)
+- [1. Intro](#1-intro)
+  - [1.1. What](#11-what)
+  - [1.2. save space](#12-save-space)
+- [2. Position](#2-position)
+- [3. StackMapTable_attribute](#3-stackmaptableattribute)
+  - [3.1. stack map frame](#31-stack-map-frame)
+  - [3.2. 定性描述](#32-%E5%AE%9A%E6%80%A7%E6%8F%8F%E8%BF%B0)
+  - [3.3. 定量表达](#33-%E5%AE%9A%E9%87%8F%E8%A1%A8%E8%BE%BE)
+- [4. verification_type_info](#4-verificationtypeinfo)
+  - [4.1. Top_variable_info](#41-topvariableinfo)
+  - [4.2. Integer_variable_info](#42-integervariableinfo)
+  - [4.3. Float_variable_info](#43-floatvariableinfo)
+  - [4.4. Null_variable_info](#44-nullvariableinfo)
+  - [4.5. UninitializedThis_variable_info](#45-uninitializedthisvariableinfo)
+  - [4.6. Object_variable_info](#46-objectvariableinfo)
+  - [4.7. Uninitialized_variable_info](#47-uninitializedvariableinfo)
+  - [4.8. Long_variable_info](#48-longvariableinfo)
+  - [4.9. Double_variable_info](#49-doublevariableinfo)
+- [5. stack_map_frame](#5-stackmapframe)
+  - [5.1. same_frame](#51-sameframe)
+  - [5.2. same_locals_1_stack_item_frame](#52-samelocals1stackitemframe)
+  - [5.3. reserved](#53-reserved)
+  - [5.4. same_locals_1_stack_item_frame_extended](#54-samelocals1stackitemframeextended)
+  - [5.5. chop_frame](#55-chopframe)
+  - [5.6. same_frame_extended](#56-sameframeextended)
+  - [5.7. append_frame](#57-appendframe)
+  - [5.8. full_frame](#58-fullframe)
+- [6. Examples](#6-examples)
+  - [6.1. append_frame example](#61-appendframe-example)
+  - [6.2. full_frame example](#62-fullframe-example)
 
 <!-- /TOC -->
 
 A `StackMapTable` attribute is used during **the process of verification** by type checking<sub>【注：讲它的作用】</sub>.
 
-## 1. Position
+## 1. Intro
+
+### 1.1. What
+
+Classes compiled with Java 6 or higher contain, in addition to bytecode instructions, a set of **stack map frames** that are used to speed up **the class verification process** inside the Java Virtual Machine. **A stack map frame** gives the state of the execution frame of a method at some point during its execution. More precisely it gives **the type of the values** that are contained in **each local variable slot** and in **each operand stack slot** just before **some specific bytecode instruction** is executed.
+
+```java
+public class Bean {
+    private int intValue;
+
+    public int getValue() {
+        return intValue;
+    }
+
+    public void setValue(int intValue) {
+        this.intValue = intValue;
+    }
+
+    public void checkAndSetValue(int intValue) {
+        if (intValue >= 0) {
+            this.intValue = intValue;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+}
+```
+
+`getValue:()I`的输出：
+
+```txt
+code='2ab40002ac'
+    0: aload_0         // 2a
+    1: getfield 2      // b40002
+    4: ireturn         // ac
+
+LocalVariableTable:
+index  start_pc  length  name_and_type
+    0         0       5  this:Llsieun/sample/HelloWorld;
+```
+
+`checkAndSetValue:(I)V`的输出：
+
+```txt
+code='1b9b000b2a1bb50002a7000bbb000359b70004bfb1'
+    0: iload_1         // 1b
+    1: iflt 11         // 9b000b
+    4: aload_0         // 2a
+    5: iload_1         // 1b
+    6: putfield 2      // b50002
+    9: goto 11         // a7000b
+   12: new 3           // bb0003
+   15: dup             // 59
+   16: invokespecial 4 // b70004
+   19: athrow          // bf
+   20: return          // b1
+
+LocalVariableTable:
+index  start_pc  length  name_and_type
+    0         0      21  this:Llsieun/sample/HelloWorld;
+    1         0      21  intValue:I
+```
+
+For example, if we consider the `getValue` method, we can define three stack map frames giving the state of the execution frame just before `ALOAD`, just before `GETFIELD`, and just before `IRETURN`. These three stack map frames can be described as follows, where **the types** between the **first square brackets** correspond to **the local variables**, and **the others** to **the operand stack**:
+
+```txt
+State of the execution frame before     Instruction
+[pkg/Bean] []                           ALOAD 0
+[pkg/Bean] [pkg/Bean]                   GETFIELD
+[pkg/Bean] [I]                          IRETURN
+```
+
+We can do the same for the `checkAndSetF` method:
+
+```txt
+State of the execution frame before                            Instruction
+[pkg/Bean I] []                                                ILOAD 1
+[pkg/Bean I] [I]                                               IFLT label
+[pkg/Bean I] []                                                ALOAD 0
+[pkg/Bean I] [pkg/Bean]                                        ILOAD 1
+[pkg/Bean I] [pkg/Bean I]                                      PUTFIELD
+[pkg/Bean I] []                                                GOTO end
+[pkg/Bean I] []                                                label :
+[pkg/Bean I] []                                                NEW
+[pkg/Bean I] [Uninitialized(label)]                            DUP
+[pkg/Bean I] [Uninitialized(label) Uninitialized(label)]       INVOKESPECIAL
+[pkg/Bean I] [java/lang/IllegalArgumentException]              ATHROW
+[pkg/Bean I] []                                                end :
+[pkg/Bean I] []                                                RETURN
+```
+
+This is similar to the previous method, except for the `Uninitialized(label)` type. This is a special type that is **used only in stack map frames**<sub>【注：说明使用场景】</sub>, and that designates **an object whose memory has been allocated but whose constructor has not been called yet**<sub>【注：说明对象的状态】</sub>. The argument designates the instruction that created this object<sub>【注：这句我没有看懂，是说要创建某个类吗？】</sub>. The only possible method that can be called on a value of this type is a constructor<sub>【注：这样一个对象，可以调用的方法】</sub>. When it is called, all the occurrences of this type in the frame are replaced with the real type, here `IllegalArgumentException`. Stack map frames can use **three other special types**: `UNINITIALIZED_THIS` is the initial type of local variable `0` in constructors, `TOP` corresponds to an undefined value, and `NULL` corresponds to `null`.
+
+### 1.2. save space
+
+As said above, starting from Java 6, compiled classes contain, in addition to bytecode, a set of stack map frames. **In order to save space, a compiled method does not contain one frame per instruction**: in fact it contains **only the frames for the instructions that correspond to jump targets or exception handlers**, or **that follow unconditional jump instructions**<sub>【注：这里是讲stack map frame记录的条件】</sub>. Indeed the other frames can be easily and quickly inferred from these ones<sub>【注：其他情况的stack map frame是可以推衍出来的】</sub>.
+
+- frame
+  - the instructions that correspond to jump targets
+    - IFXXX (conditional jump)
+    - GOTO (unconditional jump)
+  - instructions that correspond to exception handlers
+    - exception table
+  - the instructions that follow unconditional jump instructions
+    - GOTO
+    - ATHROW
+
+In the case of the `checkAndSetF` method, this means that **only two frames** are stored: one for the `NEW` instruction, because it is the target of the `IFLT` instruction, but also because it follows the unconditional jump `GOTO` instruction, and  one for the `RETURN` instruction, because it is the target of the `GOTO` instruction, and also because it follows the “unconditional jump” `ATHROW` instruction.
+
+In order to **save even more space**<sub>【注：为了节省更多的空间，采取下面两个措施】</sub>, **each frame is compressed by storing only its difference compared to the previous frame**<sub>【注：第一个措施，只存储“差异”部分】</sub>, and **the initial frame is not stored at all**<sub>【注：第二个措施，最开始的frame不进行存储，因为它可以从method parameter中推衍出来】</sub>, because it can easily be deduced from the method parameter types. In the case of the `checkAndSetF` method the **two frames** that must be stored are equal and are equal to the **initial frame**, so they are stored as the single byte value designated by the `SAME` mnemonic.
+
+```txt
+StackMapTable:
+    SAME {offset_delta=12}
+    SAME {offset_delta=7}
+}
+```
+
+## 2. Position
 
 The `StackMapTable` attribute is a variable-length attribute in the `attributes` table of a `Code` attribute<sub>【注：讲它的位置】</sub>.
 
@@ -64,7 +185,7 @@ There may be **at most one** `StackMapTable` attribute in the `attributes` table
 
 > 数量对比：Code_attribute-->1:1-->StackMapTable
 
-## 2. StackMapTable_attribute
+## 3. StackMapTable_attribute
 
 The `StackMapTable` attribute has the following format:
 
@@ -77,7 +198,7 @@ StackMapTable_attribute {
 }
 ```
 
-### 2.1. stack map frame
+### 3.1. stack map frame
 
 A **stack map frame** specifies (either explicitly or implicitly) **the bytecode offset** at which it applies, and **the verification types** of **local variables** and **operand stack entries** for that offset.
 
@@ -87,15 +208,15 @@ A **stack map frame** specifies (either explicitly or implicitly) **the bytecode
     - local variables
     - operand stack entries
 
-### 2.2. 定性描述
+### 3.2. 定性描述
 
 **Each stack map frame** described in the `entries` table relies on **the previous frame** for some of its semantics<sub>【注：】一种“向前依赖”的关系</sub>. **The first stack map frame** of a method is implicit, and computed from **the method descriptor** by the type checker<sub>【注：讲述第一个stack map frame】</sub>. The `stack_map_frame` structure at `entries[0]` therefore describes **the second stack map frame** of the method<sub>【注：讲述第二个stack map frame】</sub>.
 
-### 2.3. 定量表达
+### 3.3. 定量表达
 
 The **bytecode offset** at which a stack map frame applies is calculated by taking the value `offset_delta` specified in the frame (either explicitly or implicitly), and adding `offset_delta + 1` to the **bytecode offset of the previous frame**<sub>【注：常规情况、其计算方式】</sub>, unless the previous frame is **the initial frame** of the method<sub>【注：特殊情况】</sub>. In that case, **the bytecode offset** at which the stack map frame applies is the value `offset_delta` specified in the frame<sub>【注：特殊情况的计算方式】</sub>.
 
-## 3. verification_type_info
+## 4. verification_type_info
 
 We say that **an instruction in the bytecode** has a corresponding **stack map frame**<sub>【注：先说结果，再说条件，if后面有两个条件】</sub> if the instruction starts at offset `i` in the `code` array of a `Code` attribute<sub>【注：第一个条件，在offset为i的地方有一个instruction】</sub>, and the `Code` attribute has a `StackMapTable` attribute whose `entries` array contains a stack map frame that applies at bytecode offset `i`<sub>【注：第二个条件，在offset为i的地方有一个stack map frame】</sub>.
 
@@ -117,7 +238,7 @@ union verification_type_info {
 
 A **verification type** that specifies one location in the **local variable array** or in the **operand stack** is represented by the following items of the `verification_type_info` union:
 
-### 3.1. Top_variable_info
+### 4.1. Top_variable_info
 
 - The `Top_variable_info` item indicates that the **local variable** has the verification type `top`.
 
@@ -127,7 +248,7 @@ Top_variable_info {
 }
 ```
 
-### 3.2. Integer_variable_info
+### 4.2. Integer_variable_info
 
 - The `Integer_variable_info` item indicates that the location has the verification type `int`.
 
@@ -137,7 +258,7 @@ Integer_variable_info {
 }
 ```
 
-### 3.3. Float_variable_info
+### 4.3. Float_variable_info
 
 - The `Float_variable_info` item indicates that the location has the verification type `float`.
 
@@ -147,7 +268,7 @@ Float_variable_info {
 }
 ```
 
-### 3.4. Null_variable_info
+### 4.4. Null_variable_info
 
 - The `Null_variable_info` type indicates that the location has the verification type `null`.
 
@@ -157,7 +278,7 @@ Null_variable_info {
 }
 ```
 
-### 3.5. UninitializedThis_variable_info
+### 4.5. UninitializedThis_variable_info
 
 - The `UninitializedThis_variable_info` item indicates that the location has the verification type `uninitializedThis`.
 
@@ -167,7 +288,7 @@ UninitializedThis_variable_info {
 }
 ```
 
-### 3.6. Object_variable_info
+### 4.6. Object_variable_info
 
 - The `Object_variable_info` item indicates that the location has the verification type which is the class represented by the `CONSTANT_Class_info` structure found in the `constant_pool` table at the index given by `cpool_index`.
 
@@ -178,7 +299,7 @@ Object_variable_info {
 }
 ```
 
-### 3.7. Uninitialized_variable_info
+### 4.7. Uninitialized_variable_info
 
 - The `Uninitialized_variable_info` item indicates that the location has the verification type `uninitialized(Offset)`. The `Offset` item indicates the offset<sub>【注：飞机起飞】</sub>, in the `code` array of the `Code` attribute that contains this `StackMapTable` attribute,<sub>【注：飞机降落】</sub> of the `new` instruction that created the object being stored in the location.
 
@@ -191,7 +312,7 @@ Uninitialized_variable_info {
 
 A **verification type** that specifies **two locations** in the **local variable array** or in the **operand stack** is represented by the following items of the `verification_type_info` union:
 
-### 3.8. Long_variable_info
+### 4.8. Long_variable_info
 
 - The `Long_variable_info` item indicates that **the first of two locations** has the verification type `long`.
 
@@ -201,7 +322,7 @@ Long_variable_info {
 }
 ```
 
-### 3.9. Double_variable_info
+### 4.9. Double_variable_info
 
 - The `Double_variable_info` item indicates that **the first of two locations** has the verification type `double`.
 
@@ -211,7 +332,7 @@ Double_variable_info {
 }
 ```
 
-## 4. stack_map_frame
+## 5. stack_map_frame
 
 A **stack map frame** is represented by a discriminated union, `stack_map_frame`, which consists of a **one-byte tag**, indicating which item of the union is in use, followed by zero or more bytes, giving more information about the tag.
 
@@ -229,7 +350,7 @@ union stack_map_frame {
 
 The **tag** indicates the **frame type** of the stack map frame:
 
-### 4.1. same_frame
+### 5.1. same_frame
 
 - The frame type `same_frame` is represented by tags in the range `[0-63]`<sub>【注：取值范围】</sub>. This frame type indicates that **the frame** has exactly **the same local variables** as **the previous frame** and that **the operand stack is empty**. The `offset_delta` value for the frame is the value of the tag item, `frame_type`.
 
@@ -239,7 +360,7 @@ same_frame {
 }
 ```
 
-### 4.2. same_locals_1_stack_item_frame
+### 5.2. same_locals_1_stack_item_frame
 
 - The frame type `same_locals_1_stack_item_frame` is represented by tags in the range `[64, 127]`. This frame type indicates that **the frame** has exactly **the same local variables** as **the previous frame** and that **the operand stack has one entry**. The `offset_delta` value for the frame is given by the formula `frame_type - 64`. The **verification type** of the one stack entry appears after the frame type.
 
@@ -250,11 +371,11 @@ same_locals_1_stack_item_frame {
 }
 ```
 
-### 4.3. reserved
+### 5.3. reserved
 
 - Tags in the range `[128-246]` are reserved for future use.
 
-### 4.4. same_locals_1_stack_item_frame_extended
+### 5.4. same_locals_1_stack_item_frame_extended
 
 - The frame type `same_locals_1_stack_item_frame_extended` is represented by the tag `247`. This frame type indicates that **the frame** has exactly **the same local variables** as **the previous frame** and that **the operand stack has one entry**. The `offset_delta` value for the frame is given explicitly, unlike in the frame type `same_locals_1_stack_item_frame` . The verification type of the one stack entry appears after `offset_delta`.
 
@@ -266,7 +387,7 @@ same_locals_1_stack_item_frame_extended {
 }
 ```
 
-### 4.5. chop_frame
+### 5.5. chop_frame
 
 The frame type `chop_frame` is represented by tags in the range `[248-250]`. This frame type indicates that **the frame** has **the same local variables** as **the previous frame** except that the last `k` local variables are absent, and that **the operand stack is empty**. The value of `k` is given by the formula `251 - frame_type`. The `offset_delta` value for the frame is given explicitly.
 
@@ -277,7 +398,7 @@ chop_frame {
 }
 ```
 
-### 4.6. same_frame_extended
+### 5.6. same_frame_extended
 
 - The frame type `same_frame_extended` is represented by the tag `251`. This frame type indicates that **the frame** has exactly **the same local variables** as **the previous frame** and that **the operand stack is empty**. The `offset_delta` value for the frame is given explicitly, unlike in the frame type `same_frame`.
 
@@ -288,7 +409,7 @@ same_frame_extended {
 }
 ```
 
-### 4.7. append_frame
+### 5.7. append_frame
 
 - The frame type `append_frame` is represented by tags in the range `[252-254]`. This frame type indicates that **the frame** has **the same locals** as **the previous frame** except that `k` additional locals are defined, and that **the operand stack is empty**. The value of `k` is given by the formula `frame_type - 251`. The `offset_delta` value for the frame is given explicitly.
 
@@ -300,7 +421,7 @@ append_frame {
 }
 ```
 
-### 4.8. full_frame
+### 5.8. full_frame
 
 - The frame type `full_frame` is represented by the tag `255`. The `offset_delta` value for the frame is given explicitly.
 
@@ -315,9 +436,9 @@ full_frame {
 }
 ```
 
-## Examples
+## 6. Examples
 
-### append_frame example
+### 6.1. append_frame example
 
 ```java
 public class HelloWorld {
@@ -335,7 +456,7 @@ public class HelloWorld {
 }
 ```
 
-### full_frame example
+### 6.2. full_frame example
 
 ```java
 public class HelloWorld {

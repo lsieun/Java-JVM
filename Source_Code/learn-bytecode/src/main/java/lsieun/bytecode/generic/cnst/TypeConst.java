@@ -1,60 +1,20 @@
-package lsieun.bytecode.classfile.basic;
+package lsieun.bytecode.generic.cnst;
 
 public class TypeConst {
     /** Mnemonic for an illegal type. */
     public static final String ILLEGAL_TYPE   = "<illegal type>";
 
-    /** Boolean data type.
-     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.9.1-120-P">
-     * Static Constraints in the Java Virtual Machine Specification</a> */
     public static final byte T_BOOLEAN = 4;
-
-    /** Char data type.
-     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.9.1-120-P">
-     * Static Constraints in the Java Virtual Machine Specification</a> */
     public static final byte T_CHAR    = 5;
-
-    /** Float data type.
-     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.9.1-120-P">
-     * Static Constraints in the Java Virtual Machine Specification</a> */
     public static final byte T_FLOAT   = 6;
-
-    /** Double data type.
-     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.9.1-120-P">
-     * Static Constraints in the Java Virtual Machine Specification</a> */
     public static final byte T_DOUBLE  = 7;
-
-    /** Byte data type.
-     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.9.1-120-P">
-     * Static Constraints in the Java Virtual Machine Specification</a> */
     public static final byte T_BYTE    = 8;
-
-    /** Short data type.
-     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.9.1-120-P">
-     * Static Constraints in the Java Virtual Machine Specification</a> */
     public static final byte T_SHORT   = 9;
-
-    /** Int data type.
-     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.9.1-120-P">
-     * Static Constraints in the Java Virtual Machine Specification</a> */
     public static final byte T_INT     = 10;
-
-    /** Long data type.
-     * @see <a href="http://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.9.1-120-P">
-     * Static Constraints in the Java Virtual Machine Specification</a> */
     public static final byte T_LONG    = 11;
-
-    /** Void data type (non-standard). */
     public static final byte T_VOID      = 12; // Non-standard
-
-    /** Array data type. */
     public static final byte T_ARRAY     = 13;
-
-    /** Object data type. */
     public static final byte T_OBJECT    = 14;
-
-    /** Reference data type (deprecated). */
-    public static final byte T_REFERENCE = 14; // Deprecated
 
     /** Unknown data type. */
     public static final byte T_UNKNOWN   = 15;

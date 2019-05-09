@@ -18,7 +18,7 @@ import lsieun.bytecode.classfile.attrs.code.LineNumber;
 import lsieun.bytecode.classfile.attrs.code.LineNumberTable;
 import lsieun.bytecode.classfile.attrs.code.LocalVariable;
 import lsieun.bytecode.classfile.attrs.code.LocalVariableTable;
-import lsieun.bytecode.classfile.basic.StackMapConst;
+import lsieun.bytecode.generic.cnst.StackMapConst;
 import lsieun.bytecode.utils.InstructionParser;
 import lsieun.utils.radix.HexUtils;
 

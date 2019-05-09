@@ -1,4 +1,4 @@
-package lsieun.bytecode.classfile.basic;
+package lsieun.bytecode.generic.cnst;
 
 public class JVMConst {
     /**
@@ -8,6 +8,14 @@ public class JVMConst {
      * The ClassFile Structure in The Java Virtual Machine Specification</a>
      */
     public static final int JVM_CLASSFILE_MAGIC = 0xCAFEBABE;
+
+    /** Maximum value for an unsigned short.
+     */
+    public static final int MAX_SHORT = 65535; // 2^16 - 1
+
+    /** Maximum value for an unsigned byte.
+     */
+    public static final int MAX_BYTE  = 255; // 2^8 - 1
 
     /**
      * Maximum Constant Pool entries.

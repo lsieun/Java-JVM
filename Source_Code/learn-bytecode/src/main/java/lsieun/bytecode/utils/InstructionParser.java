@@ -3,8 +3,8 @@ package lsieun.bytecode.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import lsieun.bytecode.classfile.basic.OpcodeConst;
-import lsieun.bytecode.classfile.basic.TypeConst;
+import lsieun.bytecode.generic.cnst.OpcodeConst;
+import lsieun.bytecode.generic.cnst.TypeConst;
 import lsieun.utils.StringUtils;
 import lsieun.utils.radix.ByteUtils;
 import lsieun.utils.radix.HexUtils;

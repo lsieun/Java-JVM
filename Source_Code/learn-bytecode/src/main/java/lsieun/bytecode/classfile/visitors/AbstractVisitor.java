@@ -33,7 +33,7 @@ import lsieun.bytecode.classfile.attrs.code.StackMapTable;
 import lsieun.bytecode.classfile.attrs.field.ConstantValue;
 import lsieun.bytecode.classfile.attrs.method.Code;
 import lsieun.bytecode.classfile.attrs.method.Exceptions;
-import lsieun.bytecode.classfile.basic.CPConst;
+import lsieun.bytecode.generic.cnst.CPConst;
 import lsieun.bytecode.classfile.cp.Constant;
 import lsieun.bytecode.classfile.cp.ConstantClass;
 import lsieun.bytecode.classfile.cp.ConstantDouble;

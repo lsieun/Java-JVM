@@ -1,6 +1,6 @@
 package lsieun.bytecode.classfile;
 
-import lsieun.bytecode.classfile.basic.AccessConst;
+import lsieun.bytecode.generic.cnst.AccessConst;
 import lsieun.utils.radix.ByteUtils;
 
 public final class AccessFlags extends Node {

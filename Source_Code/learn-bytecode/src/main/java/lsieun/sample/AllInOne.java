@@ -1,9 +1,5 @@
 package lsieun.sample;
 
-import static lsieun.bytecode.classfile.basic.TypeConst.T_BYTE;
-import static lsieun.bytecode.classfile.basic.TypeConst.T_INT;
-import static lsieun.bytecode.classfile.basic.TypeConst.T_SHORT;
-
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.List;

@@ -10,8 +10,11 @@
 ## 编写文章
 
 - 要问自己是否可以把文章可以写的更简单、明了吗？
+- 要有整体的图景、画面、Picture
 - 要写下自己的讲解思路
 - 要有明显的过渡段落。例如：「过渡段落」
+- git book
+- 程序代码learn-bytecode本身，也是一个需要讲解的部分
 
 ## git commit
 
@@ -71,3 +74,7 @@ git commit -m "chore(ide):remove unnecessary files"
 
 知识整理
 
+## JDK
+
+- bcel: `rt.jar` FQCN=`com.sun.org.apache.bcel.internal.classfile`
+- asm: `rt.jar` FQCN=`jdk.internal.org.objectweb.asm.ClassReader`

@@ -3,7 +3,7 @@ package lsieun.bytecode.classfile;
 import java.util.ArrayList;
 import java.util.List;
 
-import lsieun.bytecode.classfile.basic.CPConst;
+import lsieun.bytecode.generic.cnst.CPConst;
 import lsieun.bytecode.classfile.cp.Constant;
 import lsieun.bytecode.classfile.cp.ConstantClass;
 import lsieun.bytecode.classfile.cp.ConstantDynamic;

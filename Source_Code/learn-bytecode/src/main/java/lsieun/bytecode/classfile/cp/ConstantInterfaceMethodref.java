@@ -1,7 +1,7 @@
 package lsieun.bytecode.classfile.cp;
 
 import lsieun.bytecode.classfile.Visitor;
-import lsieun.bytecode.classfile.basic.CPConst;
+import lsieun.bytecode.generic.cnst.CPConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 

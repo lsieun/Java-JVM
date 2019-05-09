@@ -1,4 +1,4 @@
-package lsieun.bytecode.classfile.basic;
+package lsieun.bytecode.generic.cnst;
 
 import java.util.ArrayList;
 import java.util.List;

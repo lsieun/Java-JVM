@@ -1,4 +1,4 @@
-package lsieun.bytecode.classfile.basic;
+package lsieun.bytecode.generic.cnst;
 
 public class CPConst {
 

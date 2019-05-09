@@ -1,8 +1,8 @@
 package lsieun.bytecode.classfile.attrs.classfile;
 
 import lsieun.bytecode.classfile.ConstantPool;
-import lsieun.bytecode.classfile.basic.AccessConst;
-import lsieun.bytecode.classfile.basic.CPConst;
+import lsieun.bytecode.generic.cnst.AccessConst;
+import lsieun.bytecode.generic.cnst.CPConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
