@@ -1,6 +1,6 @@
 package lsieun.bytecode.generic.type;
 
-import lsieun.bytecode.generic.cnst.TypeConst;
+import lsieun.bytecode.generic.cst.TypeConst;
 
 /**
  * Denotes reference such as java.lang.String.

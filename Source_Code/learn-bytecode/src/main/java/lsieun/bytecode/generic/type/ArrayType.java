@@ -1,8 +1,8 @@
 package lsieun.bytecode.generic.type;
 
 import lsieun.bytecode.exceptions.ClassGenException;
-import lsieun.bytecode.generic.cnst.JVMConst;
-import lsieun.bytecode.generic.cnst.TypeConst;
+import lsieun.bytecode.generic.cst.JVMConst;
+import lsieun.bytecode.generic.cst.TypeConst;
 
 /**
  * Denotes array type, such as int[][]

@@ -12,7 +12,7 @@ import lsieun.bytecode.classfile.attrs.code.LocalVariableTypeTable;
 import lsieun.bytecode.classfile.attrs.RuntimeVisibleAnnotations;
 import lsieun.bytecode.classfile.attrs.Signature;
 import lsieun.bytecode.classfile.attrs.classfile.SourceFile;
-import lsieun.bytecode.generic.cnst.CPConst;
+import lsieun.bytecode.generic.cst.CPConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 

@@ -1,6 +1,6 @@
 package lsieun.bytecode.generic.type;
 
-import lsieun.bytecode.generic.cnst.TypeConst;
+import lsieun.bytecode.generic.cst.TypeConst;
 
 /**
  * Super class for object and array types.

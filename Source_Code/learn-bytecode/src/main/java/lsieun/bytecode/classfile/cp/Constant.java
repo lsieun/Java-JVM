@@ -2,7 +2,7 @@ package lsieun.bytecode.classfile.cp;
 
 import lsieun.bytecode.classfile.Node;
 import lsieun.bytecode.classfile.Visitor;
-import lsieun.bytecode.generic.cnst.CPConst;
+import lsieun.bytecode.generic.cst.CPConst;
 import lsieun.bytecode.exceptions.ClassFormatException;
 import lsieun.bytecode.utils.ByteDashboard;
 

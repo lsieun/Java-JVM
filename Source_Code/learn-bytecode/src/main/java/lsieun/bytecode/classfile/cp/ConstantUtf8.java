@@ -3,7 +3,7 @@ package lsieun.bytecode.classfile.cp;
 import java.nio.charset.StandardCharsets;
 
 import lsieun.bytecode.classfile.Visitor;
-import lsieun.bytecode.generic.cnst.CPConst;
+import lsieun.bytecode.generic.cst.CPConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 

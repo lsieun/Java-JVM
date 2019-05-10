@@ -5,11 +5,27 @@ import java.util.List;
 
 import lsieun.bytecode.exceptions.ClassFormatException;
 import lsieun.bytecode.generic.Utility;
-import lsieun.bytecode.generic.cnst.TypeConst;
+import lsieun.bytecode.generic.cst.TypeConst;
 
 /**
- * Abstract super class for all possible java types, namely cnst types
- * such as int, object types like String and array types, e.g. int[]
+ * Abstract super class for all possible java types, namely cst types
+ * such as int, object types like String and array types, e.g. int[]<br/><br/>
+ *
+ * <p>
+ *     我对Type的理解是这样的：
+ * </p>
+ * <p>
+ *     （1）Java language有自己的类型，例如int/float/Object
+ * </p>
+ * <p>
+ *     （2）ClassFile对于类型有自己内部的表示，例如I/F/Ljava/lang/Object;
+ * </p>
+ * <p>
+ *     （3）Type类，虽然自己是一个表达“数据类型”的类，但这并不是它的最终目的，
+ *     它的目的是将Java language和ClassFile的数据类型进行“中间”连接。
+ *     举一个例子：先将美元兑换成银子，再用银子兑换成欧元，那么银子就起到“中间”连接的作用。
+ * </p>
+ *
  */
 public abstract class Type {
     private final byte type;
@@ -83,9 +99,6 @@ public abstract class Type {
     public static final Type UNKNOWN = new Type(TypeConst.T_UNKNOWN, "<unknown object>") {
     };
 
-    // region static methods
-
-    // region private static
     private static final ThreadLocal<Integer> consumed_chars = new ThreadLocal<Integer>() {
 
         @Override
@@ -94,7 +107,7 @@ public abstract class Type {
         }
     };//int consumed_chars=0; // Remember position in string, see getArgumentTypes
 
-
+    // region private static
     private static int unwrap(final ThreadLocal<Integer> tl) {
         return tl.get().intValue();
     }
@@ -105,6 +118,7 @@ public abstract class Type {
     }
     // endregion
 
+    // region Type-->ClassFile
     /**
      * Convert type to Java method signature, e.g. int[] f(java.lang.String x)
      * becomes (Ljava/lang/String;)[I
@@ -124,6 +138,9 @@ public abstract class Type {
         buf.append(return_type.getSignature());
         return buf.toString();
     }
+    // endregion
+
+    // region ClassFile-->Type
 
     /**
      * Convert signature to a Type object.
@@ -202,73 +219,16 @@ public abstract class Type {
         return types;
     }
 
-    /**
-     * Convert runtime java.lang.Class to BCEL Type object.
-     *
-     * @param cl Java class
-     * @return corresponding Type object
-     */
-    public static Type getType(final java.lang.Class<?> cl) {
-        if (cl == null) {
-            throw new IllegalArgumentException("Class must not be null");
-        }
-        /* That's an amzingly easy case, because getName() returns
-         * the signature. That's what we would have liked anyway.
-         */
-        if (cl.isArray()) {
-            return getType(cl.getName());
-        } else if (cl.isPrimitive()) {
-            if (cl == Integer.TYPE) {
-                return INT;
-            } else if (cl == Void.TYPE) {
-                return VOID;
-            } else if (cl == Double.TYPE) {
-                return DOUBLE;
-            } else if (cl == Float.TYPE) {
-                return FLOAT;
-            } else if (cl == Boolean.TYPE) {
-                return BOOLEAN;
-            } else if (cl == Byte.TYPE) {
-                return BYTE;
-            } else if (cl == Short.TYPE) {
-                return SHORT;
-            } else if (cl == Byte.TYPE) {
-                return BYTE;
-            } else if (cl == Long.TYPE) {
-                return LONG;
-            } else if (cl == Character.TYPE) {
-                return CHAR;
-            } else {
-                throw new IllegalStateException("Ooops, what primitive type is " + cl);
-            }
-        } else { // "Real" class
-            return ObjectType.getInstance(cl.getName());
-        }
-    }
+    // endregion
 
-    /**
-     * Convert runtime java.lang.Class[] to BCEL Type objects.
-     *
-     * @param classes an array of runtime class objects
-     * @return array of corresponding Type objects
-     */
-    public static Type[] getTypes(final java.lang.Class<?>[] classes) {
-        final Type[] ret = new Type[classes.length];
-        for (int i = 0; i < ret.length; i++) {
-            ret[i] = getType(classes[i]);
-        }
-        return ret;
-    }
 
-    public static String getSignature(final java.lang.reflect.Method meth) {
-        final StringBuilder sb = new StringBuilder("(");
-        final Class<?>[] params = meth.getParameterTypes(); // avoid clone
-        for (final Class<?> param : params) {
-            sb.append(getType(param).getSignature());
-        }
-        sb.append(")");
-        sb.append(getType(meth.getReturnType()).getSignature());
-        return sb.toString();
+    // region ClassFile
+
+    static int getReturnTypeSize(final String methodSignature) {
+        final int index = methodSignature.lastIndexOf(')') + 1;
+        String returnSignature = methodSignature.substring(index);
+        int sizeAndCharNum = getTypeSizeAndCharNum(returnSignature);
+        return size(sizeAndCharNum);
     }
 
     static int getArgumentTypesSize(final String signature) {
@@ -280,7 +240,7 @@ public abstract class Type {
             }
             index = 1; // current string position
             while (signature.charAt(index) != ')') {
-                final int coded = getTypeSize(signature.substring(index));
+                final int coded = getTypeSizeAndCharNum(signature.substring(index));
                 res += size(coded);
                 index += consumed(coded);
             }
@@ -290,17 +250,41 @@ public abstract class Type {
         return res;
     }
 
-    static int getTypeSize(final String signature) throws StringIndexOutOfBoundsException {
+
+    /**
+     * GOOD_CODE: 这个“方法的实现思路”很不错，它将“两个int值”合并成“一个int值”进行返回。
+     * <br/><br/>
+     * <p>
+     *     这个方法的返回值（return value），其实包含了两个部分数据：
+     * </p><br/>
+     * <p>
+     *     第一部分数据，就是这个Type究竟占用几个slot，它的取值只能是1或2。
+     *     例如，对于int、float、Object，它所占用的slot的大小就是1个；
+     *     而对于long、double，它所占用的slot大小就是2个。
+     * </p><br/>
+     * <p>
+     *     第二部分数据，就是这个Signature的字符长度。
+     *     比如说，I、F、D、J，它的长度是1；对于Ljava/lang/String;，它的长度是18。
+     * </p><br/>
+     * <p>
+     *     这个方法精妙的地方在于：第一部分数据的取值范围就是1和2,那么这部分只占2个bit就可以进行存储了，
+     *     第二部分的数据在进行存储的时候，只要向左移动2个bit就可以了。
+     * </p>
+     * @param signature
+     * @return
+     * @throws StringIndexOutOfBoundsException
+     */
+    static int getTypeSizeAndCharNum(final String signature) throws StringIndexOutOfBoundsException {
         final byte type = Utility.typeOfSignature(signature);
-        if (type <= Const.T_VOID) {
+        if (type <= TypeConst.T_VOID) {
             return encode(BasicType.getType(type).getSize(), 1);
-        } else if (type == Const.T_ARRAY) {
+        } else if (type == TypeConst.T_ARRAY) {
             int dim = 0;
             do { // Count dimensions
                 dim++;
             } while (signature.charAt(dim) == '[');
             // Recurse, but just once, if the signature is ok
-            final int consumed = consumed(getTypeSize(signature.substring(dim)));
+            final int consumed = consumed(getTypeSizeAndCharNum(signature.substring(dim)));
             return encode(1, dim + consumed);
         } else { // type == T_REFERENCE
             final int index = signature.indexOf(';'); // Look for closing `;'
@@ -310,11 +294,20 @@ public abstract class Type {
             return encode(1, index + 1);
         }
     }
+    // endregion
 
+    // region auxiliary methods
 
-    static int getReturnTypeSize(final String signature) {
-        final int index = signature.lastIndexOf(')') + 1;
-        return Type.size(getTypeSize(signature.substring(index)));
+    static int size(final int coded) {
+        return coded & 3;
+    }
+
+    static int consumed(final int coded) {
+        return coded >> 2;
+    }
+
+    static int encode(final int size, final int consumed) {
+        return consumed << 2 | size;
     }
 
     // endregion

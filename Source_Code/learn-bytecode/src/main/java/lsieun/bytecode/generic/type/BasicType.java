@@ -1,9 +1,7 @@
 package lsieun.bytecode.generic.type;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-
 import lsieun.bytecode.exceptions.ClassGenException;
-import lsieun.bytecode.generic.cnst.TypeConst;
+import lsieun.bytecode.generic.cst.TypeConst;
 
 /**
  * Denotes basic type such as int.

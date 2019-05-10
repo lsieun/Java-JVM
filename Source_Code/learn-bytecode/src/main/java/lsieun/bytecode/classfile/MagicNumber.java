@@ -1,6 +1,6 @@
 package lsieun.bytecode.classfile;
 
-import lsieun.bytecode.generic.cnst.JVMConst;
+import lsieun.bytecode.generic.cst.JVMConst;
 import lsieun.bytecode.exceptions.ClassFormatException;
 import lsieun.utils.radix.ByteUtils;
 

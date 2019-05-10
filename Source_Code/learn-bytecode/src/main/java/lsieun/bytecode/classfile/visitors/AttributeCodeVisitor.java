@@ -2,7 +2,7 @@ package lsieun.bytecode.classfile.visitors;
 
 import lsieun.bytecode.classfile.attrs.code.LineNumberTable;
 import lsieun.bytecode.classfile.attrs.code.StackMapTable;
-import lsieun.bytecode.generic.cnst.StackMapConst;
+import lsieun.bytecode.generic.cst.StackMapConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 import lsieun.utils.radix.HexUtils;

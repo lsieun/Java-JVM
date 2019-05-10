@@ -1,6 +1,8 @@
 package lsieun.bytecode.generic.opcode;
 
-import lsieun.bytecode.generic.cnst.OpcodeConst;
+import lsieun.bytecode.generic.cst.OpcodeConst;
+import lsieun.bytecode.generic.instruction.Instruction;
+import lsieun.bytecode.generic.instruction.Visitor;
 
 /**
  * NOP - Do nothing
@@ -12,7 +14,7 @@ public class NOP extends Instruction {
     }
 
     @Override
-    public void accept(OpcodeVisitor v) {
+    public void accept(Visitor v) {
         v.visitNOP(this);
     }
 }

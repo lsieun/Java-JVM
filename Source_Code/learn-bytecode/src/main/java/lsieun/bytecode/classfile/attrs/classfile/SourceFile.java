@@ -3,7 +3,7 @@ package lsieun.bytecode.classfile.attrs.classfile;
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.classfile.Visitor;
-import lsieun.bytecode.generic.cnst.CPConst;
+import lsieun.bytecode.generic.cst.CPConst;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.ByteUtils;
 
