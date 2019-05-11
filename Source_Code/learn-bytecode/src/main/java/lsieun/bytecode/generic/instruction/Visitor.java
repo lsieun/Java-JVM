@@ -1,5 +1,9 @@
 package lsieun.bytecode.generic.instruction;
 
+import lsieun.bytecode.generic.opcode.ARRAYLENGTH;
+import lsieun.bytecode.generic.opcode.ATHROW;
+import lsieun.bytecode.generic.opcode.MONITORENTER;
+import lsieun.bytecode.generic.opcode.MONITOREXIT;
 import lsieun.bytecode.generic.opcode.arithmetic.DADD;
 import lsieun.bytecode.generic.opcode.arithmetic.DDIV;
 import lsieun.bytecode.generic.opcode.arithmetic.DMUL;
@@ -38,6 +42,28 @@ import lsieun.bytecode.generic.opcode.arithmetic.LUSHR;
 import lsieun.bytecode.generic.opcode.arithmetic.LXOR;
 import lsieun.bytecode.generic.opcode.array.AALOAD;
 import lsieun.bytecode.generic.opcode.array.AASTORE;
+import lsieun.bytecode.generic.opcode.branh.IFEQ;
+import lsieun.bytecode.generic.opcode.branh.IFNE;
+import lsieun.bytecode.generic.opcode.compare.DCMPG;
+import lsieun.bytecode.generic.opcode.compare.DCMPL;
+import lsieun.bytecode.generic.opcode.compare.FCMPG;
+import lsieun.bytecode.generic.opcode.compare.FCMPL;
+import lsieun.bytecode.generic.opcode.compare.LCMP;
+import lsieun.bytecode.generic.opcode.conversion.D2F;
+import lsieun.bytecode.generic.opcode.conversion.D2I;
+import lsieun.bytecode.generic.opcode.conversion.D2L;
+import lsieun.bytecode.generic.opcode.conversion.F2D;
+import lsieun.bytecode.generic.opcode.conversion.F2I;
+import lsieun.bytecode.generic.opcode.conversion.F2L;
+import lsieun.bytecode.generic.opcode.conversion.I2B;
+import lsieun.bytecode.generic.opcode.conversion.I2C;
+import lsieun.bytecode.generic.opcode.conversion.I2D;
+import lsieun.bytecode.generic.opcode.conversion.I2F;
+import lsieun.bytecode.generic.opcode.conversion.I2L;
+import lsieun.bytecode.generic.opcode.conversion.I2S;
+import lsieun.bytecode.generic.opcode.conversion.L2D;
+import lsieun.bytecode.generic.opcode.conversion.L2F;
+import lsieun.bytecode.generic.opcode.conversion.L2I;
 import lsieun.bytecode.generic.opcode.cst.ACONST_NULL;
 import lsieun.bytecode.generic.opcode.array.BALOAD;
 import lsieun.bytecode.generic.opcode.array.BASTORE;
@@ -45,7 +71,28 @@ import lsieun.bytecode.generic.opcode.array.CALOAD;
 import lsieun.bytecode.generic.opcode.array.CASTORE;
 import lsieun.bytecode.generic.opcode.array.DALOAD;
 import lsieun.bytecode.generic.opcode.array.DASTORE;
+import lsieun.bytecode.generic.opcode.cst.BIPUSH;
 import lsieun.bytecode.generic.opcode.cst.DCONST;
+import lsieun.bytecode.generic.opcode.cst.LDC;
+import lsieun.bytecode.generic.opcode.cst.LDC2_W;
+import lsieun.bytecode.generic.opcode.cst.SIPUSH;
+import lsieun.bytecode.generic.opcode.locals.ALOAD;
+import lsieun.bytecode.generic.opcode.locals.ASTORE;
+import lsieun.bytecode.generic.opcode.locals.DLOAD;
+import lsieun.bytecode.generic.opcode.locals.DSTORE;
+import lsieun.bytecode.generic.opcode.locals.FLOAD;
+import lsieun.bytecode.generic.opcode.locals.FSTORE;
+import lsieun.bytecode.generic.opcode.locals.IINC;
+import lsieun.bytecode.generic.opcode.locals.ILOAD;
+import lsieun.bytecode.generic.opcode.locals.ISTORE;
+import lsieun.bytecode.generic.opcode.locals.LLOAD;
+import lsieun.bytecode.generic.opcode.locals.LSTORE;
+import lsieun.bytecode.generic.opcode.ret.ARETURN;
+import lsieun.bytecode.generic.opcode.ret.DRETURN;
+import lsieun.bytecode.generic.opcode.ret.FRETURN;
+import lsieun.bytecode.generic.opcode.ret.IRETURN;
+import lsieun.bytecode.generic.opcode.ret.LRETURN;
+import lsieun.bytecode.generic.opcode.ret.RETURN;
 import lsieun.bytecode.generic.opcode.stack.DUP;
 import lsieun.bytecode.generic.opcode.stack.DUP2;
 import lsieun.bytecode.generic.opcode.stack.DUP2_X1;
@@ -88,6 +135,14 @@ public interface Visitor {
     void visitFCONST(FCONST obj);
 
     void visitDCONST(DCONST obj);
+
+    void visitBIPUSH(BIPUSH obj);
+
+    void visitSIPUSH(SIPUSH obj);
+
+    void visitLDC(LDC obj);
+
+    void visitLDC2_W(LDC2_W obj);
     // endregion
 
     // region opcode array
@@ -218,6 +273,109 @@ public interface Visitor {
     void visitLXOR(LXOR obj);
     // endregion
 
+    // region opcode conversion
+    void visitI2L(I2L obj);
+
+    void visitI2F(I2F obj);
+
+    void visitI2D(I2D obj);
+
+    void visitL2I(L2I obj);
+
+    void visitL2F(L2F obj);
+
+    void visitL2D(L2D obj);
+
+    void visitF2I(F2I obj);
+
+    void visitF2L(F2L obj);
+
+    void visitF2D(F2D obj);
+
+    void visitD2I(D2I obj);
+
+    void visitD2L(D2L obj);
+
+    void visitD2F(D2F obj);
+
+    void visitI2B(I2B obj);
+
+    void visitI2C(I2C obj);
+
+    void visitI2S(I2S obj);
+    // endregion
+
+    // region opcode compare
+    void visitLCMP(LCMP obj);
+
+    void visitFCMPL(FCMPL obj);
+
+    void visitFCMPG(FCMPG obj);
+
+    void visitDCMPL(DCMPL obj);
+
+    void visitDCMPG(DCMPG obj);
+
+    // endregion
+
+    // region opcode return
+    void visitIRETURN(IRETURN obj);
+
+    void visitLRETURN(LRETURN obj);
+
+    void visitFRETURN(FRETURN obj);
+
+    void visitDRETURN(DRETURN obj);
+
+    void visitARETURN(ARETURN obj);
+
+    void visitRETURN(RETURN obj);
+    // endregion
+
+    // region opcode xxx
+    void visitARRAYLENGTH(ARRAYLENGTH obj);
+
+    void visitATHROW(ATHROW obj);
+
+    void visitMONITORENTER(MONITORENTER obj);
+
+    void visitMONITOREXIT(MONITOREXIT obj);
+    // endregion
+
+    // region opcode local variable
+    void visitALOAD(ALOAD obj);
+
+    void visitILOAD(ILOAD obj);
+
+    void visitASTORE(ASTORE obj);
+
+    void visitISTORE(ISTORE obj);
+
+    void visitLLOAD(LLOAD obj);
+
+    void visitFLOAD(FLOAD obj);
+
+    void visitDLOAD(DLOAD obj);
+
+    void visitLSTORE(LSTORE obj);
+
+    void visitFSTORE(FSTORE obj);
+
+    void visitDSTORE(DSTORE obj);
+
+    void visitIINC(IINC obj);
+    // endregion
+
+    // region opcode branch
+    void visitIFNE(IFNE obj);
+
+    void visitIFEQ(IFEQ obj);
+    // endregion
+
+    // region opcode xxx
+
+    // endregion
+
 
     // region Instruction
     void visitTypedInstruction(TypedInstruction obj);
@@ -237,534 +395,73 @@ public interface Visitor {
     void visitStackInstruction(StackInstruction obj);
 
     void visitArithmeticInstruction(ArithmeticInstruction obj);
+
+    void visitConversionInstruction(ConversionInstruction obj);
+
+    void visitReturnInstruction(ReturnInstruction obj);
+
+    void visitUnconditionalBranch(UnconditionalBranch obj);
+
+    void visitLocalVariableInstruction(LocalVariableInstruction obj);
+
+    void visitLoadInstruction(LoadInstruction obj);
+
+    void visitStoreInstruction(StoreInstruction obj);
+
+    void visitCPInstruction(CPInstruction obj);
+
+    void visitBranchInstruction(BranchInstruction obj);
+
+    void visitIfInstruction(IfInstruction obj);
     // endregion
 
-//
-
-
-//    void visitLocalVariableInstruction(LocalVariableInstruction obj);
-
-
-//    void visitBranchInstruction(BranchInstruction obj);
-
-
 //    void visitLoadClass(LoadClass obj);
-
-
 //    void visitFieldInstruction(FieldInstruction obj);
-
-
-//    void visitIfInstruction(IfInstruction obj);
-
-
-//    void visitConversionInstruction(ConversionInstruction obj);
-
-
-//
-
-
-//    void visitStoreInstruction(StoreInstruction obj);
-
-
 //    void visitSelect(Select obj);
-
-
 //    void visitJsrInstruction(JsrInstruction obj);
-
-
 //    void visitGotoInstruction(GotoInstruction obj);
-
-
-//    void visitUnconditionalBranch(UnconditionalBranch obj);
-
-
-//
-
-
-//    void visitCPInstruction(CPInstruction obj);
-
-
 //    void visitInvokeInstruction(InvokeInstruction obj);
-
-
-//
-
-
 //    void visitAllocationInstruction(AllocationInstruction obj);
-
-
-//    void visitReturnInstruction(ReturnInstruction obj);
-
-
 //    void visitFieldOrMethod(FieldOrMethod obj);
-
-
-//
-
-
 //    void visitExceptionThrower(ExceptionThrower obj);
-
-
-//    void visitLoadInstruction(LoadInstruction obj);
-
-
 //    void visitVariableLengthInstruction(VariableLengthInstruction obj);
-
-
-//
-
 //    void visitGETSTATIC(GETSTATIC obj);
-
-
 //    void visitIF_ICMPLT(IF_ICMPLT obj);
-
-
-//    void visitMONITOREXIT(MONITOREXIT obj);
-
-
 //    void visitIFLT(IFLT obj);
-
-
-//    void visitLSTORE(LSTORE obj);
-
-
-//
-
-
-//
-
-
-//    void visitISTORE(ISTORE obj);
-
-
 //    void visitCHECKCAST(CHECKCAST obj);
-//
-//
-//    void visitFCMPG(FCMPG obj);
-//
-//
-//    void visitI2F(I2F obj);
-//
-//
-//    void visitATHROW(ATHROW obj);
-//
-//
-//    void visitDCMPL(DCMPL obj);
-//
-//
-//    void visitARRAYLENGTH(ARRAYLENGTH obj);
-//
-//
-//
-//
-//
 //    void visitINVOKESTATIC(INVOKESTATIC obj);
-//
-//
-//
-//
-//
-//
-//
-//
 //    void visitIFGE(IFGE obj);
-//
-//
-//
-//
-//
-//
-//
-//
-//    void visitI2D(I2D obj);
-//
-//
-//
-//
-//
 //    void visitINVOKESPECIAL(INVOKESPECIAL obj);
-//
-//
-//
-//
-//
 //    void visitPUTFIELD(PUTFIELD obj);
-//
-//
-//    void visitILOAD(ILOAD obj);
-//
-//
-//    void visitDLOAD(DLOAD obj);
-//
-//
-//
-//
-//
 //    void visitNEW(NEW obj);
-//
-//
 //    void visitIFNULL(IFNULL obj);
-//
-//
-//
-//
-//
-//    void visitL2I(L2I obj);
-//
-//
-//
-//
-//
 //    void visitTABLESWITCH(TABLESWITCH obj);
-//
-//
-//    void visitIINC(IINC obj);
-//
-//
-//    void visitDRETURN(DRETURN obj);
-//
-//
-//    void visitFSTORE(FSTORE obj);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //    void visitIF_ICMPGE(IF_ICMPGE obj);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//    void visitLDC(LDC obj);
-//
-//
-//    void visitBIPUSH(BIPUSH obj);
-//
-//
-//    void visitDSTORE(DSTORE obj);
-//
-//
-//    void visitF2L(F2L obj);
-//
-//
-//
-//
-//
-//    void visitLLOAD(LLOAD obj);
-//
-//
 //    void visitJSR(JSR obj);
-//
-//
-//
-//
-//
-//
-//
-//
-//    void visitALOAD(ALOAD obj);
-//
-//
-//
-//
-//
-//    void visitRETURN(RETURN obj);
-//
-//
-//
-//
-//
-//    void visitSIPUSH(SIPUSH obj);
-//
-//
-//
-//
-//
-//    void visitL2F(L2F obj);
-//
-//
 //    void visitIF_ICMPGT(IF_ICMPGT obj);
-//
-//
-//    void visitF2D(F2D obj);
-//
-//
-//    void visitI2L(I2L obj);
-//
-//
 //    void visitIF_ACMPNE(IF_ACMPNE obj);
-//
-//
-//
-//
-//
-//    void visitI2S(I2S obj);
-//
-//
-//    void visitIFEQ(IFEQ obj);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //    void visitNEWARRAY(NEWARRAY obj);
-//
-//
 //    void visitINVOKEINTERFACE(INVOKEINTERFACE obj);
-//
-//
-//
-//
-//
-//    void visitLCMP(LCMP obj);
-//
-//
 //    void visitJSR_W(JSR_W obj);
-//
-//
 //    void visitMULTIANEWARRAY(MULTIANEWARRAY obj);
-//
-//
-//
-//
-//
-//
-//
-//
 //    void visitIFNONNULL(IFNONNULL obj);
-//
-//
-//
-//
-//
-//    void visitIFNE(IFNE obj);
-//
-//
 //    void visitIF_ICMPLE(IF_ICMPLE obj);
-//
-//
-//    void visitLDC2_W(LDC2_W obj);
-//
-//
 //    void visitGETFIELD(GETFIELD obj);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //    void visitINSTANCEOF(INSTANCEOF obj);
-//
-//
 //    void visitIFLE(IFLE obj);
-//
-//
-//
-//
-//
-//    void visitLRETURN(LRETURN obj);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //    void visitIF_ACMPEQ(IF_ACMPEQ obj);
-//
-//
 //    void visitIMPDEP1(IMPDEP1 obj);
-//
-//
-//    void visitMONITORENTER(MONITORENTER obj);
-//
-//
-//
-//
-//
-//    void visitDCMPG(DCMPG obj);
-//
-//
-//    void visitD2L(D2L obj);
-//
-//
 //    void visitIMPDEP2(IMPDEP2 obj);
-//
-//
-//    void visitL2D(L2D obj);
-//
-//
 //    void visitRET(RET obj);
-//
-//
 //    void visitIFGT(IFGT obj);
-//
-//
-//
-//
-//
 //    void visitINVOKEVIRTUAL(INVOKEVIRTUAL obj);
-//
-//
 //    void visitINVOKEDYNAMIC(INVOKEDYNAMIC obj);
-//
-//
-//
-//
-//
-//    void visitIRETURN(IRETURN obj);
-//
-//
 //    void visitIF_ICMPNE(IF_ICMPNE obj);
-//
-//
-//    void visitFLOAD(FLOAD obj);
-//
-//
-//
-//
-//
 //    void visitPUTSTATIC(PUTSTATIC obj);
-//
-//
-//
-//
-//
-//    void visitD2I(D2I obj);
-//
-//
 //    void visitIF_ICMPEQ(IF_ICMPEQ obj);
-//
-//
-//
-//
-//
-//    void visitARETURN(ARETURN obj);
-//
-//
-//
-//
-//
-//
-//
-//
 //    void visitGOTO_W(GOTO_W obj);
-//
-//
-//    void visitD2F(D2F obj);
-//
-//
 //    void visitGOTO(GOTO obj);
-//
-//
-//
-//
-//
-//    void visitF2I(F2I obj);
-//
-//
-//
-//
-//
-
-//
-//
-//
-//
-//
-//    void visitI2B(I2B obj);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //    void visitLOOKUPSWITCH(LOOKUPSWITCH obj);
-//
-//
-//
-//
-//
-//    void visitFCMPL(FCMPL obj);
-//
-//
-//    void visitI2C(I2C obj);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//    void visitASTORE(ASTORE obj);
-//
-//
 //    void visitANEWARRAY(ANEWARRAY obj);
-//
-//
-//    void visitFRETURN(FRETURN obj);
-//
-//
-//
-//
-//
 //    void visitBREAKPOINT(BREAKPOINT obj);
 }

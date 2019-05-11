@@ -1,5 +1,6 @@
 package lsieun.bytecode.generic.instruction;
 
+import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.classfile.cp.Constant;
 
 /**
@@ -22,4 +23,11 @@ public class ConstantPoolGen {
     private int size;
 
     private Constant[] constants;
+
+    /**
+     * @return intermediate constant pool
+     */
+    public ConstantPool getConstantPool() {
+        return new ConstantPool(constants);
+    }
 }

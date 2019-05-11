@@ -25,6 +25,14 @@ public class ConstantPool extends Node {
     private final int count;
     private final Constant[] entries;
 
+    /**
+     * @param constant_pool Array of constants
+     */
+    public ConstantPool(final Constant[] constant_pool) {
+        this.entries = constant_pool;
+        this.count = constant_pool.length;
+    }
+
     public ConstantPool(final ByteDashboard byteDashboard, int count) {
         this.count = count;
         this.entries = new Constant[count];

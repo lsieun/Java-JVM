@@ -23,6 +23,9 @@ import lsieun.bytecode.generic.opcode.array.AASTORE;
 import lsieun.bytecode.generic.opcode.array.BASTORE;
 import lsieun.bytecode.generic.opcode.array.CASTORE;
 import lsieun.bytecode.generic.opcode.array.SASTORE;
+import lsieun.bytecode.generic.opcode.locals.ASTORE;
+import lsieun.bytecode.generic.opcode.locals.ILOAD;
+import lsieun.bytecode.generic.opcode.locals.ISTORE;
 import lsieun.bytecode.generic.opcode.stack.POP;
 import lsieun.bytecode.generic.opcode.stack.POP2;
 import lsieun.bytecode.generic.opcode.stack.DUP;
@@ -68,6 +71,37 @@ import lsieun.bytecode.generic.opcode.arithmetic.IOR;
 import lsieun.bytecode.generic.opcode.arithmetic.LOR;
 import lsieun.bytecode.generic.opcode.arithmetic.IXOR;
 import lsieun.bytecode.generic.opcode.arithmetic.LXOR;
+import lsieun.bytecode.generic.opcode.conversion.I2L;
+import lsieun.bytecode.generic.opcode.conversion.I2F;
+import lsieun.bytecode.generic.opcode.conversion.I2D;
+import lsieun.bytecode.generic.opcode.conversion.L2I;
+import lsieun.bytecode.generic.opcode.conversion.L2F;
+import lsieun.bytecode.generic.opcode.conversion.L2D;
+import lsieun.bytecode.generic.opcode.conversion.F2I;
+import lsieun.bytecode.generic.opcode.conversion.F2L;
+import lsieun.bytecode.generic.opcode.conversion.F2D;
+import lsieun.bytecode.generic.opcode.conversion.D2I;
+import lsieun.bytecode.generic.opcode.conversion.D2L;
+import lsieun.bytecode.generic.opcode.conversion.D2F;
+import lsieun.bytecode.generic.opcode.conversion.I2B;
+import lsieun.bytecode.generic.opcode.conversion.I2C;
+import lsieun.bytecode.generic.opcode.conversion.I2S;
+import lsieun.bytecode.generic.opcode.compare.LCMP;
+import lsieun.bytecode.generic.opcode.compare.FCMPL;
+import lsieun.bytecode.generic.opcode.compare.FCMPG;
+import lsieun.bytecode.generic.opcode.compare.DCMPL;
+import lsieun.bytecode.generic.opcode.compare.DCMPG;
+import lsieun.bytecode.generic.opcode.ret.IRETURN;
+import lsieun.bytecode.generic.opcode.ret.LRETURN;
+import lsieun.bytecode.generic.opcode.ret.FRETURN;
+import lsieun.bytecode.generic.opcode.ret.DRETURN;
+import lsieun.bytecode.generic.opcode.ret.ARETURN;
+import lsieun.bytecode.generic.opcode.ret.RETURN;
+import lsieun.bytecode.generic.opcode.ARRAYLENGTH;
+import lsieun.bytecode.generic.opcode.ATHROW;
+import lsieun.bytecode.generic.opcode.MONITORENTER;
+import lsieun.bytecode.generic.opcode.MONITOREXIT;
+import lsieun.bytecode.generic.opcode.locals.ALOAD;
 
 
 /**
@@ -94,6 +128,8 @@ import lsieun.bytecode.generic.opcode.arithmetic.LXOR;
  *
  */
 public class InstructionConst {
+    private InstructionConst() { } // non-instantiable
+
     /**
      * Predefined instruction objects
      */
@@ -178,170 +214,169 @@ public class InstructionConst {
     public static final ArithmeticInstruction LOR = new LOR();
     public static final ArithmeticInstruction IXOR = new IXOR();
     public static final ArithmeticInstruction LXOR = new LXOR();
-//    public static final ConversionInstruction I2L = new I2L();
-//    public static final ConversionInstruction I2F = new I2F();
-//    public static final ConversionInstruction I2D = new I2D();
-//    public static final ConversionInstruction L2I = new L2I();
-//    public static final ConversionInstruction L2F = new L2F();
-//    public static final ConversionInstruction L2D = new L2D();
-//    public static final ConversionInstruction F2I = new F2I();
-//    public static final ConversionInstruction F2L = new F2L();
-//    public static final ConversionInstruction F2D = new F2D();
-//    public static final ConversionInstruction D2I = new D2I();
-//    public static final ConversionInstruction D2L = new D2L();
-//    public static final ConversionInstruction D2F = new D2F();
-//    public static final ConversionInstruction I2B = new I2B();
-//    public static final ConversionInstruction I2C = new I2C();
-//    public static final ConversionInstruction I2S = new I2S();
-//    public static final Instruction LCMP = new LCMP();
-//    public static final Instruction FCMPL = new FCMPL();
-//    public static final Instruction FCMPG = new FCMPG();
-//    public static final Instruction DCMPL = new DCMPL();
-//    public static final Instruction DCMPG = new DCMPG();
-//    public static final ReturnInstruction IRETURN = new IRETURN();
-//    public static final ReturnInstruction LRETURN = new LRETURN();
-//    public static final ReturnInstruction FRETURN = new FRETURN();
-//    public static final ReturnInstruction DRETURN = new DRETURN();
-//    public static final ReturnInstruction ARETURN = new ARETURN();
-//    public static final ReturnInstruction RETURN = new RETURN();
-//    public static final Instruction ARRAYLENGTH = new ARRAYLENGTH();
-//    public static final Instruction ATHROW = new ATHROW();
-//    public static final Instruction MONITORENTER = new MONITORENTER();
-//    public static final Instruction MONITOREXIT = new MONITOREXIT();
-//
-//    /** You can use these constants in multiple places safely, if you can guarantee
-//     * that you will never alter their internal values, e.g. call setIndex().
-//     */
-//    public static final LocalVariableInstruction THIS = new ALOAD(0);
-//    public static final LocalVariableInstruction ALOAD_0 = THIS;
-//    public static final LocalVariableInstruction ALOAD_1 = new ALOAD(1);
-//    public static final LocalVariableInstruction ALOAD_2 = new ALOAD(2);
-//    public static final LocalVariableInstruction ILOAD_0 = new ILOAD(0);
-//    public static final LocalVariableInstruction ILOAD_1 = new ILOAD(1);
-//    public static final LocalVariableInstruction ILOAD_2 = new ILOAD(2);
-//    public static final LocalVariableInstruction ASTORE_0 = new ASTORE(0);
-//    public static final LocalVariableInstruction ASTORE_1 = new ASTORE(1);
-//    public static final LocalVariableInstruction ASTORE_2 = new ASTORE(2);
-//    public static final LocalVariableInstruction ISTORE_0 = new ISTORE(0);
-//    public static final LocalVariableInstruction ISTORE_1 = new ISTORE(1);
-//    public static final LocalVariableInstruction ISTORE_2 = new ISTORE(2);
-//
-//    /** Get object via its opcode, for immutable instructions like
-//     * branch instructions entries are set to null.
-//     */
-//    private static final Instruction[] INSTRUCTIONS = new Instruction[256];
-//
-//    static {
-//        INSTRUCTIONS[OpcodeConst.NOP] = NOP;
-//        INSTRUCTIONS[OpcodeConst.ACONST_NULL] = ACONST_NULL;
-//        INSTRUCTIONS[OpcodeConst.ICONST_M1] = ICONST_M1;
-//        INSTRUCTIONS[OpcodeConst.ICONST_0] = ICONST_0;
-//        INSTRUCTIONS[OpcodeConst.ICONST_1] = ICONST_1;
-//        INSTRUCTIONS[OpcodeConst.ICONST_2] = ICONST_2;
-//        INSTRUCTIONS[OpcodeConst.ICONST_3] = ICONST_3;
-//        INSTRUCTIONS[OpcodeConst.ICONST_4] = ICONST_4;
-//        INSTRUCTIONS[OpcodeConst.ICONST_5] = ICONST_5;
-//        INSTRUCTIONS[OpcodeConst.LCONST_0] = LCONST_0;
-//        INSTRUCTIONS[OpcodeConst.LCONST_1] = LCONST_1;
-//        INSTRUCTIONS[OpcodeConst.FCONST_0] = FCONST_0;
-//        INSTRUCTIONS[OpcodeConst.FCONST_1] = FCONST_1;
-//        INSTRUCTIONS[OpcodeConst.FCONST_2] = FCONST_2;
-//        INSTRUCTIONS[OpcodeConst.DCONST_0] = DCONST_0;
-//        INSTRUCTIONS[OpcodeConst.DCONST_1] = DCONST_1;
-//        INSTRUCTIONS[OpcodeConst.IALOAD] = IALOAD;
-//        INSTRUCTIONS[OpcodeConst.LALOAD] = LALOAD;
-//        INSTRUCTIONS[OpcodeConst.FALOAD] = FALOAD;
-//        INSTRUCTIONS[OpcodeConst.DALOAD] = DALOAD;
-//        INSTRUCTIONS[OpcodeConst.AALOAD] = AALOAD;
-//        INSTRUCTIONS[OpcodeConst.BALOAD] = BALOAD;
-//        INSTRUCTIONS[OpcodeConst.CALOAD] = CALOAD;
-//        INSTRUCTIONS[OpcodeConst.SALOAD] = SALOAD;
-//        INSTRUCTIONS[OpcodeConst.IASTORE] = IASTORE;
-//        INSTRUCTIONS[OpcodeConst.LASTORE] = LASTORE;
-//        INSTRUCTIONS[OpcodeConst.FASTORE] = FASTORE;
-//        INSTRUCTIONS[OpcodeConst.DASTORE] = DASTORE;
-//        INSTRUCTIONS[OpcodeConst.AASTORE] = AASTORE;
-//        INSTRUCTIONS[OpcodeConst.BASTORE] = BASTORE;
-//        INSTRUCTIONS[OpcodeConst.CASTORE] = CASTORE;
-//        INSTRUCTIONS[OpcodeConst.SASTORE] = SASTORE;
-//        INSTRUCTIONS[OpcodeConst.POP] = POP;
-//        INSTRUCTIONS[OpcodeConst.POP2] = POP2;
-//        INSTRUCTIONS[OpcodeConst.DUP] = DUP;
-//        INSTRUCTIONS[OpcodeConst.DUP_X1] = DUP_X1;
-//        INSTRUCTIONS[OpcodeConst.DUP_X2] = DUP_X2;
-//        INSTRUCTIONS[OpcodeConst.DUP2] = DUP2;
-//        INSTRUCTIONS[OpcodeConst.DUP2_X1] = DUP2_X1;
-//        INSTRUCTIONS[OpcodeConst.DUP2_X2] = DUP2_X2;
-//        INSTRUCTIONS[OpcodeConst.SWAP] = SWAP;
-//        INSTRUCTIONS[OpcodeConst.IADD] = IADD;
-//        INSTRUCTIONS[OpcodeConst.LADD] = LADD;
-//        INSTRUCTIONS[OpcodeConst.FADD] = FADD;
-//        INSTRUCTIONS[OpcodeConst.DADD] = DADD;
-//        INSTRUCTIONS[OpcodeConst.ISUB] = ISUB;
-//        INSTRUCTIONS[OpcodeConst.LSUB] = LSUB;
-//        INSTRUCTIONS[OpcodeConst.FSUB] = FSUB;
-//        INSTRUCTIONS[OpcodeConst.DSUB] = DSUB;
-//        INSTRUCTIONS[OpcodeConst.IMUL] = IMUL;
-//        INSTRUCTIONS[OpcodeConst.LMUL] = LMUL;
-//        INSTRUCTIONS[OpcodeConst.FMUL] = FMUL;
-//        INSTRUCTIONS[OpcodeConst.DMUL] = DMUL;
-//        INSTRUCTIONS[OpcodeConst.IDIV] = IDIV;
-//        INSTRUCTIONS[OpcodeConst.LDIV] = LDIV;
-//        INSTRUCTIONS[OpcodeConst.FDIV] = FDIV;
-//        INSTRUCTIONS[OpcodeConst.DDIV] = DDIV;
-//        INSTRUCTIONS[OpcodeConst.IREM] = IREM;
-//        INSTRUCTIONS[OpcodeConst.LREM] = LREM;
-//        INSTRUCTIONS[OpcodeConst.FREM] = FREM;
-//        INSTRUCTIONS[OpcodeConst.DREM] = DREM;
-//        INSTRUCTIONS[OpcodeConst.INEG] = INEG;
-//        INSTRUCTIONS[OpcodeConst.LNEG] = LNEG;
-//        INSTRUCTIONS[OpcodeConst.FNEG] = FNEG;
-//        INSTRUCTIONS[OpcodeConst.DNEG] = DNEG;
-//        INSTRUCTIONS[OpcodeConst.ISHL] = ISHL;
-//        INSTRUCTIONS[OpcodeConst.LSHL] = LSHL;
-//        INSTRUCTIONS[OpcodeConst.ISHR] = ISHR;
-//        INSTRUCTIONS[OpcodeConst.LSHR] = LSHR;
-//        INSTRUCTIONS[OpcodeConst.IUSHR] = IUSHR;
-//        INSTRUCTIONS[OpcodeConst.LUSHR] = LUSHR;
-//        INSTRUCTIONS[OpcodeConst.IAND] = IAND;
-//        INSTRUCTIONS[OpcodeConst.LAND] = LAND;
-//        INSTRUCTIONS[OpcodeConst.IOR] = IOR;
-//        INSTRUCTIONS[OpcodeConst.LOR] = LOR;
-//        INSTRUCTIONS[OpcodeConst.IXOR] = IXOR;
-//        INSTRUCTIONS[OpcodeConst.LXOR] = LXOR;
-//        INSTRUCTIONS[OpcodeConst.I2L] = I2L;
-//        INSTRUCTIONS[OpcodeConst.I2F] = I2F;
-//        INSTRUCTIONS[OpcodeConst.I2D] = I2D;
-//        INSTRUCTIONS[OpcodeConst.L2I] = L2I;
-//        INSTRUCTIONS[OpcodeConst.L2F] = L2F;
-//        INSTRUCTIONS[OpcodeConst.L2D] = L2D;
-//        INSTRUCTIONS[OpcodeConst.F2I] = F2I;
-//        INSTRUCTIONS[OpcodeConst.F2L] = F2L;
-//        INSTRUCTIONS[OpcodeConst.F2D] = F2D;
-//        INSTRUCTIONS[OpcodeConst.D2I] = D2I;
-//        INSTRUCTIONS[OpcodeConst.D2L] = D2L;
-//        INSTRUCTIONS[OpcodeConst.D2F] = D2F;
-//        INSTRUCTIONS[OpcodeConst.I2B] = I2B;
-//        INSTRUCTIONS[OpcodeConst.I2C] = I2C;
-//        INSTRUCTIONS[OpcodeConst.I2S] = I2S;
-//        INSTRUCTIONS[OpcodeConst.LCMP] = LCMP;
-//        INSTRUCTIONS[OpcodeConst.FCMPL] = FCMPL;
-//        INSTRUCTIONS[OpcodeConst.FCMPG] = FCMPG;
-//        INSTRUCTIONS[OpcodeConst.DCMPL] = DCMPL;
-//        INSTRUCTIONS[OpcodeConst.DCMPG] = DCMPG;
-//        INSTRUCTIONS[OpcodeConst.IRETURN] = IRETURN;
-//        INSTRUCTIONS[OpcodeConst.LRETURN] = LRETURN;
-//        INSTRUCTIONS[OpcodeConst.FRETURN] = FRETURN;
-//        INSTRUCTIONS[OpcodeConst.DRETURN] = DRETURN;
-//        INSTRUCTIONS[OpcodeConst.ARETURN] = ARETURN;
-//        INSTRUCTIONS[OpcodeConst.RETURN] = RETURN;
-//        INSTRUCTIONS[OpcodeConst.ARRAYLENGTH] = ARRAYLENGTH;
-//        INSTRUCTIONS[OpcodeConst.ATHROW] = ATHROW;
-//        INSTRUCTIONS[OpcodeConst.MONITORENTER] = MONITORENTER;
-//        INSTRUCTIONS[OpcodeConst.MONITOREXIT] = MONITOREXIT;
-//    }
+    public static final ConversionInstruction I2L = new I2L();
+    public static final ConversionInstruction I2F = new I2F();
+    public static final ConversionInstruction I2D = new I2D();
+    public static final ConversionInstruction L2I = new L2I();
+    public static final ConversionInstruction L2F = new L2F();
+    public static final ConversionInstruction L2D = new L2D();
+    public static final ConversionInstruction F2I = new F2I();
+    public static final ConversionInstruction F2L = new F2L();
+    public static final ConversionInstruction F2D = new F2D();
+    public static final ConversionInstruction D2I = new D2I();
+    public static final ConversionInstruction D2L = new D2L();
+    public static final ConversionInstruction D2F = new D2F();
+    public static final ConversionInstruction I2B = new I2B();
+    public static final ConversionInstruction I2C = new I2C();
+    public static final ConversionInstruction I2S = new I2S();
+    public static final Instruction LCMP = new LCMP();
+    public static final Instruction FCMPL = new FCMPL();
+    public static final Instruction FCMPG = new FCMPG();
+    public static final Instruction DCMPL = new DCMPL();
+    public static final Instruction DCMPG = new DCMPG();
+    public static final ReturnInstruction IRETURN = new IRETURN();
+    public static final ReturnInstruction LRETURN = new LRETURN();
+    public static final ReturnInstruction FRETURN = new FRETURN();
+    public static final ReturnInstruction DRETURN = new DRETURN();
+    public static final ReturnInstruction ARETURN = new ARETURN();
+    public static final ReturnInstruction RETURN = new RETURN();
+    public static final Instruction ARRAYLENGTH = new ARRAYLENGTH();
+    public static final Instruction ATHROW = new ATHROW();
+    public static final Instruction MONITORENTER = new MONITORENTER();
+    public static final Instruction MONITOREXIT = new MONITOREXIT();
 
-    private InstructionConst() { } // non-instantiable
+    /** You can use these constants in multiple places safely, if you can guarantee
+     * that you will never alter their internal values, e.g. call setIndex().
+     */
+    public static final LocalVariableInstruction THIS = new ALOAD(0);
+    public static final LocalVariableInstruction ALOAD_0 = THIS;
+    public static final LocalVariableInstruction ALOAD_1 = new ALOAD(1);
+    public static final LocalVariableInstruction ALOAD_2 = new ALOAD(2);
+    public static final LocalVariableInstruction ILOAD_0 = new ILOAD(0);
+    public static final LocalVariableInstruction ILOAD_1 = new ILOAD(1);
+    public static final LocalVariableInstruction ILOAD_2 = new ILOAD(2);
+    public static final LocalVariableInstruction ASTORE_0 = new ASTORE(0);
+    public static final LocalVariableInstruction ASTORE_1 = new ASTORE(1);
+    public static final LocalVariableInstruction ASTORE_2 = new ASTORE(2);
+    public static final LocalVariableInstruction ISTORE_0 = new ISTORE(0);
+    public static final LocalVariableInstruction ISTORE_1 = new ISTORE(1);
+    public static final LocalVariableInstruction ISTORE_2 = new ISTORE(2);
+
+    /** Get object via its opcode, for immutable instructions like
+     * branch instructions entries are set to null.
+     */
+    private static final Instruction[] INSTRUCTIONS = new Instruction[256];
+
+    static {
+        INSTRUCTIONS[OpcodeConst.NOP] = NOP;
+        INSTRUCTIONS[OpcodeConst.ACONST_NULL] = ACONST_NULL;
+        INSTRUCTIONS[OpcodeConst.ICONST_M1] = ICONST_M1;
+        INSTRUCTIONS[OpcodeConst.ICONST_0] = ICONST_0;
+        INSTRUCTIONS[OpcodeConst.ICONST_1] = ICONST_1;
+        INSTRUCTIONS[OpcodeConst.ICONST_2] = ICONST_2;
+        INSTRUCTIONS[OpcodeConst.ICONST_3] = ICONST_3;
+        INSTRUCTIONS[OpcodeConst.ICONST_4] = ICONST_4;
+        INSTRUCTIONS[OpcodeConst.ICONST_5] = ICONST_5;
+        INSTRUCTIONS[OpcodeConst.LCONST_0] = LCONST_0;
+        INSTRUCTIONS[OpcodeConst.LCONST_1] = LCONST_1;
+        INSTRUCTIONS[OpcodeConst.FCONST_0] = FCONST_0;
+        INSTRUCTIONS[OpcodeConst.FCONST_1] = FCONST_1;
+        INSTRUCTIONS[OpcodeConst.FCONST_2] = FCONST_2;
+        INSTRUCTIONS[OpcodeConst.DCONST_0] = DCONST_0;
+        INSTRUCTIONS[OpcodeConst.DCONST_1] = DCONST_1;
+        INSTRUCTIONS[OpcodeConst.IALOAD] = IALOAD;
+        INSTRUCTIONS[OpcodeConst.LALOAD] = LALOAD;
+        INSTRUCTIONS[OpcodeConst.FALOAD] = FALOAD;
+        INSTRUCTIONS[OpcodeConst.DALOAD] = DALOAD;
+        INSTRUCTIONS[OpcodeConst.AALOAD] = AALOAD;
+        INSTRUCTIONS[OpcodeConst.BALOAD] = BALOAD;
+        INSTRUCTIONS[OpcodeConst.CALOAD] = CALOAD;
+        INSTRUCTIONS[OpcodeConst.SALOAD] = SALOAD;
+        INSTRUCTIONS[OpcodeConst.IASTORE] = IASTORE;
+        INSTRUCTIONS[OpcodeConst.LASTORE] = LASTORE;
+        INSTRUCTIONS[OpcodeConst.FASTORE] = FASTORE;
+        INSTRUCTIONS[OpcodeConst.DASTORE] = DASTORE;
+        INSTRUCTIONS[OpcodeConst.AASTORE] = AASTORE;
+        INSTRUCTIONS[OpcodeConst.BASTORE] = BASTORE;
+        INSTRUCTIONS[OpcodeConst.CASTORE] = CASTORE;
+        INSTRUCTIONS[OpcodeConst.SASTORE] = SASTORE;
+        INSTRUCTIONS[OpcodeConst.POP] = POP;
+        INSTRUCTIONS[OpcodeConst.POP2] = POP2;
+        INSTRUCTIONS[OpcodeConst.DUP] = DUP;
+        INSTRUCTIONS[OpcodeConst.DUP_X1] = DUP_X1;
+        INSTRUCTIONS[OpcodeConst.DUP_X2] = DUP_X2;
+        INSTRUCTIONS[OpcodeConst.DUP2] = DUP2;
+        INSTRUCTIONS[OpcodeConst.DUP2_X1] = DUP2_X1;
+        INSTRUCTIONS[OpcodeConst.DUP2_X2] = DUP2_X2;
+        INSTRUCTIONS[OpcodeConst.SWAP] = SWAP;
+        INSTRUCTIONS[OpcodeConst.IADD] = IADD;
+        INSTRUCTIONS[OpcodeConst.LADD] = LADD;
+        INSTRUCTIONS[OpcodeConst.FADD] = FADD;
+        INSTRUCTIONS[OpcodeConst.DADD] = DADD;
+        INSTRUCTIONS[OpcodeConst.ISUB] = ISUB;
+        INSTRUCTIONS[OpcodeConst.LSUB] = LSUB;
+        INSTRUCTIONS[OpcodeConst.FSUB] = FSUB;
+        INSTRUCTIONS[OpcodeConst.DSUB] = DSUB;
+        INSTRUCTIONS[OpcodeConst.IMUL] = IMUL;
+        INSTRUCTIONS[OpcodeConst.LMUL] = LMUL;
+        INSTRUCTIONS[OpcodeConst.FMUL] = FMUL;
+        INSTRUCTIONS[OpcodeConst.DMUL] = DMUL;
+        INSTRUCTIONS[OpcodeConst.IDIV] = IDIV;
+        INSTRUCTIONS[OpcodeConst.LDIV] = LDIV;
+        INSTRUCTIONS[OpcodeConst.FDIV] = FDIV;
+        INSTRUCTIONS[OpcodeConst.DDIV] = DDIV;
+        INSTRUCTIONS[OpcodeConst.IREM] = IREM;
+        INSTRUCTIONS[OpcodeConst.LREM] = LREM;
+        INSTRUCTIONS[OpcodeConst.FREM] = FREM;
+        INSTRUCTIONS[OpcodeConst.DREM] = DREM;
+        INSTRUCTIONS[OpcodeConst.INEG] = INEG;
+        INSTRUCTIONS[OpcodeConst.LNEG] = LNEG;
+        INSTRUCTIONS[OpcodeConst.FNEG] = FNEG;
+        INSTRUCTIONS[OpcodeConst.DNEG] = DNEG;
+        INSTRUCTIONS[OpcodeConst.ISHL] = ISHL;
+        INSTRUCTIONS[OpcodeConst.LSHL] = LSHL;
+        INSTRUCTIONS[OpcodeConst.ISHR] = ISHR;
+        INSTRUCTIONS[OpcodeConst.LSHR] = LSHR;
+        INSTRUCTIONS[OpcodeConst.IUSHR] = IUSHR;
+        INSTRUCTIONS[OpcodeConst.LUSHR] = LUSHR;
+        INSTRUCTIONS[OpcodeConst.IAND] = IAND;
+        INSTRUCTIONS[OpcodeConst.LAND] = LAND;
+        INSTRUCTIONS[OpcodeConst.IOR] = IOR;
+        INSTRUCTIONS[OpcodeConst.LOR] = LOR;
+        INSTRUCTIONS[OpcodeConst.IXOR] = IXOR;
+        INSTRUCTIONS[OpcodeConst.LXOR] = LXOR;
+        INSTRUCTIONS[OpcodeConst.I2L] = I2L;
+        INSTRUCTIONS[OpcodeConst.I2F] = I2F;
+        INSTRUCTIONS[OpcodeConst.I2D] = I2D;
+        INSTRUCTIONS[OpcodeConst.L2I] = L2I;
+        INSTRUCTIONS[OpcodeConst.L2F] = L2F;
+        INSTRUCTIONS[OpcodeConst.L2D] = L2D;
+        INSTRUCTIONS[OpcodeConst.F2I] = F2I;
+        INSTRUCTIONS[OpcodeConst.F2L] = F2L;
+        INSTRUCTIONS[OpcodeConst.F2D] = F2D;
+        INSTRUCTIONS[OpcodeConst.D2I] = D2I;
+        INSTRUCTIONS[OpcodeConst.D2L] = D2L;
+        INSTRUCTIONS[OpcodeConst.D2F] = D2F;
+        INSTRUCTIONS[OpcodeConst.I2B] = I2B;
+        INSTRUCTIONS[OpcodeConst.I2C] = I2C;
+        INSTRUCTIONS[OpcodeConst.I2S] = I2S;
+        INSTRUCTIONS[OpcodeConst.LCMP] = LCMP;
+        INSTRUCTIONS[OpcodeConst.FCMPL] = FCMPL;
+        INSTRUCTIONS[OpcodeConst.FCMPG] = FCMPG;
+        INSTRUCTIONS[OpcodeConst.DCMPL] = DCMPL;
+        INSTRUCTIONS[OpcodeConst.DCMPG] = DCMPG;
+        INSTRUCTIONS[OpcodeConst.IRETURN] = IRETURN;
+        INSTRUCTIONS[OpcodeConst.LRETURN] = LRETURN;
+        INSTRUCTIONS[OpcodeConst.FRETURN] = FRETURN;
+        INSTRUCTIONS[OpcodeConst.DRETURN] = DRETURN;
+        INSTRUCTIONS[OpcodeConst.ARETURN] = ARETURN;
+        INSTRUCTIONS[OpcodeConst.RETURN] = RETURN;
+        INSTRUCTIONS[OpcodeConst.ARRAYLENGTH] = ARRAYLENGTH;
+        INSTRUCTIONS[OpcodeConst.ATHROW] = ATHROW;
+        INSTRUCTIONS[OpcodeConst.MONITORENTER] = MONITORENTER;
+        INSTRUCTIONS[OpcodeConst.MONITOREXIT] = MONITOREXIT;
+    }
+
 
     /**
      * Gets the Instruction.
@@ -349,7 +384,6 @@ public class InstructionConst {
      * @return the entry from the private INSTRUCTIONS table
      */
     public static Instruction getInstruction(final int index) {
-//        return INSTRUCTIONS[index];
-        return null;
+        return INSTRUCTIONS[index];
     }
 }

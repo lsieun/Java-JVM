@@ -2,7 +2,26 @@ package lsieun.bytecode.generic.instruction;
 
 import java.io.IOException;
 
+import lsieun.bytecode.exceptions.ClassGenException;
 import lsieun.bytecode.generic.cst.OpcodeConst;
+import lsieun.bytecode.generic.opcode.branh.IFEQ;
+import lsieun.bytecode.generic.opcode.branh.IFNE;
+import lsieun.bytecode.generic.opcode.cst.BIPUSH;
+import lsieun.bytecode.generic.opcode.cst.LDC;
+import lsieun.bytecode.generic.opcode.cst.LDC2_W;
+import lsieun.bytecode.generic.opcode.cst.LDC_W;
+import lsieun.bytecode.generic.opcode.cst.SIPUSH;
+import lsieun.bytecode.generic.opcode.locals.ALOAD;
+import lsieun.bytecode.generic.opcode.locals.ASTORE;
+import lsieun.bytecode.generic.opcode.locals.DLOAD;
+import lsieun.bytecode.generic.opcode.locals.DSTORE;
+import lsieun.bytecode.generic.opcode.locals.FLOAD;
+import lsieun.bytecode.generic.opcode.locals.FSTORE;
+import lsieun.bytecode.generic.opcode.locals.IINC;
+import lsieun.bytecode.generic.opcode.locals.ILOAD;
+import lsieun.bytecode.generic.opcode.locals.ISTORE;
+import lsieun.bytecode.generic.opcode.locals.LLOAD;
+import lsieun.bytecode.generic.opcode.locals.LSTORE;
 import lsieun.bytecode.utils.ByteDashboard;
 
 /**
@@ -48,6 +67,10 @@ public abstract class Instruction {
         this.length = length;
     }
 
+    public void setLength(final int length) {
+        this.length = (short) length; // TODO check range?
+    }
+
     public short getOpcode() {
         return opcode;
     }
@@ -58,14 +81,16 @@ public abstract class Instruction {
     // endregion
 
     // region Stack
+
     /**
      * This method also gives right results for instructions whose
      * effect on the stack depends on the constant pool entry they
      * reference.
-     *  @return Number of words consumed from stack by this instruction,
+     *
+     * @return Number of words consumed from stack by this instruction,
      * or Constants.UNPREDICTABLE, if this can not be computed statically
      */
-    public int consumeStack( final ConstantPoolGen cpg ) {
+    public int consumeStack(final ConstantPoolGen cpg) {
         return OpcodeConst.getConsumeStack(opcode);
     }
 
@@ -73,13 +98,19 @@ public abstract class Instruction {
      * This method also gives right results for instructions whose
      * effect on the stack depends on the constant pool entry they
      * reference.
+     *
      * @return Number of words produced onto stack by this instruction,
      * or Constants.UNPREDICTABLE, if this can not be computed statically
      */
-    public int produceStack( final ConstantPoolGen cpg ) {
+    public int produceStack(final ConstantPoolGen cpg) {
         return OpcodeConst.getProduceStack(opcode);
     }
     // endregion
+
+    /** Some instructions may be reused, so don't do anything by default.
+     */
+    void dispose() {
+    }
 
     /**
      * Call corresponding visitor method(s). The order is:
@@ -128,193 +159,193 @@ public abstract class Instruction {
      * @see InstructionConst#getInstruction(int)
      */
     public static Instruction readInstruction(final ByteDashboard byteDashboard) throws IOException {
-//        boolean wide = false;
-//        short opcode = (short) byteDashboard.nextByte();
-//        Instruction obj = null;
-//        if (opcode == OpcodeConst.WIDE) { // Read next opcode after wide byte
-//            wide = true;
-//            opcode = (short) byteDashboard.nextByte();
-//        }
-//        final Instruction instruction = InstructionOpcodeConst.getInstruction(opcode);
-//        if (instruction != null) {
-//            return instruction; // Used predefined immutable object, if available
-//        }
-//
-//        switch (opcode) {
-//            case OpcodeConst.BIPUSH:
-//                obj = new BIPUSH();
-//                break;
-//            case OpcodeConst.SIPUSH:
-//                obj = new SIPUSH();
-//                break;
-//            case OpcodeConst.LDC:
-//                obj = new LDC();
-//                break;
-//            case OpcodeConst.LDC_W:
-//                obj = new LDC_W();
-//                break;
-//            case OpcodeConst.LDC2_W:
-//                obj = new LDC2_W();
-//                break;
-//            case OpcodeConst.ILOAD:
-//                obj = new ILOAD();
-//                break;
-//            case OpcodeConst.LLOAD:
-//                obj = new LLOAD();
-//                break;
-//            case OpcodeConst.FLOAD:
-//                obj = new FLOAD();
-//                break;
-//            case OpcodeConst.DLOAD:
-//                obj = new DLOAD();
-//                break;
-//            case OpcodeConst.ALOAD:
-//                obj = new ALOAD();
-//                break;
-//            case OpcodeConst.ILOAD_0:
-//                obj = new ILOAD(0);
-//                break;
-//            case OpcodeConst.ILOAD_1:
-//                obj = new ILOAD(1);
-//                break;
-//            case OpcodeConst.ILOAD_2:
-//                obj = new ILOAD(2);
-//                break;
-//            case OpcodeConst.ILOAD_3:
-//                obj = new ILOAD(3);
-//                break;
-//            case OpcodeConst.LLOAD_0:
-//                obj = new LLOAD(0);
-//                break;
-//            case OpcodeConst.LLOAD_1:
-//                obj = new LLOAD(1);
-//                break;
-//            case OpcodeConst.LLOAD_2:
-//                obj = new LLOAD(2);
-//                break;
-//            case OpcodeConst.LLOAD_3:
-//                obj = new LLOAD(3);
-//                break;
-//            case OpcodeConst.FLOAD_0:
-//                obj = new FLOAD(0);
-//                break;
-//            case OpcodeConst.FLOAD_1:
-//                obj = new FLOAD(1);
-//                break;
-//            case OpcodeConst.FLOAD_2:
-//                obj = new FLOAD(2);
-//                break;
-//            case OpcodeConst.FLOAD_3:
-//                obj = new FLOAD(3);
-//                break;
-//            case OpcodeConst.DLOAD_0:
-//                obj = new DLOAD(0);
-//                break;
-//            case OpcodeConst.DLOAD_1:
-//                obj = new DLOAD(1);
-//                break;
-//            case OpcodeConst.DLOAD_2:
-//                obj = new DLOAD(2);
-//                break;
-//            case OpcodeConst.DLOAD_3:
-//                obj = new DLOAD(3);
-//                break;
-//            case OpcodeConst.ALOAD_0:
-//                obj = new ALOAD(0);
-//                break;
-//            case OpcodeConst.ALOAD_1:
-//                obj = new ALOAD(1);
-//                break;
-//            case OpcodeConst.ALOAD_2:
-//                obj = new ALOAD(2);
-//                break;
-//            case OpcodeConst.ALOAD_3:
-//                obj = new ALOAD(3);
-//                break;
-//            case OpcodeConst.ISTORE:
-//                obj = new ISTORE();
-//                break;
-//            case OpcodeConst.LSTORE:
-//                obj = new LSTORE();
-//                break;
-//            case OpcodeConst.FSTORE:
-//                obj = new FSTORE();
-//                break;
-//            case OpcodeConst.DSTORE:
-//                obj = new DSTORE();
-//                break;
-//            case OpcodeConst.ASTORE:
-//                obj = new ASTORE();
-//                break;
-//            case OpcodeConst.ISTORE_0:
-//                obj = new ISTORE(0);
-//                break;
-//            case OpcodeConst.ISTORE_1:
-//                obj = new ISTORE(1);
-//                break;
-//            case OpcodeConst.ISTORE_2:
-//                obj = new ISTORE(2);
-//                break;
-//            case OpcodeConst.ISTORE_3:
-//                obj = new ISTORE(3);
-//                break;
-//            case OpcodeConst.LSTORE_0:
-//                obj = new LSTORE(0);
-//                break;
-//            case OpcodeConst.LSTORE_1:
-//                obj = new LSTORE(1);
-//                break;
-//            case OpcodeConst.LSTORE_2:
-//                obj = new LSTORE(2);
-//                break;
-//            case OpcodeConst.LSTORE_3:
-//                obj = new LSTORE(3);
-//                break;
-//            case OpcodeConst.FSTORE_0:
-//                obj = new FSTORE(0);
-//                break;
-//            case OpcodeConst.FSTORE_1:
-//                obj = new FSTORE(1);
-//                break;
-//            case OpcodeConst.FSTORE_2:
-//                obj = new FSTORE(2);
-//                break;
-//            case OpcodeConst.FSTORE_3:
-//                obj = new FSTORE(3);
-//                break;
-//            case OpcodeConst.DSTORE_0:
-//                obj = new DSTORE(0);
-//                break;
-//            case OpcodeConst.DSTORE_1:
-//                obj = new DSTORE(1);
-//                break;
-//            case OpcodeConst.DSTORE_2:
-//                obj = new DSTORE(2);
-//                break;
-//            case OpcodeConst.DSTORE_3:
-//                obj = new DSTORE(3);
-//                break;
-//            case OpcodeConst.ASTORE_0:
-//                obj = new ASTORE(0);
-//                break;
-//            case OpcodeConst.ASTORE_1:
-//                obj = new ASTORE(1);
-//                break;
-//            case OpcodeConst.ASTORE_2:
-//                obj = new ASTORE(2);
-//                break;
-//            case OpcodeConst.ASTORE_3:
-//                obj = new ASTORE(3);
-//                break;
-//            case OpcodeConst.IINC:
-//                obj = new IINC();
-//                break;
-//            case OpcodeConst.IFEQ:
-//                obj = new IFEQ();
-//                break;
-//            case OpcodeConst.IFNE:
-//                obj = new IFNE();
-//                break;
+        boolean wide = false;
+        short opcode = (short) byteDashboard.nextByte();
+        Instruction obj = null;
+        if (opcode == OpcodeConst.WIDE) { // Read next opcode after wide byte
+            wide = true;
+            opcode = (short) byteDashboard.nextByte();
+        }
+        final Instruction instruction = InstructionConst.getInstruction(opcode);
+        if (instruction != null) {
+            return instruction; // Used predefined immutable object, if available
+        }
+
+        switch (opcode) {
+            case OpcodeConst.BIPUSH:
+                obj = new BIPUSH();
+                break;
+            case OpcodeConst.SIPUSH:
+                obj = new SIPUSH();
+                break;
+            case OpcodeConst.LDC:
+                obj = new LDC();
+                break;
+            case OpcodeConst.LDC_W:
+                obj = new LDC_W();
+                break;
+            case OpcodeConst.LDC2_W:
+                obj = new LDC2_W();
+                break;
+            case OpcodeConst.ILOAD:
+                obj = new ILOAD();
+                break;
+            case OpcodeConst.LLOAD:
+                obj = new LLOAD();
+                break;
+            case OpcodeConst.FLOAD:
+                obj = new FLOAD();
+                break;
+            case OpcodeConst.DLOAD:
+                obj = new DLOAD();
+                break;
+            case OpcodeConst.ALOAD:
+                obj = new ALOAD();
+                break;
+            case OpcodeConst.ILOAD_0:
+                obj = new ILOAD(0);
+                break;
+            case OpcodeConst.ILOAD_1:
+                obj = new ILOAD(1);
+                break;
+            case OpcodeConst.ILOAD_2:
+                obj = new ILOAD(2);
+                break;
+            case OpcodeConst.ILOAD_3:
+                obj = new ILOAD(3);
+                break;
+            case OpcodeConst.LLOAD_0:
+                obj = new LLOAD(0);
+                break;
+            case OpcodeConst.LLOAD_1:
+                obj = new LLOAD(1);
+                break;
+            case OpcodeConst.LLOAD_2:
+                obj = new LLOAD(2);
+                break;
+            case OpcodeConst.LLOAD_3:
+                obj = new LLOAD(3);
+                break;
+            case OpcodeConst.FLOAD_0:
+                obj = new FLOAD(0);
+                break;
+            case OpcodeConst.FLOAD_1:
+                obj = new FLOAD(1);
+                break;
+            case OpcodeConst.FLOAD_2:
+                obj = new FLOAD(2);
+                break;
+            case OpcodeConst.FLOAD_3:
+                obj = new FLOAD(3);
+                break;
+            case OpcodeConst.DLOAD_0:
+                obj = new DLOAD(0);
+                break;
+            case OpcodeConst.DLOAD_1:
+                obj = new DLOAD(1);
+                break;
+            case OpcodeConst.DLOAD_2:
+                obj = new DLOAD(2);
+                break;
+            case OpcodeConst.DLOAD_3:
+                obj = new DLOAD(3);
+                break;
+            case OpcodeConst.ALOAD_0:
+                obj = new ALOAD(0);
+                break;
+            case OpcodeConst.ALOAD_1:
+                obj = new ALOAD(1);
+                break;
+            case OpcodeConst.ALOAD_2:
+                obj = new ALOAD(2);
+                break;
+            case OpcodeConst.ALOAD_3:
+                obj = new ALOAD(3);
+                break;
+            case OpcodeConst.ISTORE:
+                obj = new ISTORE();
+                break;
+            case OpcodeConst.LSTORE:
+                obj = new LSTORE();
+                break;
+            case OpcodeConst.FSTORE:
+                obj = new FSTORE();
+                break;
+            case OpcodeConst.DSTORE:
+                obj = new DSTORE();
+                break;
+            case OpcodeConst.ASTORE:
+                obj = new ASTORE();
+                break;
+            case OpcodeConst.ISTORE_0:
+                obj = new ISTORE(0);
+                break;
+            case OpcodeConst.ISTORE_1:
+                obj = new ISTORE(1);
+                break;
+            case OpcodeConst.ISTORE_2:
+                obj = new ISTORE(2);
+                break;
+            case OpcodeConst.ISTORE_3:
+                obj = new ISTORE(3);
+                break;
+            case OpcodeConst.LSTORE_0:
+                obj = new LSTORE(0);
+                break;
+            case OpcodeConst.LSTORE_1:
+                obj = new LSTORE(1);
+                break;
+            case OpcodeConst.LSTORE_2:
+                obj = new LSTORE(2);
+                break;
+            case OpcodeConst.LSTORE_3:
+                obj = new LSTORE(3);
+                break;
+            case OpcodeConst.FSTORE_0:
+                obj = new FSTORE(0);
+                break;
+            case OpcodeConst.FSTORE_1:
+                obj = new FSTORE(1);
+                break;
+            case OpcodeConst.FSTORE_2:
+                obj = new FSTORE(2);
+                break;
+            case OpcodeConst.FSTORE_3:
+                obj = new FSTORE(3);
+                break;
+            case OpcodeConst.DSTORE_0:
+                obj = new DSTORE(0);
+                break;
+            case OpcodeConst.DSTORE_1:
+                obj = new DSTORE(1);
+                break;
+            case OpcodeConst.DSTORE_2:
+                obj = new DSTORE(2);
+                break;
+            case OpcodeConst.DSTORE_3:
+                obj = new DSTORE(3);
+                break;
+            case OpcodeConst.ASTORE_0:
+                obj = new ASTORE(0);
+                break;
+            case OpcodeConst.ASTORE_1:
+                obj = new ASTORE(1);
+                break;
+            case OpcodeConst.ASTORE_2:
+                obj = new ASTORE(2);
+                break;
+            case OpcodeConst.ASTORE_3:
+                obj = new ASTORE(3);
+                break;
+            case OpcodeConst.IINC:
+                obj = new IINC();
+                break;
+            case OpcodeConst.IFEQ:
+                obj = new IFEQ();
+                break;
+            case OpcodeConst.IFNE:
+                obj = new IFNE();
+                break;
 //            case OpcodeConst.IFLT:
 //                obj = new IFLT();
 //                break;
@@ -432,10 +463,9 @@ public abstract class Instruction {
 //            case OpcodeConst.IMPDEP2:
 //                obj = new IMPDEP2();
 //                break;
-//            default:
-//                throw new ClassGenException("Illegal opcode detected: " + opcode);
-//
-//        }
+            default:
+                throw new ClassGenException("Illegal opcode detected: " + opcode);
+        }
 //
 //        if (wide
 //                && !((obj instanceof LocalVariableInstruction) || (obj instanceof IINC) || (obj instanceof RET))) {
