@@ -90,3 +90,4 @@ Settings-->Editor-->TODO
 GOOD_CODE
 
 - prosaic
+- Portraits人物志

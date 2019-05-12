@@ -4,13 +4,52 @@ import java.io.IOException;
 
 import lsieun.bytecode.exceptions.ClassGenException;
 import lsieun.bytecode.generic.cst.OpcodeConst;
+import lsieun.bytecode.generic.opcode.BREAKPOINT;
+import lsieun.bytecode.generic.opcode.CHECKCAST;
+import lsieun.bytecode.generic.opcode.IMPDEP1;
+import lsieun.bytecode.generic.opcode.IMPDEP2;
+import lsieun.bytecode.generic.opcode.INSTANCEOF;
+import lsieun.bytecode.generic.opcode.allocate.ANEWARRAY;
+import lsieun.bytecode.generic.opcode.allocate.MULTIANEWARRAY;
+import lsieun.bytecode.generic.opcode.allocate.NEW;
+import lsieun.bytecode.generic.opcode.allocate.NEWARRAY;
+import lsieun.bytecode.generic.opcode.branh.GOTO;
+import lsieun.bytecode.generic.opcode.branh.GOTO_W;
 import lsieun.bytecode.generic.opcode.branh.IFEQ;
+import lsieun.bytecode.generic.opcode.branh.IFGE;
+import lsieun.bytecode.generic.opcode.branh.IFGT;
+import lsieun.bytecode.generic.opcode.branh.IFLE;
+import lsieun.bytecode.generic.opcode.branh.IFLT;
 import lsieun.bytecode.generic.opcode.branh.IFNE;
+import lsieun.bytecode.generic.opcode.branh.IFNONNULL;
+import lsieun.bytecode.generic.opcode.branh.IFNULL;
+import lsieun.bytecode.generic.opcode.branh.IF_ACMPEQ;
+import lsieun.bytecode.generic.opcode.branh.IF_ACMPNE;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPEQ;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPGE;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPGT;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPLE;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPLT;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPNE;
+import lsieun.bytecode.generic.opcode.branh.JSR;
+import lsieun.bytecode.generic.opcode.branh.JSR_W;
+import lsieun.bytecode.generic.opcode.branh.LOOKUPSWITCH;
+import lsieun.bytecode.generic.opcode.branh.RET;
+import lsieun.bytecode.generic.opcode.branh.TABLESWITCH;
 import lsieun.bytecode.generic.opcode.cst.BIPUSH;
 import lsieun.bytecode.generic.opcode.cst.LDC;
 import lsieun.bytecode.generic.opcode.cst.LDC2_W;
 import lsieun.bytecode.generic.opcode.cst.LDC_W;
 import lsieun.bytecode.generic.opcode.cst.SIPUSH;
+import lsieun.bytecode.generic.opcode.field.GETFIELD;
+import lsieun.bytecode.generic.opcode.field.GETSTATIC;
+import lsieun.bytecode.generic.opcode.field.PUTFIELD;
+import lsieun.bytecode.generic.opcode.field.PUTSTATIC;
+import lsieun.bytecode.generic.opcode.invoke.INVOKEDYNAMIC;
+import lsieun.bytecode.generic.opcode.invoke.INVOKEINTERFACE;
+import lsieun.bytecode.generic.opcode.invoke.INVOKESPECIAL;
+import lsieun.bytecode.generic.opcode.invoke.INVOKESTATIC;
+import lsieun.bytecode.generic.opcode.invoke.INVOKEVIRTUAL;
 import lsieun.bytecode.generic.opcode.locals.ALOAD;
 import lsieun.bytecode.generic.opcode.locals.ASTORE;
 import lsieun.bytecode.generic.opcode.locals.DLOAD;
@@ -51,13 +90,6 @@ public abstract class Instruction {
         this.length = length;
     }
 
-    /**
-     * @return name of instruction, i.e., opcode name
-     */
-    public String getName() {
-        return OpcodeConst.getOpcodeName(opcode);
-    }
-
     // region getters and setters
     public short getLength() {
         return length;
@@ -79,6 +111,14 @@ public abstract class Instruction {
         this.opcode = opcode;
     }
     // endregion
+
+
+    /**
+     * @return name of instruction, i.e., opcode name
+     */
+    public String getName() {
+        return OpcodeConst.getOpcodeName(opcode);
+    }
 
     // region Stack
 
@@ -107,9 +147,20 @@ public abstract class Instruction {
     }
     // endregion
 
-    /** Some instructions may be reused, so don't do anything by default.
+    /**
+     * Some instructions may be reused, so don't do anything by default.
      */
     void dispose() {
+    }
+
+    /**
+     * Read needed data (e.g. index) from file.
+     *
+     * @param byteDashboard byte sequence to read from
+     * @param wide  "wide" instruction flag
+     * @throws IOException may be thrown if the implementation needs to read data from the file
+     */
+    protected void initFromFile(final ByteDashboard byteDashboard, final boolean wide) {
     }
 
     /**
@@ -158,7 +209,7 @@ public abstract class Instruction {
      * @return instruction object being read
      * @see InstructionConst#getInstruction(int)
      */
-    public static Instruction readInstruction(final ByteDashboard byteDashboard) throws IOException {
+    public static Instruction readInstruction(final ByteDashboard byteDashboard) {
         boolean wide = false;
         short opcode = (short) byteDashboard.nextByte();
         Instruction obj = null;
@@ -172,6 +223,7 @@ public abstract class Instruction {
         }
 
         switch (opcode) {
+            // region switch
             case OpcodeConst.BIPUSH:
                 obj = new BIPUSH();
                 break;
@@ -346,135 +398,153 @@ public abstract class Instruction {
             case OpcodeConst.IFNE:
                 obj = new IFNE();
                 break;
-//            case OpcodeConst.IFLT:
-//                obj = new IFLT();
-//                break;
-//            case OpcodeConst.IFGE:
-//                obj = new IFGE();
-//                break;
-//            case OpcodeConst.IFGT:
-//                obj = new IFGT();
-//                break;
-//            case OpcodeConst.IFLE:
-//                obj = new IFLE();
-//                break;
-//            case OpcodeConst.IF_ICMPEQ:
-//                obj = new IF_ICMPEQ();
-//                break;
-//            case OpcodeConst.IF_ICMPNE:
-//                obj = new IF_ICMPNE();
-//                break;
-//            case OpcodeConst.IF_ICMPLT:
-//                obj = new IF_ICMPLT();
-//                break;
-//            case OpcodeConst.IF_ICMPGE:
-//                obj = new IF_ICMPGE();
-//                break;
-//            case OpcodeConst.IF_ICMPGT:
-//                obj = new IF_ICMPGT();
-//                break;
-//            case OpcodeConst.IF_ICMPLE:
-//                obj = new IF_ICMPLE();
-//                break;
-//            case OpcodeConst.IF_ACMPEQ:
-//                obj = new IF_ACMPEQ();
-//                break;
-//            case OpcodeConst.IF_ACMPNE:
-//                obj = new IF_ACMPNE();
-//                break;
-//            case OpcodeConst.GOTO:
-//                obj = new GOTO();
-//                break;
-//            case OpcodeConst.JSR:
-//                obj = new JSR();
-//                break;
-//            case OpcodeConst.RET:
-//                obj = new RET();
-//                break;
-//            case OpcodeConst.TABLESWITCH:
-//                obj = new TABLESWITCH();
-//                break;
-//            case OpcodeConst.LOOKUPSWITCH:
-//                obj = new LOOKUPSWITCH();
-//                break;
-//            case OpcodeConst.GETSTATIC:
-//                obj = new GETSTATIC();
-//                break;
-//            case OpcodeConst.PUTSTATIC:
-//                obj = new PUTSTATIC();
-//                break;
-//            case OpcodeConst.GETFIELD:
-//                obj = new GETFIELD();
-//                break;
-//            case OpcodeConst.PUTFIELD:
-//                obj = new PUTFIELD();
-//                break;
-//            case OpcodeConst.INVOKEVIRTUAL:
-//                obj = new INVOKEVIRTUAL();
-//                break;
-//            case OpcodeConst.INVOKESPECIAL:
-//                obj = new INVOKESPECIAL();
-//                break;
-//            case OpcodeConst.INVOKESTATIC:
-//                obj = new INVOKESTATIC();
-//                break;
-//            case OpcodeConst.INVOKEINTERFACE:
-//                obj = new INVOKEINTERFACE();
-//                break;
-//            case OpcodeConst.INVOKEDYNAMIC:
-//                obj = new INVOKEDYNAMIC();
-//                break;
-//            case OpcodeConst.NEW:
-//                obj = new NEW();
-//                break;
-//            case OpcodeConst.NEWARRAY:
-//                obj = new NEWARRAY();
-//                break;
-//            case OpcodeConst.ANEWARRAY:
-//                obj = new ANEWARRAY();
-//                break;
-//            case OpcodeConst.CHECKCAST:
-//                obj = new CHECKCAST();
-//                break;
-//            case OpcodeConst.INSTANCEOF:
-//                obj = new INSTANCEOF();
-//                break;
-//            case OpcodeConst.MULTIANEWARRAY:
-//                obj = new MULTIANEWARRAY();
-//                break;
-//            case OpcodeConst.IFNULL:
-//                obj = new IFNULL();
-//                break;
-//            case OpcodeConst.IFNONNULL:
-//                obj = new IFNONNULL();
-//                break;
-//            case OpcodeConst.GOTO_W:
-//                obj = new GOTO_W();
-//                break;
-//            case OpcodeConst.JSR_W:
-//                obj = new JSR_W();
-//                break;
-//            case OpcodeConst.BREAKPOINT:
-//                obj = new BREAKPOINT();
-//                break;
-//            case OpcodeConst.IMPDEP1:
-//                obj = new IMPDEP1();
-//                break;
-//            case OpcodeConst.IMPDEP2:
-//                obj = new IMPDEP2();
-//                break;
+            case OpcodeConst.IFLT:
+                obj = new IFLT();
+                break;
+            case OpcodeConst.IFGE:
+                obj = new IFGE();
+                break;
+            case OpcodeConst.IFGT:
+                obj = new IFGT();
+                break;
+            case OpcodeConst.IFLE:
+                obj = new IFLE();
+                break;
+            case OpcodeConst.IF_ICMPEQ:
+                obj = new IF_ICMPEQ();
+                break;
+            case OpcodeConst.IF_ICMPNE:
+                obj = new IF_ICMPNE();
+                break;
+            case OpcodeConst.IF_ICMPLT:
+                obj = new IF_ICMPLT();
+                break;
+            case OpcodeConst.IF_ICMPGE:
+                obj = new IF_ICMPGE();
+                break;
+            case OpcodeConst.IF_ICMPGT:
+                obj = new IF_ICMPGT();
+                break;
+            case OpcodeConst.IF_ICMPLE:
+                obj = new IF_ICMPLE();
+                break;
+            case OpcodeConst.IF_ACMPEQ:
+                obj = new IF_ACMPEQ();
+                break;
+            case OpcodeConst.IF_ACMPNE:
+                obj = new IF_ACMPNE();
+                break;
+            case OpcodeConst.GOTO:
+                obj = new GOTO();
+                break;
+            case OpcodeConst.JSR:
+                obj = new JSR();
+                break;
+            case OpcodeConst.RET:
+                obj = new RET();
+                break;
+            case OpcodeConst.TABLESWITCH:
+                obj = new TABLESWITCH();
+                break;
+            case OpcodeConst.LOOKUPSWITCH:
+                obj = new LOOKUPSWITCH();
+                break;
+            case OpcodeConst.GETSTATIC:
+                obj = new GETSTATIC();
+                break;
+            case OpcodeConst.PUTSTATIC:
+                obj = new PUTSTATIC();
+                break;
+            case OpcodeConst.GETFIELD:
+                obj = new GETFIELD();
+                break;
+            case OpcodeConst.PUTFIELD:
+                obj = new PUTFIELD();
+                break;
+            case OpcodeConst.INVOKEVIRTUAL:
+                obj = new INVOKEVIRTUAL();
+                break;
+            case OpcodeConst.INVOKESPECIAL:
+                obj = new INVOKESPECIAL();
+                break;
+            case OpcodeConst.INVOKESTATIC:
+                obj = new INVOKESTATIC();
+                break;
+            case OpcodeConst.INVOKEINTERFACE:
+                obj = new INVOKEINTERFACE();
+                break;
+            case OpcodeConst.INVOKEDYNAMIC:
+                obj = new INVOKEDYNAMIC();
+                break;
+            case OpcodeConst.NEW:
+                obj = new NEW();
+                break;
+            case OpcodeConst.NEWARRAY:
+                obj = new NEWARRAY();
+                break;
+            case OpcodeConst.ANEWARRAY:
+                obj = new ANEWARRAY();
+                break;
+            case OpcodeConst.CHECKCAST:
+                obj = new CHECKCAST();
+                break;
+            case OpcodeConst.INSTANCEOF:
+                obj = new INSTANCEOF();
+                break;
+            case OpcodeConst.MULTIANEWARRAY:
+                obj = new MULTIANEWARRAY();
+                break;
+            case OpcodeConst.IFNULL:
+                obj = new IFNULL();
+                break;
+            case OpcodeConst.IFNONNULL:
+                obj = new IFNONNULL();
+                break;
+            case OpcodeConst.GOTO_W:
+                obj = new GOTO_W();
+                break;
+            case OpcodeConst.JSR_W:
+                obj = new JSR_W();
+                break;
+            case OpcodeConst.BREAKPOINT:
+                obj = new BREAKPOINT();
+                break;
+            case OpcodeConst.IMPDEP1:
+                obj = new IMPDEP1();
+                break;
+            case OpcodeConst.IMPDEP2:
+                obj = new IMPDEP2();
+                break;
             default:
                 throw new ClassGenException("Illegal opcode detected: " + opcode);
+            // endregion
         }
-//
-//        if (wide
-//                && !((obj instanceof LocalVariableInstruction) || (obj instanceof IINC) || (obj instanceof RET))) {
-//            throw new ClassGenException("Illegal opcode after wide: " + opcode);
-//        }
-//        obj.setOpcode(opcode);
-//        obj.initFromFile(byteDashboard, wide); // Do further initializations, if any
-//        return obj;
-        return null;
+
+        if (wide
+                && !((obj instanceof LocalVariableInstruction) || (obj instanceof IINC) || (obj instanceof RET))) {
+            throw new ClassGenException("Illegal opcode after wide: " + opcode);
+        }
+        obj.setOpcode(opcode);
+        obj.initFromFile(byteDashboard, wide); // Do further initializations, if any
+        return obj;
+    }
+
+    /**
+     * Check if the value can fit in a byte (signed)
+     * @param value the value to check
+     * @return true if the value is in range
+     */
+    public static boolean isValidByte(final int value) {
+        return value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE;
+    }
+
+    /**
+     * Check if the value can fit in a short (signed)
+     * @param value the value to check
+     * @return true if the value is in range
+     */
+    public static boolean isValidShort(final int value) {
+        return value >= Short.MIN_VALUE && value <= Short.MAX_VALUE;
     }
 
 }

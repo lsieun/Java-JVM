@@ -1,9 +1,20 @@
 package lsieun.bytecode.generic.instruction;
 
+import lsieun.bytecode.generic.FieldOrMethod;
+import lsieun.bytecode.generic.LoadClass;
 import lsieun.bytecode.generic.opcode.ARRAYLENGTH;
 import lsieun.bytecode.generic.opcode.ATHROW;
+import lsieun.bytecode.generic.opcode.BREAKPOINT;
+import lsieun.bytecode.generic.opcode.CHECKCAST;
+import lsieun.bytecode.generic.opcode.IMPDEP1;
+import lsieun.bytecode.generic.opcode.IMPDEP2;
+import lsieun.bytecode.generic.opcode.INSTANCEOF;
 import lsieun.bytecode.generic.opcode.MONITORENTER;
 import lsieun.bytecode.generic.opcode.MONITOREXIT;
+import lsieun.bytecode.generic.opcode.allocate.ANEWARRAY;
+import lsieun.bytecode.generic.opcode.allocate.MULTIANEWARRAY;
+import lsieun.bytecode.generic.opcode.allocate.NEW;
+import lsieun.bytecode.generic.opcode.allocate.NEWARRAY;
 import lsieun.bytecode.generic.opcode.arithmetic.DADD;
 import lsieun.bytecode.generic.opcode.arithmetic.DDIV;
 import lsieun.bytecode.generic.opcode.arithmetic.DMUL;
@@ -42,8 +53,29 @@ import lsieun.bytecode.generic.opcode.arithmetic.LUSHR;
 import lsieun.bytecode.generic.opcode.arithmetic.LXOR;
 import lsieun.bytecode.generic.opcode.array.AALOAD;
 import lsieun.bytecode.generic.opcode.array.AASTORE;
+import lsieun.bytecode.generic.opcode.branh.GOTO;
+import lsieun.bytecode.generic.opcode.branh.GOTO_W;
 import lsieun.bytecode.generic.opcode.branh.IFEQ;
+import lsieun.bytecode.generic.opcode.branh.IFGE;
+import lsieun.bytecode.generic.opcode.branh.IFGT;
+import lsieun.bytecode.generic.opcode.branh.IFLE;
+import lsieun.bytecode.generic.opcode.branh.IFLT;
 import lsieun.bytecode.generic.opcode.branh.IFNE;
+import lsieun.bytecode.generic.opcode.branh.IFNONNULL;
+import lsieun.bytecode.generic.opcode.branh.IFNULL;
+import lsieun.bytecode.generic.opcode.branh.IF_ACMPEQ;
+import lsieun.bytecode.generic.opcode.branh.IF_ACMPNE;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPEQ;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPGE;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPGT;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPLE;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPLT;
+import lsieun.bytecode.generic.opcode.branh.IF_ICMPNE;
+import lsieun.bytecode.generic.opcode.branh.JSR;
+import lsieun.bytecode.generic.opcode.branh.JSR_W;
+import lsieun.bytecode.generic.opcode.branh.LOOKUPSWITCH;
+import lsieun.bytecode.generic.opcode.branh.RET;
+import lsieun.bytecode.generic.opcode.branh.TABLESWITCH;
 import lsieun.bytecode.generic.opcode.compare.DCMPG;
 import lsieun.bytecode.generic.opcode.compare.DCMPL;
 import lsieun.bytecode.generic.opcode.compare.FCMPG;
@@ -76,6 +108,15 @@ import lsieun.bytecode.generic.opcode.cst.DCONST;
 import lsieun.bytecode.generic.opcode.cst.LDC;
 import lsieun.bytecode.generic.opcode.cst.LDC2_W;
 import lsieun.bytecode.generic.opcode.cst.SIPUSH;
+import lsieun.bytecode.generic.opcode.field.GETFIELD;
+import lsieun.bytecode.generic.opcode.field.GETSTATIC;
+import lsieun.bytecode.generic.opcode.field.PUTFIELD;
+import lsieun.bytecode.generic.opcode.field.PUTSTATIC;
+import lsieun.bytecode.generic.opcode.invoke.INVOKEDYNAMIC;
+import lsieun.bytecode.generic.opcode.invoke.INVOKEINTERFACE;
+import lsieun.bytecode.generic.opcode.invoke.INVOKESPECIAL;
+import lsieun.bytecode.generic.opcode.invoke.INVOKESTATIC;
+import lsieun.bytecode.generic.opcode.invoke.INVOKEVIRTUAL;
 import lsieun.bytecode.generic.opcode.locals.ALOAD;
 import lsieun.bytecode.generic.opcode.locals.ASTORE;
 import lsieun.bytecode.generic.opcode.locals.DLOAD;
@@ -370,6 +411,94 @@ public interface Visitor {
     void visitIFNE(IFNE obj);
 
     void visitIFEQ(IFEQ obj);
+
+    void visitIFGE(IFGE obj);
+
+    void visitIFLT(IFLT obj);
+
+    void visitIFLE(IFLE obj);
+
+    void visitIFGT(IFGT obj);
+
+    void visitIF_ICMPNE(IF_ICMPNE obj);
+
+    void visitIF_ICMPEQ(IF_ICMPEQ obj);
+
+    void visitIF_ICMPGE(IF_ICMPGE obj);
+
+    void visitIF_ICMPLT(IF_ICMPLT obj);
+
+    void visitIF_ICMPLE(IF_ICMPLE obj);
+
+    void visitIF_ICMPGT(IF_ICMPGT obj);
+
+    void visitIF_ACMPNE(IF_ACMPNE obj);
+
+    void visitIF_ACMPEQ(IF_ACMPEQ obj);
+
+    void visitIFNONNULL(IFNONNULL obj);
+
+    void visitIFNULL(IFNULL obj);
+
+    void visitGOTO(GOTO obj);
+
+    void visitGOTO_W(GOTO_W obj);
+
+    void visitJSR(JSR obj);
+
+    void visitJSR_W(JSR_W obj);
+
+    void visitRET(RET obj);
+
+    void visitSelect(Select obj);
+
+    void visitTABLESWITCH(TABLESWITCH obj);
+
+    void visitLOOKUPSWITCH(LOOKUPSWITCH obj);
+    // endregion
+
+    // region opcode field
+    void visitPUTSTATIC(PUTSTATIC obj);
+
+    void visitGETSTATIC(GETSTATIC obj);
+
+    void visitGETFIELD(GETFIELD obj);
+
+    void visitPUTFIELD(PUTFIELD obj);
+    // endregion
+
+    // region opcode invoke
+    void visitINVOKEVIRTUAL(INVOKEVIRTUAL obj);
+
+    void visitINVOKESPECIAL(INVOKESPECIAL obj);
+
+    void visitINVOKESTATIC(INVOKESTATIC obj);
+
+    void visitINVOKEINTERFACE(INVOKEINTERFACE obj);
+
+    void visitINVOKEDYNAMIC(INVOKEDYNAMIC obj);
+    // endregion
+
+    // region opcode allocate
+    void visitNEW(NEW obj);
+
+    void visitNEWARRAY(NEWARRAY obj);
+
+    void visitANEWARRAY(ANEWARRAY obj);
+
+    void visitMULTIANEWARRAY(MULTIANEWARRAY obj);
+    // endregion
+
+    // region opcode xxx
+    void visitCHECKCAST(CHECKCAST obj);
+
+    void visitINSTANCEOF(INSTANCEOF obj);
+
+    void visitBREAKPOINT(BREAKPOINT obj);
+
+    void visitIMPDEP1(IMPDEP1 obj);
+
+    void visitIMPDEP2(IMPDEP2 obj);
     // endregion
 
     // region opcode xxx
@@ -413,55 +542,24 @@ public interface Visitor {
     void visitBranchInstruction(BranchInstruction obj);
 
     void visitIfInstruction(IfInstruction obj);
+
+    void visitVariableLengthInstruction(VariableLengthInstruction obj);
+
+    void visitGotoInstruction(GotoInstruction obj);
+
+    void visitJsrInstruction(JsrInstruction obj);
+
+    void visitLoadClass(LoadClass obj);
+
+    void visitFieldOrMethod(FieldOrMethod obj);
+
+    void visitFieldInstruction(FieldInstruction obj);
+
+    void visitInvokeInstruction(InvokeInstruction obj);
+
+    void visitAllocationInstruction(AllocationInstruction obj);
     // endregion
 
-//    void visitLoadClass(LoadClass obj);
-//    void visitFieldInstruction(FieldInstruction obj);
-//    void visitSelect(Select obj);
-//    void visitJsrInstruction(JsrInstruction obj);
-//    void visitGotoInstruction(GotoInstruction obj);
-//    void visitInvokeInstruction(InvokeInstruction obj);
-//    void visitAllocationInstruction(AllocationInstruction obj);
-//    void visitFieldOrMethod(FieldOrMethod obj);
 //    void visitExceptionThrower(ExceptionThrower obj);
-//    void visitVariableLengthInstruction(VariableLengthInstruction obj);
-//    void visitGETSTATIC(GETSTATIC obj);
-//    void visitIF_ICMPLT(IF_ICMPLT obj);
-//    void visitIFLT(IFLT obj);
-//    void visitCHECKCAST(CHECKCAST obj);
-//    void visitINVOKESTATIC(INVOKESTATIC obj);
-//    void visitIFGE(IFGE obj);
-//    void visitINVOKESPECIAL(INVOKESPECIAL obj);
-//    void visitPUTFIELD(PUTFIELD obj);
-//    void visitNEW(NEW obj);
-//    void visitIFNULL(IFNULL obj);
-//    void visitTABLESWITCH(TABLESWITCH obj);
-//    void visitIF_ICMPGE(IF_ICMPGE obj);
-//    void visitJSR(JSR obj);
-//    void visitIF_ICMPGT(IF_ICMPGT obj);
-//    void visitIF_ACMPNE(IF_ACMPNE obj);
-//    void visitNEWARRAY(NEWARRAY obj);
-//    void visitINVOKEINTERFACE(INVOKEINTERFACE obj);
-//    void visitJSR_W(JSR_W obj);
-//    void visitMULTIANEWARRAY(MULTIANEWARRAY obj);
-//    void visitIFNONNULL(IFNONNULL obj);
-//    void visitIF_ICMPLE(IF_ICMPLE obj);
-//    void visitGETFIELD(GETFIELD obj);
-//    void visitINSTANCEOF(INSTANCEOF obj);
-//    void visitIFLE(IFLE obj);
-//    void visitIF_ACMPEQ(IF_ACMPEQ obj);
-//    void visitIMPDEP1(IMPDEP1 obj);
-//    void visitIMPDEP2(IMPDEP2 obj);
-//    void visitRET(RET obj);
-//    void visitIFGT(IFGT obj);
-//    void visitINVOKEVIRTUAL(INVOKEVIRTUAL obj);
-//    void visitINVOKEDYNAMIC(INVOKEDYNAMIC obj);
-//    void visitIF_ICMPNE(IF_ICMPNE obj);
-//    void visitPUTSTATIC(PUTSTATIC obj);
-//    void visitIF_ICMPEQ(IF_ICMPEQ obj);
-//    void visitGOTO_W(GOTO_W obj);
-//    void visitGOTO(GOTO obj);
-//    void visitLOOKUPSWITCH(LOOKUPSWITCH obj);
-//    void visitANEWARRAY(ANEWARRAY obj);
-//    void visitBREAKPOINT(BREAKPOINT obj);
+
 }

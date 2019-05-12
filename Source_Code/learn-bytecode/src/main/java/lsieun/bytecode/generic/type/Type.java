@@ -224,14 +224,14 @@ public abstract class Type {
 
     // region ClassFile
 
-    static int getReturnTypeSize(final String methodSignature) {
+    public static int getReturnTypeSize(final String methodSignature) {
         final int index = methodSignature.lastIndexOf(')') + 1;
         String returnSignature = methodSignature.substring(index);
         int sizeAndCharNum = getTypeSizeAndCharNum(returnSignature);
         return size(sizeAndCharNum);
     }
 
-    static int getArgumentTypesSize(final String signature) {
+    public static int getArgumentTypesSize(final String signature) {
         int res = 0;
         int index;
         try { // Read all declarations between for `(' and `)'
@@ -274,7 +274,7 @@ public abstract class Type {
      * @return
      * @throws StringIndexOutOfBoundsException
      */
-    static int getTypeSizeAndCharNum(final String signature) throws StringIndexOutOfBoundsException {
+    public static int getTypeSizeAndCharNum(final String signature) throws StringIndexOutOfBoundsException {
         final byte type = Utility.typeOfSignature(signature);
         if (type <= TypeConst.T_VOID) {
             return encode(BasicType.getType(type).getSize(), 1);
@@ -298,7 +298,7 @@ public abstract class Type {
 
     // region auxiliary methods
 
-    static int size(final int coded) {
+    public static int size(final int coded) {
         return coded & 3;
     }
 
