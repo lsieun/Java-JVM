@@ -72,7 +72,7 @@ public class ByteDashboard {
     }
     // endregion
 
-    public boolean hasNex() {
+    public boolean hasNext() {
         if(index >= start && index < stop) return true;
         return false;
     }

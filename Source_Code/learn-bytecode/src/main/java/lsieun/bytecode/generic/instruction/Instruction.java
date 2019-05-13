@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import lsieun.bytecode.exceptions.ClassGenException;
 import lsieun.bytecode.generic.cst.OpcodeConst;
+import lsieun.bytecode.generic.instruction.sub.LocalVariableInstruction;
 import lsieun.bytecode.generic.opcode.BREAKPOINT;
 import lsieun.bytecode.generic.opcode.CHECKCAST;
 import lsieun.bytecode.generic.opcode.IMPDEP1;
@@ -70,7 +71,7 @@ public abstract class Instruction {
     /**
      * Length of instruction in bytes
      */
-    private short length = 1;
+    private int length = 1;
 
     /**
      * Opcode number
@@ -91,16 +92,12 @@ public abstract class Instruction {
     }
 
     // region getters and setters
-    public short getLength() {
+    public int getLength() {
         return length;
     }
 
-    public void setLength(short length) {
+    public void setLength(int length) {
         this.length = length;
-    }
-
-    public void setLength(final int length) {
-        this.length = (short) length; // TODO check range?
     }
 
     public short getOpcode() {
@@ -150,7 +147,7 @@ public abstract class Instruction {
     /**
      * Some instructions may be reused, so don't do anything by default.
      */
-    void dispose() {
+    public void dispose() {
     }
 
     /**
@@ -160,7 +157,7 @@ public abstract class Instruction {
      * @param wide  "wide" instruction flag
      * @throws IOException may be thrown if the implementation needs to read data from the file
      */
-    protected void initFromFile(final ByteDashboard byteDashboard, final boolean wide) {
+    protected void readFully(final ByteDashboard byteDashboard, final boolean wide) {
     }
 
     /**
@@ -525,7 +522,7 @@ public abstract class Instruction {
             throw new ClassGenException("Illegal opcode after wide: " + opcode);
         }
         obj.setOpcode(opcode);
-        obj.initFromFile(byteDashboard, wide); // Do further initializations, if any
+        obj.readFully(byteDashboard, wide); // Do further initializations, if any
         return obj;
     }
 

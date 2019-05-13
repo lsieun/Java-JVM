@@ -1,12 +1,8 @@
 package lsieun.bytecode.generic.opcode.invoke;
 
-import lsieun.bytecode.classfile.ConstantPool;
-import lsieun.bytecode.classfile.cp.ConstantInvokeDynamic;
-import lsieun.bytecode.classfile.cp.ConstantNameAndType;
-import lsieun.bytecode.generic.cst.CPConst;
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.ConstantPoolGen;
-import lsieun.bytecode.generic.instruction.InvokeInstruction;
+import lsieun.bytecode.generic.instruction.sub.cp.InvokeInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.ObjectType;
 import lsieun.bytecode.generic.type.ReferenceType;

@@ -1,8 +1,7 @@
 package lsieun.bytecode.generic.type;
 
-import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.cst.TypeConst;
-import lsieun.bytecode.generic.instruction.InstructionHandle;
+import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
 
 /**
  * Returnaddress, the type JSR or JSR_W instructions push upon the stack.

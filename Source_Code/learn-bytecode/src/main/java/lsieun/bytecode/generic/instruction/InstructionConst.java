@@ -1,6 +1,12 @@
 package lsieun.bytecode.generic.instruction;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
+import lsieun.bytecode.generic.instruction.sub.ArithmeticInstruction;
+import lsieun.bytecode.generic.instruction.sub.ArrayInstruction;
+import lsieun.bytecode.generic.instruction.sub.ConversionInstruction;
+import lsieun.bytecode.generic.instruction.sub.LocalVariableInstruction;
+import lsieun.bytecode.generic.instruction.sub.ReturnInstruction;
+import lsieun.bytecode.generic.instruction.sub.StackInstruction;
 import lsieun.bytecode.generic.opcode.cst.ACONST_NULL;
 import lsieun.bytecode.generic.opcode.cst.DCONST;
 import lsieun.bytecode.generic.opcode.cst.FCONST;

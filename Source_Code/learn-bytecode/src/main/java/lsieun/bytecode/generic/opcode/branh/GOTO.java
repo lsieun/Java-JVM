@@ -1,9 +1,9 @@
 package lsieun.bytecode.generic.opcode.branh;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.GotoInstruction;
-import lsieun.bytecode.generic.instruction.InstructionHandle;
-import lsieun.bytecode.generic.instruction.VariableLengthInstruction;
+import lsieun.bytecode.generic.instruction.sub.branch.GotoInstruction;
+import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
+import lsieun.bytecode.generic.instruction.facet.VariableLengthInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 
 /**
@@ -31,7 +31,7 @@ public class GOTO extends GotoInstruction implements VariableLengthInstruction {
      * @return additional offset caused by possible change of this instruction's length
      */
     @Override
-    protected int updatePosition(final int offset, final int max_offset) {
+    public int updatePosition(final int offset, final int max_offset) {
         final int i = getTargetOffset(); // Depending on old position value
         setPosition(getPosition() + offset); // Position may be shifted by preceding expansions
         if (Math.abs(i) >= (Short.MAX_VALUE - max_offset)) { // to large for short (estimate)

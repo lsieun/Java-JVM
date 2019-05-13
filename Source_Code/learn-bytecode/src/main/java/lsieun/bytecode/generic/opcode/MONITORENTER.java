@@ -2,7 +2,7 @@ package lsieun.bytecode.generic.opcode;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.Instruction;
-import lsieun.bytecode.generic.instruction.StackConsumer;
+import lsieun.bytecode.generic.instruction.facet.StackConsumer;
 import lsieun.bytecode.generic.instruction.Visitor;
 
 /**

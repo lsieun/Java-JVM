@@ -1,8 +1,8 @@
 package lsieun.bytecode.generic.opcode.branh;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.GotoInstruction;
-import lsieun.bytecode.generic.instruction.InstructionHandle;
+import lsieun.bytecode.generic.instruction.sub.branch.GotoInstruction;
+import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
 import lsieun.bytecode.generic.instruction.Visitor;
 
 /**

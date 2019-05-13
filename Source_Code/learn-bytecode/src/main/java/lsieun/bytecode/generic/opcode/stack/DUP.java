@@ -2,8 +2,8 @@ package lsieun.bytecode.generic.opcode.stack;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.Visitor;
-import lsieun.bytecode.generic.instruction.PushInstruction;
-import lsieun.bytecode.generic.instruction.StackInstruction;
+import lsieun.bytecode.generic.instruction.facet.PushInstruction;
+import lsieun.bytecode.generic.instruction.sub.StackInstruction;
 
 /**
  * DUP - Duplicate top operand stack word

@@ -1,14 +1,12 @@
 package lsieun.bytecode.generic.opcode.locals;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.StoreInstruction;
+import lsieun.bytecode.generic.instruction.sub.load.StoreInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 
 /**
  * FSTORE - Store float into local variable
  * <PRE>Stack: ..., value -&gt; ... </PRE>
- *
- * @version $Id$
  */
 public class FSTORE extends StoreInstruction {
 

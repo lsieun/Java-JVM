@@ -2,9 +2,9 @@ package lsieun.bytecode.generic.opcode.field;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.ConstantPoolGen;
-import lsieun.bytecode.generic.instruction.FieldInstruction;
-import lsieun.bytecode.generic.instruction.StackConsumer;
-import lsieun.bytecode.generic.instruction.StackProducer;
+import lsieun.bytecode.generic.instruction.sub.cp.FieldInstruction;
+import lsieun.bytecode.generic.instruction.facet.StackConsumer;
+import lsieun.bytecode.generic.instruction.facet.StackProducer;
 import lsieun.bytecode.generic.instruction.Visitor;
 
 /**

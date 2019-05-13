@@ -13,17 +13,21 @@ import lsieun.bytecode.classfile.attrs.method.Code;
 import lsieun.bytecode.classfile.visitors.AttributeClassFileVisitor;
 import lsieun.bytecode.classfile.visitors.AttributeFieldVisitor;
 import lsieun.bytecode.classfile.visitors.AttributeMethodVisitor;
-import lsieun.bytecode.classfile.visitors.AttributeVisitor;
 import lsieun.bytecode.classfile.visitors.ClassFileStandardVisitor;
 import lsieun.bytecode.classfile.visitors.AttributeCodeVisitor;
 import lsieun.bytecode.classfile.visitors.FieldStandardVisitor;
 import lsieun.bytecode.classfile.visitors.MethodStandardVisitor;
+import lsieun.bytecode.generic.instruction.Instruction;
+import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
+import lsieun.bytecode.generic.instruction.InstructionList;
+import lsieun.bytecode.generic.instruction.visitor.CodeStandardVisitor;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.bytecode.utils.ClassParser;
 import lsieun.bytecode.utils.PropertyUtils;
 import lsieun.utils.StringUtils;
 import lsieun.utils.io.FileUtils;
 import lsieun.utils.io.JarUtils;
+import lsieun.utils.radix.HexUtils;
 
 public class App {
     public static void main(String[] args) {
@@ -89,6 +93,10 @@ public class App {
             String methodSignature = PropertyUtils.getProperty("bytecode.content.method.signature");
             displayMethod(classFile, methodSignature);
         }
+        else if("Code".equalsIgnoreCase(target)) {
+            String methodSignature = PropertyUtils.getProperty("bytecode.content.method.signature");
+            displayCode(classFile, methodSignature);
+        }
         else if("ClassFileAttribute".equalsIgnoreCase(target)) {
             String attrName = PropertyUtils.getProperty("bytecode.content.classfile.attribute.name");
             displayClassFileAttribute(classFile, attrName);
@@ -131,6 +139,33 @@ public class App {
         MethodStandardVisitor visitor = new MethodStandardVisitor(nameAndType);
         //MethodRawVisitor visitor = new MethodRawVisitor(nameAndType);
         classFile.accept(visitor);
+    }
+
+    public static void displayCode(ClassFile classFile, String nameAndType) {
+        System.out.println("=================================================" + StringUtils.LF);
+        Methods methods = classFile.getMethods();
+        MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
+        if(methodInfo == null) {
+            System.out.println("Method DOES NOT EXIST: " + nameAndType);
+            return;
+        }
+        Attributes attributes = methodInfo.getAttributes();
+        AttributeInfo methodAttr = attributes.findAttribute("Code");
+        if(methodAttr == null) {
+            System.out.println("Code Attribute DOES NOT EXIST: " + nameAndType);
+            return;
+        }
+        CodeStandardVisitor visitor = new CodeStandardVisitor();
+        Code code = (Code) methodAttr;
+        byte[] bytes = code.getCode();
+        System.out.println("HexCode: " + HexUtils.fromBytes(bytes));
+        InstructionList il = new InstructionList(bytes);
+        InstructionHandle ih = il.getStart();
+        while (ih != null) {
+            Instruction instruction = ih.getInstruction();
+            instruction.accept(visitor);
+            ih = ih.getNext();
+        }
     }
 
     public static void displayClassFileAttribute(ClassFile classFile, String attrName) {

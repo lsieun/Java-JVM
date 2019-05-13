@@ -1,7 +1,7 @@
 package lsieun.bytecode.generic.opcode.arithmetic;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.ArithmeticInstruction;
+import lsieun.bytecode.generic.instruction.sub.ArithmeticInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 
 /**

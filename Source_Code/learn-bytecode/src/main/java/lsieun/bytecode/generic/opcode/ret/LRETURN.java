@@ -1,7 +1,7 @@
 package lsieun.bytecode.generic.opcode.ret;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.ReturnInstruction;
+import lsieun.bytecode.generic.instruction.sub.ReturnInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 
 /**

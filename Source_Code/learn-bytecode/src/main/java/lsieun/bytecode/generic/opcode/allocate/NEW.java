@@ -2,10 +2,10 @@ package lsieun.bytecode.generic.opcode.allocate;
 
 import lsieun.bytecode.generic.LoadClass;
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.AllocationInstruction;
-import lsieun.bytecode.generic.instruction.CPInstruction;
+import lsieun.bytecode.generic.instruction.facet.AllocationInstruction;
+import lsieun.bytecode.generic.instruction.sub.CPInstruction;
 import lsieun.bytecode.generic.instruction.ConstantPoolGen;
-import lsieun.bytecode.generic.instruction.StackProducer;
+import lsieun.bytecode.generic.instruction.facet.StackProducer;
 import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.ObjectType;
 

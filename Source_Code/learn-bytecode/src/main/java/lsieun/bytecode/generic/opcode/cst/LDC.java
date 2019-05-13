@@ -9,12 +9,13 @@ import lsieun.bytecode.classfile.cp.ConstantUtf8;
 import lsieun.bytecode.generic.cst.CPConst;
 import lsieun.bytecode.generic.cst.JVMConst;
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.CPInstruction;
+import lsieun.bytecode.generic.instruction.sub.CPInstruction;
 import lsieun.bytecode.generic.instruction.ConstantPoolGen;
-import lsieun.bytecode.generic.instruction.PushInstruction;
+import lsieun.bytecode.generic.instruction.facet.PushInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.ObjectType;
 import lsieun.bytecode.generic.type.Type;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * LDC - Push item from constant pool.
@@ -55,6 +56,7 @@ public class LDC extends CPInstruction implements PushInstruction {
         setSize();
     }
 
+
     public Object getValue(final ConstantPoolGen cpg) {
         Constant c = cpg.getConstantPool().getConstant(super.getIndex());
         switch (c.getTag()) {
@@ -89,6 +91,13 @@ public class LDC extends CPInstruction implements PushInstruction {
             default: // Never reached
                 throw new RuntimeException("Unknown or invalid constant type at " + super.getIndex());
         }
+    }
+
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        super.setLength(2);
+        int cpIndex = byteDashboard.nextByte();
+        super.setIndex(cpIndex);
     }
 
     /**

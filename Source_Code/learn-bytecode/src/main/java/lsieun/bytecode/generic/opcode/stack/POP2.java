@@ -2,8 +2,8 @@ package lsieun.bytecode.generic.opcode.stack;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.Visitor;
-import lsieun.bytecode.generic.instruction.PopInstruction;
-import lsieun.bytecode.generic.instruction.StackInstruction;
+import lsieun.bytecode.generic.instruction.facet.PopInstruction;
+import lsieun.bytecode.generic.instruction.sub.StackInstruction;
 
 /**
  * POP2 - Pop two top operand stack words

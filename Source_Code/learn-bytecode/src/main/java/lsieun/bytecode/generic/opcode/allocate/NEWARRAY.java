@@ -1,9 +1,9 @@
 package lsieun.bytecode.generic.opcode.allocate;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.AllocationInstruction;
+import lsieun.bytecode.generic.instruction.facet.AllocationInstruction;
 import lsieun.bytecode.generic.instruction.Instruction;
-import lsieun.bytecode.generic.instruction.StackProducer;
+import lsieun.bytecode.generic.instruction.facet.StackProducer;
 import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.ArrayType;
 import lsieun.bytecode.generic.type.BasicType;

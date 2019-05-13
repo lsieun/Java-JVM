@@ -16,7 +16,7 @@ public class InstructionParser {
 
         List<String> list = new ArrayList();
 
-        while (board.hasNex()) {
+        while (board.hasNext()) {
             int index = board.getIndex();
             List<Byte> byteList = new ArrayList();
 

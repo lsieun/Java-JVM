@@ -3,8 +3,7 @@ package lsieun.bytecode.generic.opcode.cst;
 import lsieun.bytecode.exceptions.ClassGenException;
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.ConstantPoolGen;
-import lsieun.bytecode.generic.instruction.ConstantPushInstruction;
-import lsieun.bytecode.generic.instruction.Instruction;
+import lsieun.bytecode.generic.instruction.sub.ConstantPushInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.Type;
 
@@ -14,7 +13,7 @@ import lsieun.bytecode.generic.type.Type;
  * <PRE>Stack: ... -&gt; ..., </PRE>
  *
  */
-public class ICONST extends Instruction implements ConstantPushInstruction {
+public class ICONST extends ConstantPushInstruction {
     private int value;
 
     /**

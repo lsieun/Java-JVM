@@ -3,9 +3,9 @@ package lsieun.bytecode.generic.opcode.compare;
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.ConstantPoolGen;
 import lsieun.bytecode.generic.instruction.Instruction;
-import lsieun.bytecode.generic.instruction.StackConsumer;
-import lsieun.bytecode.generic.instruction.StackProducer;
-import lsieun.bytecode.generic.instruction.TypedInstruction;
+import lsieun.bytecode.generic.instruction.facet.StackConsumer;
+import lsieun.bytecode.generic.instruction.facet.StackProducer;
+import lsieun.bytecode.generic.instruction.facet.TypedInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.Type;
 

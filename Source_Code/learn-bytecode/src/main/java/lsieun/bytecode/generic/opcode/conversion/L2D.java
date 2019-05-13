@@ -1,7 +1,7 @@
 package lsieun.bytecode.generic.opcode.conversion;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.ConversionInstruction;
+import lsieun.bytecode.generic.instruction.sub.ConversionInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 
 /**

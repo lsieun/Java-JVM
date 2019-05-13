@@ -2,9 +2,9 @@ package lsieun.bytecode.generic.opcode.stack;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.Visitor;
-import lsieun.bytecode.generic.instruction.StackConsumer;
-import lsieun.bytecode.generic.instruction.StackInstruction;
-import lsieun.bytecode.generic.instruction.StackProducer;
+import lsieun.bytecode.generic.instruction.facet.StackConsumer;
+import lsieun.bytecode.generic.instruction.sub.StackInstruction;
+import lsieun.bytecode.generic.instruction.facet.StackProducer;
 
 /**
  * SWAP - Swa top operand stack word

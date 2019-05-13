@@ -1,7 +1,7 @@
 package lsieun.bytecode.generic.opcode.invoke;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.InvokeInstruction;
+import lsieun.bytecode.generic.instruction.sub.cp.InvokeInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 
 /**

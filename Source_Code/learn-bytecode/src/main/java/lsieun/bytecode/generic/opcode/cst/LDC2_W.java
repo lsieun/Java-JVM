@@ -5,9 +5,9 @@ import lsieun.bytecode.classfile.cp.ConstantDouble;
 import lsieun.bytecode.classfile.cp.ConstantLong;
 import lsieun.bytecode.generic.cst.CPConst;
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.CPInstruction;
+import lsieun.bytecode.generic.instruction.sub.CPInstruction;
 import lsieun.bytecode.generic.instruction.ConstantPoolGen;
-import lsieun.bytecode.generic.instruction.PushInstruction;
+import lsieun.bytecode.generic.instruction.facet.PushInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.Type;
 
@@ -16,7 +16,6 @@ import lsieun.bytecode.generic.type.Type;
  *
  * <PRE>Stack: ... -&gt; ..., item.word1, item.word2</PRE>
  *
- * @version $Id$
  */
 public class LDC2_W extends CPInstruction implements PushInstruction {
 

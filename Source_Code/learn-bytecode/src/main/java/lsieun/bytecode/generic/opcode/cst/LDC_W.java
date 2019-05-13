@@ -2,6 +2,9 @@ package lsieun.bytecode.generic.opcode.cst;
 
 import java.io.IOException;
 
+import lsieun.bytecode.generic.cst.OpcodeConst;
+import lsieun.bytecode.utils.ByteDashboard;
+
 /**
  * LDC_W - Push item from constant pool (wide index)
  *
@@ -22,4 +25,12 @@ public class LDC_W extends LDC {
         super(index);
     }
 
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        int cpIndex = byteDashboard.nextShort();
+        setIndex(cpIndex);
+        // Override just in case it has been changed
+        super.setOpcode(OpcodeConst.LDC_W);
+        super.setLength(3);
+    }
 }

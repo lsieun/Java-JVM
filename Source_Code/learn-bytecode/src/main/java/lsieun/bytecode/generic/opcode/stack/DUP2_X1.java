@@ -2,7 +2,7 @@ package lsieun.bytecode.generic.opcode.stack;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.Visitor;
-import lsieun.bytecode.generic.instruction.StackInstruction;
+import lsieun.bytecode.generic.instruction.sub.StackInstruction;
 
 /**
  * DUP2_X1 - Duplicate two top operand stack words and put three down

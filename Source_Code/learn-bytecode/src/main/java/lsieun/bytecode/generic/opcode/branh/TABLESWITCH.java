@@ -1,8 +1,8 @@
 package lsieun.bytecode.generic.opcode.branh;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.InstructionHandle;
-import lsieun.bytecode.generic.instruction.Select;
+import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
+import lsieun.bytecode.generic.instruction.sub.branch.SelectInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 
 /**
@@ -11,7 +11,7 @@ import lsieun.bytecode.generic.instruction.Visitor;
  * @version $Id$
  * @see SWITCH
  */
-public class TABLESWITCH extends Select {
+public class TABLESWITCH extends SelectInstruction {
 
     /**
      * Empty constructor needed for Instruction.readInstruction.
