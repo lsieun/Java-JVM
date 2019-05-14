@@ -118,6 +118,16 @@ public class ByteDashboard {
         return bytes;
     }
 
+    public static byte[] peekN(byte[] code_bytes, int offset, int n) {
+        byte[] buff = new byte[n];
+        for(int i=0; i<n; i++) {
+            int idx = offset + i;
+            byte b = code_bytes[idx];
+            buff[i] = b;
+        }
+        return buff;
+    }
+
     // region nextXXX
     /**
      * 这里不保留符号（正负的符号）

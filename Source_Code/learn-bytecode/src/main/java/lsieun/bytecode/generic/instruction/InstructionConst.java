@@ -390,6 +390,6 @@ public class InstructionConst {
      * @return the entry from the private INSTRUCTIONS table
      */
     public static Instruction getInstruction(final int index) {
-        return INSTRUCTIONS[index];
+        return (Instruction) INSTRUCTIONS[index];
     }
 }

@@ -8,6 +8,7 @@ import lsieun.bytecode.generic.instruction.Instruction;
 import lsieun.bytecode.generic.instruction.facet.IndexedInstruction;
 import lsieun.bytecode.generic.instruction.facet.TypedInstruction;
 import lsieun.bytecode.generic.type.Type;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * Abstract super class for instructions that use an index into the
@@ -49,21 +50,29 @@ public abstract class CPInstruction extends Instruction
 
     /**
      * Set the index to constant pool.
+     *
      * @param index in  constant pool.
      */
     @Override
-    public void setIndex( final int index ) { // TODO could be package-protected?
+    public void setIndex(final int index) { // TODO could be package-protected?
         if (index < 0) {
             throw new ClassGenException("Negative index value: " + index);
         }
         this.index = index;
     }
 
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        int cpIndex = byteDashboard.nextShort();
+        setIndex(cpIndex);
+        super.setLength(3);
+    }
 
-    /** @return type related with this instruction.
+    /**
+     * @return type related with this instruction.
      */
     @Override
-    public Type getType(final ConstantPoolGen cpg ) {
+    public Type getType(final ConstantPoolGen cpg) {
         final ConstantPool cp = cpg.getConstantPool();
         String name = cp.getConstantString(index, CPConst.CONSTANT_Class);
         if (!name.startsWith("[")) {

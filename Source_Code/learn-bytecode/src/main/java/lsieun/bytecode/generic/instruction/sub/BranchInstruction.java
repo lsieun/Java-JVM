@@ -5,6 +5,7 @@ import lsieun.bytecode.generic.instruction.Instruction;
 import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
 import lsieun.bytecode.generic.instruction.InstructionList;
 import lsieun.bytecode.generic.instruction.facet.InstructionTargeter;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * Abstract super class for branching instructions like GOTO, IFEQ, etc..
@@ -153,6 +154,12 @@ public abstract class BranchInstruction extends Instruction implements Instructi
     public int updatePosition(final int offset, final int max_offset) {
         position += offset;
         return 0;
+    }
+
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        super.setLength(3);
+        index = byteDashboard.readShort();
     }
 
     /**

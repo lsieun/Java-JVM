@@ -5,6 +5,7 @@ import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.ConstantPoolGen;
 import lsieun.bytecode.generic.instruction.sub.cp.InvokeInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * INVOKEINTERFACE - Invoke interface method
@@ -42,6 +43,14 @@ public final class INVOKEINTERFACE extends InvokeInstruction {
     @Override
     public int consumeStack(final ConstantPoolGen cpg) { // nargs is given in byte-code
         return nargs; // nargs includes this reference
+    }
+
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        super.readFully(byteDashboard, wide);
+        super.setLength(5);
+        nargs = byteDashboard.nextByte();
+        byteDashboard.readByte(); // Skip 0 byte
     }
 
     /**

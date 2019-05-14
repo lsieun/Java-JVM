@@ -1,5 +1,6 @@
 package lsieun.bytecode.generic.instruction.visitor;
 
+import lsieun.bytecode.generic.instruction.Instruction;
 import lsieun.bytecode.generic.instruction.sub.cp.FieldOrMethod;
 import lsieun.bytecode.generic.LoadClass;
 import lsieun.bytecode.generic.cst.OpcodeConst;
@@ -953,6 +954,11 @@ public class OpcodeVisitor implements Visitor {
 
     @Override
     public void visitIMPDEP2(IMPDEP2 obj) {
+
+    }
+
+    @Override
+    public void visitInstruction(Instruction obj) {
 
     }
 

@@ -67,7 +67,7 @@ import lsieun.bytecode.utils.ByteDashboard;
 /**
  * Abstract super class for all Java byte codes.
  */
-public abstract class Instruction {
+public abstract class Instruction implements Cloneable {
     /**
      * Length of instruction in bytes
      */
@@ -208,6 +208,7 @@ public abstract class Instruction {
      */
     public static Instruction readInstruction(final ByteDashboard byteDashboard) {
         boolean wide = false;
+        int byte_offset = byteDashboard.getIndex();
         short opcode = (short) byteDashboard.nextByte();
         Instruction obj = null;
         if (opcode == OpcodeConst.WIDE) { // Read next opcode after wide byte

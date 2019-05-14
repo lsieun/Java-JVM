@@ -4,6 +4,7 @@ import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
 import lsieun.bytecode.generic.instruction.sub.branch.SelectInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * LOOKUPSWITCH - Switch with unordered set of values
@@ -29,6 +30,23 @@ public class LOOKUPSWITCH extends SelectInstruction {
         setFixed_length(_length);
     }
 
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        super.readFully(byteDashboard, wide); // reads padding
+        final int _match_length = byteDashboard.readInt();
+        setMatch_length(_match_length);
+        final short _fixed_length = (short) (9 + _match_length * 8);
+        setFixed_length(_fixed_length);
+        final short _length = (short) (_fixed_length + super.getPadding());
+        super.setLength(_length);
+        super.setMatches(new int[_match_length]);
+        super.setIndices(new int[_match_length]);
+        super.setTargets(new InstructionHandle[_match_length]);
+        for (int i = 0; i < _match_length; i++) {
+            super.setMatch(i, byteDashboard.readInt());
+            super.setIndices(i, byteDashboard.readInt());
+        }
+    }
 
     /**
      * Call corresponding visitor method(s). The order is:

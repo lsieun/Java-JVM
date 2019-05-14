@@ -4,6 +4,7 @@ import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
 import lsieun.bytecode.generic.instruction.sub.branch.SelectInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * TABLESWITCH - Switch within given range of values, i.e., low..high
@@ -35,6 +36,24 @@ public class TABLESWITCH extends SelectInstruction {
         setFixed_length(_length);
     }
 
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        super.readFully(byteDashboard, wide);
+        final int low = byteDashboard.readInt();
+        final int high = byteDashboard.readInt();
+        final int _match_length = high - low + 1;
+        setMatch_length(_match_length);
+        final short _fixed_length = (short) (13 + _match_length * 4);
+        setFixed_length(_fixed_length);
+        super.setLength((short) (_fixed_length + super.getPadding()));
+        super.setMatches(new int[_match_length]);
+        super.setIndices(new int[_match_length]);
+        super.setTargets(new InstructionHandle[_match_length]);
+        for (int i = 0; i < _match_length; i++) {
+            super.setMatch(i, low + i);
+            super.setIndices(i, byteDashboard.readInt());
+        }
+    }
 
     /**
      * Call corresponding visitor method(s). The order is:

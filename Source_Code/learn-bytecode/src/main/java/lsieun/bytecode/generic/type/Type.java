@@ -77,6 +77,15 @@ public abstract class Type {
     }
 
     /**
+     * @return Type string, e.g. `int[]'
+     */
+    @Override
+    public String toString() {
+        return ((this.equals(Type.NULL) || (type >= TypeConst.T_UNKNOWN))) ? signature : Utility
+                .signatureToString(signature, false);
+    }
+
+    /**
      * Predefined constants
      */
     public static final BasicType VOID = new BasicType(TypeConst.T_VOID);

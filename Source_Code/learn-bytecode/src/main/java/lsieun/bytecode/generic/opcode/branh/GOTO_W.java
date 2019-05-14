@@ -4,6 +4,7 @@ import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.sub.branch.GotoInstruction;
 import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
 import lsieun.bytecode.generic.instruction.Visitor;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * GOTO_W - Branch always (to relative offset, not absolute address)
@@ -25,6 +26,11 @@ public class GOTO_W extends GotoInstruction {
         super.setLength(5);
     }
 
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        super.setIndex(byteDashboard.readInt());
+        super.setLength(5);
+    }
 
     /**
      * Call corresponding visitor method(s). The order is:

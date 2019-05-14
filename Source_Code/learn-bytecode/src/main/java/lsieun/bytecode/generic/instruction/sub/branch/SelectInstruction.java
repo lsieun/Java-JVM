@@ -7,6 +7,7 @@ import lsieun.bytecode.generic.instruction.facet.StackConsumer;
 import lsieun.bytecode.generic.instruction.facet.StackProducer;
 import lsieun.bytecode.generic.instruction.facet.VariableLengthInstruction;
 import lsieun.bytecode.generic.instruction.sub.BranchInstruction;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * SelectInstruction - Abstract super class for LOOKUPSWITCH and TABLESWITCH instructions.
@@ -84,12 +85,12 @@ public abstract class SelectInstruction extends BranchInstruction
     /**
      * @return index entry from indices
      */
-    final int getIndices(final int index) {
+    public final int getIndices(final int index) {
         return indices[index];
     }
 
 
-    final int setIndices(final int i, final int value) {
+    public final int setIndices(final int i, final int value) {
         indices[i] = value;
         return value;  // Allow use in nested calls
     }
@@ -204,7 +205,7 @@ public abstract class SelectInstruction extends BranchInstruction
     /**
      * @param match_length the match_length to set
      */
-    final int setMatch_length(final int match_length) {
+    public final int setMatch_length(final int match_length) {
         this.match_length = match_length;
         return match_length;
     }
@@ -214,7 +215,7 @@ public abstract class SelectInstruction extends BranchInstruction
      * @param index
      * @param value
      */
-    final void setMatch(final int index, final int value) {
+    public final void setMatch(final int index, final int value) {
         match[index] = value;
     }
 
@@ -222,7 +223,7 @@ public abstract class SelectInstruction extends BranchInstruction
      *
      * @param array
      */
-    final void setIndices(final int[] array) {
+    public final void setIndices(final int[] array) {
         indices = array;
     }
 
@@ -230,7 +231,7 @@ public abstract class SelectInstruction extends BranchInstruction
      *
      * @param array
      */
-    final void setMatches(final int[] array) {
+    public final void setMatches(final int[] array) {
         match = array;
     }
 
@@ -238,7 +239,7 @@ public abstract class SelectInstruction extends BranchInstruction
      *
      * @param array
      */
-    final void setTargets(final InstructionHandle[] array) {
+    public final void setTargets(final InstructionHandle[] array) {
         targets = array;
     }
 
@@ -246,11 +247,19 @@ public abstract class SelectInstruction extends BranchInstruction
      *
      * @return the padding
      */
-    final int getPadding() {
+    public final int getPadding() {
         return padding;
     }
 
-
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        padding = (4 - (byteDashboard.getIndex() % 4)) % 4; // Compute number of pad bytes
+        for (int i = 0; i < padding; i++) {
+            byteDashboard.readByte();
+        }
+        // Default branch target common for both cases (TABLESWITCH, LOOKUPSWITCH)
+        super.setIndex(byteDashboard.readInt());
+    }
 
     /**
      * Inform targets that they're not targeted anymore.

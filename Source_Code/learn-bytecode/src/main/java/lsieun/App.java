@@ -5,6 +5,7 @@ import java.io.InputStream;
 import lsieun.bytecode.classfile.AttributeInfo;
 import lsieun.bytecode.classfile.Attributes;
 import lsieun.bytecode.classfile.ClassFile;
+import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.classfile.FieldInfo;
 import lsieun.bytecode.classfile.Fields;
 import lsieun.bytecode.classfile.MethodInfo;
@@ -155,17 +156,12 @@ public class App {
             System.out.println("Code Attribute DOES NOT EXIST: " + nameAndType);
             return;
         }
-        CodeStandardVisitor visitor = new CodeStandardVisitor();
+        ConstantPool constantPool = classFile.getConstantPool();
         Code code = (Code) methodAttr;
         byte[] bytes = code.getCode();
-        System.out.println("HexCode: " + HexUtils.fromBytes(bytes));
-        InstructionList il = new InstructionList(bytes);
-        InstructionHandle ih = il.getStart();
-        while (ih != null) {
-            Instruction instruction = ih.getInstruction();
-            instruction.accept(visitor);
-            ih = ih.getNext();
-        }
+
+        CodeStandardVisitor visitor = new CodeStandardVisitor();
+        visitor.visit(constantPool, bytes);
     }
 
     public static void displayClassFileAttribute(ClassFile classFile, String attrName) {

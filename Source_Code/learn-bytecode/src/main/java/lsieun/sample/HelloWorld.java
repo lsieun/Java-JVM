@@ -2,7 +2,8 @@ package lsieun.sample;
 
 public class HelloWorld {
     public void testSimple() {
-        float value = 5;
-        value++;
+        int a;
+        int b;
+        b = a = 2;
     }
 }

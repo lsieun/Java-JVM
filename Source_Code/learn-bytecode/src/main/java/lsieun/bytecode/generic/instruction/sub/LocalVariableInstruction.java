@@ -8,6 +8,7 @@ import lsieun.bytecode.generic.instruction.Instruction;
 import lsieun.bytecode.generic.instruction.facet.TypedInstruction;
 import lsieun.bytecode.generic.instruction.facet.IndexedInstruction;
 import lsieun.bytecode.generic.type.Type;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * Abstract super class for instructions dealing with local variables.
@@ -101,8 +102,37 @@ public abstract class LocalVariableInstruction extends Instruction
     }
 
 
-    private boolean wide() {
+    public boolean wide() {
         return n > JVMConst.MAX_BYTE;
+    }
+
+    /**
+     * Read needed data (e.g. index) from file.
+     * <pre>
+     * (ILOAD &lt;= tag &lt;= ALOAD_3) || (ISTORE &lt;= tag &lt;= ASTORE_3)
+     * </pre>
+     */
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        if (wide) {
+            int localVarIndex = byteDashboard.nextShort();
+            n = localVarIndex;
+            super.setLength(4); // wide占1个byte，opcode占一个byte，而n占两个byte
+        } else {
+            final short _opcode = super.getOpcode();
+            if (((_opcode >= OpcodeConst.ILOAD) && (_opcode <= OpcodeConst.ALOAD))
+                    || ((_opcode >= OpcodeConst.ISTORE) && (_opcode <= OpcodeConst.ASTORE))) {
+                int localVarIndex = byteDashboard.nextByte();
+                n = localVarIndex;
+                super.setLength(2);
+            } else if (_opcode <= OpcodeConst.ALOAD_3) { // compact load instruction such as ILOAD_2
+                n = (_opcode - OpcodeConst.ILOAD_0) % 4;
+                super.setLength(1);
+            } else { // Assert ISTORE_0 <= tag <= ASTORE_3
+                n = (_opcode - OpcodeConst.ISTORE_0) % 4;
+                super.setLength(1);
+            }
+        }
     }
 
     /**

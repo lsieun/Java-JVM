@@ -532,6 +532,8 @@ public interface Visitor {
 
 
     // region Instruction
+    void visitInstruction(Instruction obj);
+
     void visitTypedInstruction(TypedInstruction obj);
 
     void visitPushInstruction(PushInstruction obj);

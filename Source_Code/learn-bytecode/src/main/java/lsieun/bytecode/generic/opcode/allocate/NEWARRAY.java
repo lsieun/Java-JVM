@@ -8,6 +8,7 @@ import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.ArrayType;
 import lsieun.bytecode.generic.type.BasicType;
 import lsieun.bytecode.generic.type.Type;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * NEWARRAY -  Create new array of basic type (int, short, ...)
@@ -49,6 +50,12 @@ public class NEWARRAY extends Instruction
      */
     public final Type getType() {
         return new ArrayType(BasicType.getType(type), 1);
+    }
+
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        type = byteDashboard.readByte();
+        super.setLength(2);
     }
 
     /**

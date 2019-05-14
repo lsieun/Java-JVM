@@ -1,5 +1,11 @@
 package lsieun.bytecode.generic.instruction;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import lsieun.bytecode.exceptions.ClassGenException;
 import lsieun.bytecode.generic.instruction.handle.BranchHandle;
 import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
@@ -23,6 +29,7 @@ public class InstructionList /*implements Iterable<InstructionHandle>*/ {
     private InstructionHandle end = null;
     private int length = 0; // number of elements in list
     private int[] byte_positions; // byte code offsets corresponding to instructions
+    private byte[] code_bytes;
 
     /**
      * Create (empty) instruction list.
@@ -38,6 +45,7 @@ public class InstructionList /*implements Iterable<InstructionHandle>*/ {
      *            byte array containing the instructions
      */
     public InstructionList(final byte[] code) {
+        this.code_bytes = code;
         int count = 0; // Contains actual length
         int[] pos;
         InstructionHandle[] ihs;
@@ -185,6 +193,41 @@ public class InstructionList /*implements Iterable<InstructionHandle>*/ {
      */
     public int size() {
         return length;
+    }
+
+    /**
+     * Get positions (offsets) of all instructions in the list. This relies on that the list has been freshly created from an byte code array, or that
+     * setPositions() has been called. Otherwise this may be inaccurate.
+     *
+     * @return array containing all instruction's offset in byte code
+     */
+    public int[] getInstructionPositions() {
+        return byte_positions;
+    }
+
+    /**
+     * When everything is finished, use this method to convert the instruction list into an array of bytes.
+     *
+     * @return the byte code ready to be dumped
+     */
+    public byte[] getByteCode() {
+        return this.code_bytes;
+    }
+
+    /**
+     * @return an array of instructions without target information for branch instructions.
+     */
+    public Instruction[] getInstructions() {
+        final List<Instruction> instructions = new ArrayList();
+        ByteDashboard byteDashboard = new ByteDashboard("code_bytes", code_bytes);
+        try {
+            while (byteDashboard.hasNext()) {
+                instructions.add(Instruction.readInstruction(byteDashboard));
+            }
+        } catch (final Exception e) {
+            throw new ClassGenException(e.toString(), e);
+        }
+        return instructions.toArray(new Instruction[instructions.size()]);
     }
 
     /**
