@@ -29,10 +29,11 @@ public abstract class InvokeInstruction extends FieldOrMethod
     /**
      * Also works for instructions whose stack effect depends on the
      * constant pool entry they reference.
+     *
      * @return Number of words consumed from stack by this instruction
      */
     @Override
-    public int consumeStack( final ConstantPoolGen cpg ) {
+    public int consumeStack(final ConstantPoolGen cpg) {
         int sum;
         if ((super.getOpcode() == OpcodeConst.INVOKESTATIC) || (super.getOpcode() == OpcodeConst.INVOKEDYNAMIC)) {
             sum = 0;
@@ -48,36 +49,41 @@ public abstract class InvokeInstruction extends FieldOrMethod
     /**
      * Also works for instructions whose stack effect depends on the
      * constant pool entry they reference.
+     *
      * @return Number of words produced onto stack by this instruction
      */
     @Override
-    public int produceStack( final ConstantPoolGen cpg ) {
+    public int produceStack(final ConstantPoolGen cpg) {
         final String signature = getSignature(cpg);
         return Type.getReturnTypeSize(signature);
     }
 
-    /** @return return type of referenced method.
+    /**
+     * @return return type of referenced method.
      */
     @Override
-    public Type getType( final ConstantPoolGen cpg ) {
+    public Type getType(final ConstantPoolGen cpg) {
         return getReturnType(cpg);
     }
 
-    /** @return name of referenced method.
+    /**
+     * @return name of referenced method.
      */
-    public String getMethodName( final ConstantPoolGen cpg ) {
+    public String getMethodName(final ConstantPoolGen cpg) {
         return getName(cpg);
     }
 
-    /** @return return type of referenced method.
+    /**
+     * @return return type of referenced method.
      */
-    public Type getReturnType( final ConstantPoolGen cpg ) {
+    public Type getReturnType(final ConstantPoolGen cpg) {
         return Type.getReturnType(getSignature(cpg));
     }
 
-    /** @return argument types of referenced method.
+    /**
+     * @return argument types of referenced method.
      */
-    public Type[] getArgumentTypes( final ConstantPoolGen cpg ) {
+    public Type[] getArgumentTypes(final ConstantPoolGen cpg) {
         return Type.getArgumentTypes(getSignature(cpg));
     }
 }

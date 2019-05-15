@@ -68,7 +68,7 @@ public class TABLESWITCH extends SelectInstruction {
         v.visitVariableLengthInstruction(this);
         v.visitStackConsumer(this);
         v.visitBranchInstruction(this);
-        v.visitSelect(this);
+        v.visitSelectInstruction(this);
         v.visitTABLESWITCH(this);
     }
 }

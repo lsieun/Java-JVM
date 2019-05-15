@@ -9,8 +9,6 @@ import lsieun.bytecode.generic.instruction.Visitor;
  * IFNULL - Branch if reference is not null
  *
  * <PRE>Stack: ..., reference -&gt; ...</PRE>
- *
- * @version $Id$
  */
 public class IFNULL extends IfInstruction {
 

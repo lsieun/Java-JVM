@@ -22,6 +22,7 @@ import lsieun.bytecode.classfile.SuperClass;
 import lsieun.bytecode.classfile.ThisClass;
 import lsieun.bytecode.classfile.attrs.classfile.SourceFile;
 import lsieun.bytecode.utils.ByteDashboard;
+import lsieun.bytecode.utils.clazz.AttributeUtils;
 import lsieun.utils.radix.HexUtils;
 
 public class ClassFileStandardVisitor extends AbstractVisitor {
@@ -150,7 +151,7 @@ public class ClassFileStandardVisitor extends AbstractVisitor {
     @Override
     public void visitFieldInfo(FieldInfo obj) {
         Attributes attributes = obj.getAttributes();
-        String attrNames = attributes.getAttributeNames();
+        String attrNames = AttributeUtils.getAttributeNames(attributes);
 
         String line = String.format("    FieldInfo {Value='%s', AccessFlags='%s', Attrs='%s', HexCode='%s'}",
                 obj.getValue(),
@@ -179,7 +180,7 @@ public class ClassFileStandardVisitor extends AbstractVisitor {
     @Override
     public void visitMethodInfo(MethodInfo obj) {
         Attributes attributes = obj.getAttributes();
-        String attrNames = attributes.getAttributeNames();
+        String attrNames = AttributeUtils.getAttributeNames(attributes);
 
         String line = String.format("    MethodInfo {Value='%s', AccessFlags='%s', Attrs='%s'}",
                 obj.getValue(),

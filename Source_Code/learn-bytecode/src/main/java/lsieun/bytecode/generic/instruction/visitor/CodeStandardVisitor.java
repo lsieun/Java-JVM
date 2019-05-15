@@ -10,6 +10,7 @@ import lsieun.bytecode.generic.instruction.sub.ArithmeticInstruction;
 import lsieun.bytecode.generic.instruction.sub.ArrayInstruction;
 import lsieun.bytecode.generic.instruction.sub.BranchInstruction;
 import lsieun.bytecode.generic.instruction.sub.CPInstruction;
+import lsieun.bytecode.generic.instruction.sub.CompareInstruction;
 import lsieun.bytecode.generic.instruction.sub.ConstantPushInstruction;
 import lsieun.bytecode.generic.instruction.sub.ConversionInstruction;
 import lsieun.bytecode.generic.instruction.sub.LocalVariableInstruction;
@@ -84,31 +85,6 @@ public class CodeStandardVisitor extends OpcodeVisitor {
 
     @Override
     public void visitACONST_NULL(ACONST_NULL obj) {
-        visitInstruction(obj);
-    }
-
-    @Override
-    public void visitLCMP(LCMP obj) {
-        visitInstruction(obj);
-    }
-
-    @Override
-    public void visitFCMPL(FCMPL obj) {
-        visitInstruction(obj);
-    }
-
-    @Override
-    public void visitFCMPG(FCMPG obj) {
-        visitInstruction(obj);
-    }
-
-    @Override
-    public void visitDCMPL(DCMPL obj) {
-        visitInstruction(obj);
-    }
-
-    @Override
-    public void visitDCMPG(DCMPG obj) {
         visitInstruction(obj);
     }
 
@@ -198,19 +174,6 @@ public class CodeStandardVisitor extends OpcodeVisitor {
     }
 
     @Override
-    public void visitCPInstruction(CPInstruction obj) {
-        String name = obj.getName();
-        int cpIndex = obj.getIndex();
-        String cpValue = this.constantPool.getConstant(cpIndex).getValue();
-
-        int length = obj.getLength();
-        byte[] bytes = ByteDashboard.peekN(code_bytes, offset, length);
-
-        System.out.printf(CP_INS_FORMAT, offset, name, cpIndex, HexUtils.fromBytes(bytes), cpValue);
-
-    }
-
-    @Override
     public void visitLocalVariableInstruction(LocalVariableInstruction obj) {
         String name = obj.getName();
         short opcode = obj.getOpcode();
@@ -239,7 +202,7 @@ public class CodeStandardVisitor extends OpcodeVisitor {
     }
 
     @Override
-    public void visitArithmeticInstruction(ArithmeticInstruction obj) {
+    public void visitArrayInstruction(ArrayInstruction obj) {
         visitInstruction(obj);
     }
 
@@ -249,7 +212,17 @@ public class CodeStandardVisitor extends OpcodeVisitor {
     }
 
     @Override
-    public void visitArrayInstruction(ArrayInstruction obj) {
+    public void visitArithmeticInstruction(ArithmeticInstruction obj) {
+        visitInstruction(obj);
+    }
+
+    @Override
+    public void visitConversionInstruction(ConversionInstruction obj) {
+        visitInstruction(obj);
+    }
+
+    @Override
+    public void visitCompareInstruction(CompareInstruction obj) {
         visitInstruction(obj);
     }
 
@@ -282,12 +255,19 @@ public class CodeStandardVisitor extends OpcodeVisitor {
     }
 
     @Override
-    public void visitConversionInstruction(ConversionInstruction obj) {
+    public void visitReturnInstruction(ReturnInstruction obj) {
         visitInstruction(obj);
     }
 
     @Override
-    public void visitReturnInstruction(ReturnInstruction obj) {
-        visitInstruction(obj);
+    public void visitCPInstruction(CPInstruction obj) {
+        String name = obj.getName();
+        int cpIndex = obj.getIndex();
+        String cpValue = this.constantPool.getConstant(cpIndex).getValue();
+
+        int length = obj.getLength();
+        byte[] bytes = ByteDashboard.peekN(code_bytes, offset, length);
+
+        System.out.printf(CP_INS_FORMAT, offset, name, cpIndex, HexUtils.fromBytes(bytes), cpValue);
     }
 }

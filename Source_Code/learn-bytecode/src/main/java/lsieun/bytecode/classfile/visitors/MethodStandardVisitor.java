@@ -20,6 +20,8 @@ import lsieun.bytecode.classfile.attrs.code.LocalVariable;
 import lsieun.bytecode.classfile.attrs.code.LocalVariableTable;
 import lsieun.bytecode.generic.cst.StackMapConst;
 import lsieun.bytecode.utils.InstructionParser;
+import lsieun.bytecode.utils.clazz.AttributeUtils;
+import lsieun.bytecode.utils.clazz.MethodUtils;
 import lsieun.utils.radix.HexUtils;
 
 public class MethodStandardVisitor extends AbstractVisitor {
@@ -35,7 +37,7 @@ public class MethodStandardVisitor extends AbstractVisitor {
         constantPool.accept(this);
 
         Methods methods = obj.getMethods();
-        MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
+        MethodInfo methodInfo = MethodUtils.findMethod(methods, nameAndType);
         if(methodInfo != null) {
             methodInfo.accept(this);
         }
@@ -45,35 +47,14 @@ public class MethodStandardVisitor extends AbstractVisitor {
 
     @Override
     public void visitMethods(Methods obj) {
-        MethodInfo[] entries = obj.getEntries();
-        if(entries != null && entries.length > 0) {
-            System.out.println("\nAvailable Methods:");
-            for(MethodInfo item : entries) {
-                Attributes attributes = item.getAttributes();
-                String attrNames = attributes.getAttributeNames();
 
-                String codeAttrs = "";
-                AttributeInfo codeAttribute = attributes.findAttribute("Code");
-                if(codeAttribute != null) {
-                    Code code = (Code) codeAttribute;
-                    codeAttrs = code.getAttributes().getAttributeNames();
-                }
-
-                String line = String.format("    Method='%s', AccessFlags='%s', Attrs='%s' CodeAttrs='%s'",
-                        item.getValue(),
-                        item.getAccessFlagsString(),
-                        attrNames,
-                        codeAttrs);
-                System.out.println(line);
-            }
-        }
 
     }
 
     @Override
     public void visitMethodInfo(MethodInfo obj) {
         Attributes attributes = obj.getAttributes();
-        String attrNames = attributes.getAttributeNames();
+        String attrNames = AttributeUtils.getAttributeNames(attributes);
 
         String line = String.format("\nMethodInfo {\n    MethodName='%s'\n    AccessFlags='%s'\n    Attrs='%s'\n}",
                 obj.getValue(),
@@ -96,7 +77,7 @@ public class MethodStandardVisitor extends AbstractVisitor {
         System.out.printf("Code {\n");
         System.out.printf("max_stack='%d', max_locals='%d'\n", maxStack, maxLocals);
         System.out.printf("code_length='%d'\n", codeLength);
-        String attributesName = attributes.getAttributeNames();
+        String attributesName = AttributeUtils.getAttributeNames(attributes);
         System.out.printf("attributes='%s'\n\n", attributesName);
         System.out.printf("code='%s'\n", HexUtils.fromBytes(bytes));
 
@@ -128,17 +109,17 @@ public class MethodStandardVisitor extends AbstractVisitor {
         }
 
 
-        AttributeInfo localVariableTable = attributes.findAttribute("LocalVariableTable");
+        AttributeInfo localVariableTable = AttributeUtils.findAttribute(attributes, "LocalVariableTable");
         if(localVariableTable != null) {
             localVariableTable.accept(this);
         }
 
-        AttributeInfo lineNumberTable = attributes.findAttribute("LineNumberTable");
+        AttributeInfo lineNumberTable = AttributeUtils.findAttribute(attributes, "LineNumberTable");
         if(lineNumberTable != null) {
             lineNumberTable.accept(this);
         }
 
-        AttributeInfo stackMapTable = attributes.findAttribute("StackMapTable");
+        AttributeInfo stackMapTable = AttributeUtils.findAttribute(attributes, "StackMapTable");
         if(stackMapTable != null) {
             stackMapTable.accept(this);
         }

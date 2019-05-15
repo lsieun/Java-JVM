@@ -19,6 +19,14 @@ public final class ConstantDouble extends Constant {
         super.setBytes(bytes);
     }
 
+    /**
+     * @param doubleValue Data
+     */
+    public ConstantDouble(final double doubleValue) {
+        super(CPConst.CONSTANT_Double);
+        this.doubleValue = doubleValue;
+    }
+
     public Double getDoubleValue() {
         return doubleValue;
     }

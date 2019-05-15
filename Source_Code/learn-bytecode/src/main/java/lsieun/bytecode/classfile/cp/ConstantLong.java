@@ -19,6 +19,14 @@ public final class ConstantLong extends Constant {
         super.setBytes(bytes);
     }
 
+    /**
+     * @param longValue Data
+     */
+    public ConstantLong(final long longValue) {
+        super(CPConst.CONSTANT_Long);
+        this.longValue = longValue;
+    }
+
     public Long getLongValue() {
         return longValue;
     }

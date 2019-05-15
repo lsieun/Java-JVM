@@ -9,6 +9,5 @@ import lsieun.bytecode.generic.type.Type;
  *
  */
 public interface TypedInstruction {
-
     Type getType(ConstantPoolGen cpg);
 }

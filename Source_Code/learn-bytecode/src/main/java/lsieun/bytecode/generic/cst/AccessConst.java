@@ -135,4 +135,8 @@ public class AccessConst {
         String str = StringUtils.list2str(list, "[", "]", ",");
         return str;
     }
+
+    public static boolean isStatic(int accessFlags) {
+        return BitUtils.hasBit(accessFlags, 4);
+    }
 }

@@ -257,7 +257,7 @@ public abstract class SelectInstruction extends BranchInstruction
         for (int i = 0; i < padding; i++) {
             byteDashboard.readByte();
         }
-        // Default branch target common for both cases (TABLESWITCH, LOOKUPSWITCH)
+        // Default branch target clazz for both cases (TABLESWITCH, LOOKUPSWITCH)
         super.setIndex(byteDashboard.readInt());
     }
 

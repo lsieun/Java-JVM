@@ -475,3 +475,10 @@ public class HelloWorld {
 }
 ```
 
+查看stack map的示例
+
+```java
+System.out.println(i);
+
+System.out.printf("%s\n", "World", "Hello");
+```

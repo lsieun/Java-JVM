@@ -26,6 +26,18 @@ public final class ConstantUtf8 extends Constant {
         super.setBytes(bytes);
     }
 
+    /**
+     * @param str Data
+     */
+    public ConstantUtf8(final String str) {
+        super(CPConst.CONSTANT_Utf8);
+        if (str == null) {
+            throw new IllegalArgumentException("str must not be null!");
+        }
+        this.utf8Value = str;
+        this.length = str.getBytes(StandardCharsets.UTF_8).length;
+    }
+
     public int getLength() {
         return length;
     }

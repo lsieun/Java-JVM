@@ -19,6 +19,15 @@ public final class ConstantClass extends Constant {
         super.setBytes(bytes);
     }
 
+    /**
+     * @param name_index Name index in constant pool.  Should refer to a
+     * ConstantUtf8.
+     */
+    public ConstantClass(final int name_index) {
+        super(CPConst.CONSTANT_Class);
+        this.name_index = name_index;
+    }
+
     public int getNameIndex() {
         return name_index;
     }

@@ -2,18 +2,15 @@ package lsieun.bytecode.generic.opcode.compare;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.ConstantPoolGen;
-import lsieun.bytecode.generic.instruction.Instruction;
-import lsieun.bytecode.generic.instruction.facet.StackConsumer;
-import lsieun.bytecode.generic.instruction.facet.StackProducer;
-import lsieun.bytecode.generic.instruction.facet.TypedInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
+import lsieun.bytecode.generic.instruction.sub.CompareInstruction;
 import lsieun.bytecode.generic.type.Type;
 
 /**
  * FCMPG - Compare floats: value1 &gt; value2
  * <PRE>Stack: ..., value1, value2 -&gt; ..., result</PRE>
  */
-public class FCMPG extends Instruction implements TypedInstruction, StackProducer, StackConsumer {
+public class FCMPG extends CompareInstruction {
 
     public FCMPG() {
         super(OpcodeConst.FCMPG, (short) 1);
@@ -39,6 +36,7 @@ public class FCMPG extends Instruction implements TypedInstruction, StackProduce
      */
     @Override
     public void accept(final Visitor v) {
+        v.visitCompareInstruction(this);
         v.visitTypedInstruction(this);
         v.visitStackProducer(this);
         v.visitStackConsumer(this);

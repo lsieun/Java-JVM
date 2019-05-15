@@ -1,6 +1,7 @@
 package lsieun.bytecode.generic.instruction.visitor;
 
 import lsieun.bytecode.generic.instruction.Instruction;
+import lsieun.bytecode.generic.instruction.sub.CompareInstruction;
 import lsieun.bytecode.generic.instruction.sub.cp.FieldOrMethod;
 import lsieun.bytecode.generic.LoadClass;
 import lsieun.bytecode.generic.cst.OpcodeConst;
@@ -185,13 +186,13 @@ import lsieun.bytecode.generic.opcode.stack.POP2;
 import lsieun.bytecode.generic.opcode.stack.SWAP;
 
 public class OpcodeVisitor implements Visitor {
+
     @Override
     public void visitNOP(NOP obj) {
-        short opcode = obj.getOpcode();
-        String opcodeName = OpcodeConst.getOpcodeName(opcode);
-        System.out.println(opcodeName);
+
     }
 
+    // region opcode const
     @Override
     public void visitACONST_NULL(ACONST_NULL obj) {
 
@@ -236,7 +237,61 @@ public class OpcodeVisitor implements Visitor {
     public void visitLDC2_W(LDC2_W obj) {
 
     }
+    // endregion
 
+    // region opcode local variable
+    @Override
+    public void visitILOAD(ILOAD obj) {
+
+    }
+
+    @Override
+    public void visitLLOAD(LLOAD obj) {
+
+    }
+
+    @Override
+    public void visitFLOAD(FLOAD obj) {
+
+    }
+
+    @Override
+    public void visitDLOAD(DLOAD obj) {
+
+    }
+
+    @Override
+    public void visitALOAD(ALOAD obj) {
+
+    }
+
+    @Override
+    public void visitISTORE(ISTORE obj) {
+
+    }
+
+    @Override
+    public void visitLSTORE(LSTORE obj) {
+
+    }
+
+    @Override
+    public void visitFSTORE(FSTORE obj) {
+
+    }
+
+    @Override
+    public void visitDSTORE(DSTORE obj) {
+
+    }
+
+    @Override
+    public void visitASTORE(ASTORE obj) {
+
+    }
+    // endregion
+
+    // region opcode array
     @Override
     public void visitIALOAD(IALOAD obj) {
 
@@ -316,7 +371,9 @@ public class OpcodeVisitor implements Visitor {
     public void visitSASTORE(SASTORE obj) {
 
     }
+    // endregion
 
+    // region opcode stack
     @Override
     public void visitPOP(POP obj) {
 
@@ -361,7 +418,9 @@ public class OpcodeVisitor implements Visitor {
     public void visitSWAP(SWAP obj) {
 
     }
+    // endregion
 
+    // region opcode arithmetic
     @Override
     public void visitIADD(IADD obj) {
 
@@ -543,6 +602,13 @@ public class OpcodeVisitor implements Visitor {
     }
 
     @Override
+    public void visitIINC(IINC obj) {
+
+    }
+    // endregion
+
+    // region opcode conversion
+    @Override
     public void visitI2L(I2L obj) {
 
     }
@@ -616,7 +682,9 @@ public class OpcodeVisitor implements Visitor {
     public void visitI2S(I2S obj) {
 
     }
+    // endregion
 
+    // region opcode compare
     @Override
     public void visitLCMP(LCMP obj) {
 
@@ -641,7 +709,128 @@ public class OpcodeVisitor implements Visitor {
     public void visitDCMPG(DCMPG obj) {
 
     }
+    // endregion
 
+    // region opcode if
+    @Override
+    public void visitIFEQ(IFEQ obj) {
+
+    }
+
+    @Override
+    public void visitIFNE(IFNE obj) {
+
+    }
+
+    @Override
+    public void visitIFLT(IFLT obj) {
+
+    }
+
+    @Override
+    public void visitIFGE(IFGE obj) {
+
+    }
+
+    @Override
+    public void visitIFGT(IFGT obj) {
+
+    }
+
+    @Override
+    public void visitIFLE(IFLE obj) {
+
+    }
+
+    @Override
+    public void visitIF_ICMPEQ(IF_ICMPEQ obj) {
+
+    }
+
+    @Override
+    public void visitIF_ICMPNE(IF_ICMPNE obj) {
+
+    }
+
+    @Override
+    public void visitIF_ICMPLT(IF_ICMPLT obj) {
+
+    }
+
+    @Override
+    public void visitIF_ICMPGE(IF_ICMPGE obj) {
+
+    }
+
+    @Override
+    public void visitIF_ICMPGT(IF_ICMPGT obj) {
+
+    }
+
+    @Override
+    public void visitIF_ICMPLE(IF_ICMPLE obj) {
+
+    }
+
+    @Override
+    public void visitIF_ACMPEQ(IF_ACMPEQ obj) {
+
+    }
+
+    @Override
+    public void visitIF_ACMPNE(IF_ACMPNE obj) {
+
+    }
+
+    @Override
+    public void visitIFNULL(IFNULL obj) {
+
+    }
+
+    @Override
+    public void visitIFNONNULL(IFNONNULL obj) {
+
+    }
+    // endregion
+
+    // region opcode branch
+    @Override
+    public void visitGOTO(GOTO obj) {
+
+    }
+
+    @Override
+    public void visitGOTO_W(GOTO_W obj) {
+
+    }
+
+    @Override
+    public void visitJSR(JSR obj) {
+
+    }
+
+    @Override
+    public void visitJSR_W(JSR_W obj) {
+
+    }
+
+    @Override
+    public void visitRET(RET obj) {
+
+    }
+
+    @Override
+    public void visitTABLESWITCH(TABLESWITCH obj) {
+
+    }
+
+    @Override
+    public void visitLOOKUPSWITCH(LOOKUPSWITCH obj) {
+
+    }
+    // endregion
+
+    // region opcode return
     @Override
     public void visitIRETURN(IRETURN obj) {
 
@@ -671,209 +860,16 @@ public class OpcodeVisitor implements Visitor {
     public void visitRETURN(RETURN obj) {
 
     }
+    // endregion
 
+    // region opcode field
     @Override
-    public void visitARRAYLENGTH(ARRAYLENGTH obj) {
-
-    }
-
-    @Override
-    public void visitATHROW(ATHROW obj) {
-
-    }
-
-    @Override
-    public void visitMONITORENTER(MONITORENTER obj) {
-
-    }
-
-    @Override
-    public void visitMONITOREXIT(MONITOREXIT obj) {
-
-    }
-
-    @Override
-    public void visitALOAD(ALOAD obj) {
-
-    }
-
-    @Override
-    public void visitILOAD(ILOAD obj) {
-
-    }
-
-    @Override
-    public void visitASTORE(ASTORE obj) {
-
-    }
-
-    @Override
-    public void visitISTORE(ISTORE obj) {
-
-    }
-
-    @Override
-    public void visitLLOAD(LLOAD obj) {
-
-    }
-
-    @Override
-    public void visitFLOAD(FLOAD obj) {
-
-    }
-
-    @Override
-    public void visitDLOAD(DLOAD obj) {
-
-    }
-
-    @Override
-    public void visitLSTORE(LSTORE obj) {
-
-    }
-
-    @Override
-    public void visitFSTORE(FSTORE obj) {
-
-    }
-
-    @Override
-    public void visitDSTORE(DSTORE obj) {
-
-    }
-
-    @Override
-    public void visitIINC(IINC obj) {
-
-    }
-
-    @Override
-    public void visitIFNE(IFNE obj) {
-
-    }
-
-    @Override
-    public void visitIFEQ(IFEQ obj) {
-
-    }
-
-    @Override
-    public void visitIFGE(IFGE obj) {
-
-    }
-
-    @Override
-    public void visitIFLT(IFLT obj) {
-
-    }
-
-    @Override
-    public void visitIFLE(IFLE obj) {
-
-    }
-
-    @Override
-    public void visitIFGT(IFGT obj) {
-
-    }
-
-    @Override
-    public void visitIF_ICMPNE(IF_ICMPNE obj) {
-
-    }
-
-    @Override
-    public void visitIF_ICMPEQ(IF_ICMPEQ obj) {
-
-    }
-
-    @Override
-    public void visitIF_ICMPGE(IF_ICMPGE obj) {
-
-    }
-
-    @Override
-    public void visitIF_ICMPLT(IF_ICMPLT obj) {
-
-    }
-
-    @Override
-    public void visitIF_ICMPLE(IF_ICMPLE obj) {
-
-    }
-
-    @Override
-    public void visitIF_ICMPGT(IF_ICMPGT obj) {
-
-    }
-
-    @Override
-    public void visitIF_ACMPNE(IF_ACMPNE obj) {
-
-    }
-
-    @Override
-    public void visitIF_ACMPEQ(IF_ACMPEQ obj) {
-
-    }
-
-    @Override
-    public void visitIFNONNULL(IFNONNULL obj) {
-
-    }
-
-    @Override
-    public void visitIFNULL(IFNULL obj) {
-
-    }
-
-    @Override
-    public void visitGOTO(GOTO obj) {
-
-    }
-
-    @Override
-    public void visitGOTO_W(GOTO_W obj) {
-
-    }
-
-    @Override
-    public void visitJSR(JSR obj) {
-
-    }
-
-    @Override
-    public void visitJSR_W(JSR_W obj) {
-
-    }
-
-    @Override
-    public void visitRET(RET obj) {
-
-    }
-
-    @Override
-    public void visitSelect(SelectInstruction obj) {
-
-    }
-
-    @Override
-    public void visitTABLESWITCH(TABLESWITCH obj) {
-
-    }
-
-    @Override
-    public void visitLOOKUPSWITCH(LOOKUPSWITCH obj) {
+    public void visitGETSTATIC(GETSTATIC obj) {
 
     }
 
     @Override
     public void visitPUTSTATIC(PUTSTATIC obj) {
-
-    }
-
-    @Override
-    public void visitGETSTATIC(GETSTATIC obj) {
 
     }
 
@@ -886,7 +882,9 @@ public class OpcodeVisitor implements Visitor {
     public void visitPUTFIELD(PUTFIELD obj) {
 
     }
+    // endregion
 
+    // region opcode invoke
     @Override
     public void visitINVOKEVIRTUAL(INVOKEVIRTUAL obj) {
 
@@ -911,7 +909,9 @@ public class OpcodeVisitor implements Visitor {
     public void visitINVOKEDYNAMIC(INVOKEDYNAMIC obj) {
 
     }
+    // endregion
 
+    // region opcode allocate
     @Override
     public void visitNEW(NEW obj) {
 
@@ -928,7 +928,19 @@ public class OpcodeVisitor implements Visitor {
     }
 
     @Override
+    public void visitARRAYLENGTH(ARRAYLENGTH obj) {
+
+    }
+
+    @Override
     public void visitMULTIANEWARRAY(MULTIANEWARRAY obj) {
+
+    }
+    // endregion
+
+    // region opcode xxx
+    @Override
+    public void visitATHROW(ATHROW obj) {
 
     }
 
@@ -939,6 +951,16 @@ public class OpcodeVisitor implements Visitor {
 
     @Override
     public void visitINSTANCEOF(INSTANCEOF obj) {
+
+    }
+
+    @Override
+    public void visitMONITORENTER(MONITORENTER obj) {
+
+    }
+
+    @Override
+    public void visitMONITOREXIT(MONITOREXIT obj) {
 
     }
 
@@ -956,69 +978,16 @@ public class OpcodeVisitor implements Visitor {
     public void visitIMPDEP2(IMPDEP2 obj) {
 
     }
+    // endregion
 
+    // region basic Instruction
     @Override
     public void visitInstruction(Instruction obj) {
 
     }
 
     @Override
-    public void visitTypedInstruction(TypedInstruction obj) {
-
-    }
-
-    @Override
-    public void visitPushInstruction(PushInstruction obj) {
-
-    }
-
-    @Override
-    public void visitStackProducer(StackProducer obj) {
-
-    }
-
-    @Override
     public void visitConstantPushInstruction(ConstantPushInstruction obj) {
-
-    }
-
-    @Override
-    public void visitArrayInstruction(ArrayInstruction obj) {
-
-    }
-
-    @Override
-    public void visitStackConsumer(StackConsumer obj) {
-
-    }
-
-    @Override
-    public void visitPopInstruction(PopInstruction obj) {
-
-    }
-
-    @Override
-    public void visitStackInstruction(StackInstruction obj) {
-
-    }
-
-    @Override
-    public void visitArithmeticInstruction(ArithmeticInstruction obj) {
-
-    }
-
-    @Override
-    public void visitConversionInstruction(ConversionInstruction obj) {
-
-    }
-
-    @Override
-    public void visitReturnInstruction(ReturnInstruction obj) {
-
-    }
-
-    @Override
-    public void visitUnconditionalBranch(UnconditionalBranch obj) {
 
     }
 
@@ -1038,7 +1007,27 @@ public class OpcodeVisitor implements Visitor {
     }
 
     @Override
-    public void visitCPInstruction(CPInstruction obj) {
+    public void visitArrayInstruction(ArrayInstruction obj) {
+
+    }
+
+    @Override
+    public void visitStackInstruction(StackInstruction obj) {
+
+    }
+
+    @Override
+    public void visitArithmeticInstruction(ArithmeticInstruction obj) {
+
+    }
+
+    @Override
+    public void visitConversionInstruction(ConversionInstruction obj) {
+
+    }
+
+    @Override
+    public void visitCompareInstruction(CompareInstruction obj) {
 
     }
 
@@ -1053,11 +1042,6 @@ public class OpcodeVisitor implements Visitor {
     }
 
     @Override
-    public void visitVariableLengthInstruction(VariableLengthInstruction obj) {
-
-    }
-
-    @Override
     public void visitGotoInstruction(GotoInstruction obj) {
 
     }
@@ -1068,7 +1052,12 @@ public class OpcodeVisitor implements Visitor {
     }
 
     @Override
-    public void visitLoadClass(LoadClass obj) {
+    public void visitSelectInstruction(SelectInstruction obj) {
+
+    }
+
+    @Override
+    public void visitReturnInstruction(ReturnInstruction obj) {
 
     }
 
@@ -1086,10 +1075,57 @@ public class OpcodeVisitor implements Visitor {
     public void visitInvokeInstruction(InvokeInstruction obj) {
 
     }
+    // endregion
+
+    // region facet Instruction
+    @Override
+    public void visitTypedInstruction(TypedInstruction obj) {
+
+    }
+
+    @Override
+    public void visitCPInstruction(CPInstruction obj) {
+
+    }
+
+    @Override
+    public void visitPushInstruction(PushInstruction obj) {
+
+    }
+
+    @Override
+    public void visitPopInstruction(PopInstruction obj) {
+
+    }
+
+    @Override
+    public void visitStackProducer(StackProducer obj) {
+
+    }
+
+    @Override
+    public void visitStackConsumer(StackConsumer obj) {
+
+    }
 
     @Override
     public void visitAllocationInstruction(AllocationInstruction obj) {
 
     }
 
+    @Override
+    public void visitLoadClass(LoadClass obj) {
+
+    }
+
+    @Override
+    public void visitVariableLengthInstruction(VariableLengthInstruction obj) {
+
+    }
+
+    @Override
+    public void visitUnconditionalBranch(UnconditionalBranch obj) {
+
+    }
+    // endregion
 }

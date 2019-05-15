@@ -10,6 +10,7 @@ import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.ArrayType;
 import lsieun.bytecode.generic.type.ObjectType;
 import lsieun.bytecode.generic.type.Type;
+import lsieun.bytecode.utils.ByteDashboard;
 
 /**
  * MULTIANEWARRAY - Create new mutidimensional array of references
@@ -60,6 +61,13 @@ public class MULTIANEWARRAY extends CPInstruction
             t = ((ArrayType) t).getBasicType();
         }
         return (t instanceof ObjectType) ? (ObjectType) t : null;
+    }
+
+    @Override
+    protected void readFully(ByteDashboard byteDashboard, boolean wide) {
+        super.readFully(byteDashboard, wide);
+        dimensions = (short) byteDashboard.nextByte();
+        super.setLength(4);
     }
 
     /**

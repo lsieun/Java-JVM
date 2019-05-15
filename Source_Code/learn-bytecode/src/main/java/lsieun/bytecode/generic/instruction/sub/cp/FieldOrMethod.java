@@ -1,15 +1,22 @@
 package lsieun.bytecode.generic.instruction.sub.cp;
 
+import lsieun.bytecode.classfile.ConstantPool;
+import lsieun.bytecode.classfile.cp.ConstantNameAndType;
+import lsieun.bytecode.classfile.cp.ConstantRef;
+import lsieun.bytecode.classfile.cp.ConstantUtf8;
 import lsieun.bytecode.exceptions.ClassGenException;
 import lsieun.bytecode.generic.LoadClass;
+import lsieun.bytecode.generic.cst.CPConst;
 import lsieun.bytecode.generic.instruction.sub.CPInstruction;
 import lsieun.bytecode.generic.instruction.ConstantPoolGen;
+import lsieun.bytecode.generic.type.ArrayType;
 import lsieun.bytecode.generic.type.ObjectType;
 import lsieun.bytecode.generic.type.ReferenceType;
+import lsieun.bytecode.generic.type.Type;
 
 /**
  * Super class for InvokeInstruction and FieldInstruction, since they have
- * some methods in common!
+ * some methods in clazz!
  */
 public abstract class FieldOrMethod extends CPInstruction implements LoadClass {
     /**
@@ -30,23 +37,19 @@ public abstract class FieldOrMethod extends CPInstruction implements LoadClass {
      * @return signature of referenced method/field.
      */
     public String getSignature(final ConstantPoolGen cpg) {
-        //FIXME: 这段代码注释掉了
-//        final ConstantPool cp = cpg.getConstantPool();
-//        final ConstantCP cmr = (ConstantCP) cp.getConstant(super.getIndex());
-//        final ConstantNameAndType cnat = (ConstantNameAndType) cp.getConstant(cmr.getNameAndTypeIndex());
-//        return ((ConstantUtf8) cp.getConstant(cnat.getSignatureIndex())).getBytes();
-        return null;
+        final ConstantPool cp = cpg.getConstantPool();
+        final ConstantRef cmr = (ConstantRef) cp.getConstant(super.getIndex());
+        final ConstantNameAndType cnat = (ConstantNameAndType) cp.getConstant(cmr.getNameAndTypeIndex());
+        return ((ConstantUtf8) cp.getConstant(cnat.getDescriptorIndex())).getUtf8Value();
     }
 
     /** @return name of referenced method/field.
      */
     public String getName( final ConstantPoolGen cpg ) {
-        //FIXME: 这段代码注释掉了
-//        final ConstantPool cp = cpg.getConstantPool();
-//        final ConstantCP cmr = (ConstantCP) cp.getConstant(super.getIndex());
-//        final ConstantNameAndType cnat = (ConstantNameAndType) cp.getConstant(cmr.getNameAndTypeIndex());
-//        return ((ConstantUtf8) cp.getConstant(cnat.getNameIndex())).getBytes();
-        return null;
+        final ConstantPool cp = cpg.getConstantPool();
+        final ConstantRef cmr = (ConstantRef) cp.getConstant(super.getIndex());
+        final ConstantNameAndType cnat = (ConstantNameAndType) cp.getConstant(cmr.getNameAndTypeIndex());
+        return ((ConstantUtf8) cp.getConstant(cnat.getNameIndex())).getUtf8Value();
     }
 
     /**
@@ -58,16 +61,14 @@ public abstract class FieldOrMethod extends CPInstruction implements LoadClass {
      *   type is an array class)
      */
     public ReferenceType getReferenceType(final ConstantPoolGen cpg ) {
-        //FIXME: 这段代码注释掉了
-//        final ConstantPool cp = cpg.getConstantPool();
-//        final ConstantCP cmr = (ConstantCP) cp.getConstant(super.getIndex());
-//        String className = cp.getConstantString(cmr.getClassIndex(), Const.CONSTANT_Class);
-//        if (className.startsWith("[")) {
-//            return (ArrayType) Type.getType(className);
-//        }
-//        className = className.replace('/', '.');
-//        return ObjectType.getInstance(className);
-        return null;
+        final ConstantPool cp = cpg.getConstantPool();
+        final ConstantRef cmr = (ConstantRef) cp.getConstant(super.getIndex());
+        String className = cp.getConstantString(cmr.getClassIndex(), CPConst.CONSTANT_Class);
+        if (className.startsWith("[")) {
+            return (ArrayType) Type.getType(className);
+        }
+        className = className.replace('/', '.');
+        return ObjectType.getInstance(className);
     }
 
     /**

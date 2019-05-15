@@ -61,7 +61,7 @@ public class LOOKUPSWITCH extends SelectInstruction {
         v.visitVariableLengthInstruction(this);
         v.visitStackConsumer(this);
         v.visitBranchInstruction(this);
-        v.visitSelect(this);
+        v.visitSelectInstruction(this);
         v.visitLOOKUPSWITCH(this);
     }
 }

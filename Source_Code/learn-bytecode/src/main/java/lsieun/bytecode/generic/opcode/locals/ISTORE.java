@@ -7,8 +7,6 @@ import lsieun.bytecode.generic.instruction.Visitor;
 /**
  * ISTORE - Store int from stack into local variable
  * <PRE>Stack: ..., value -&gt; ... </PRE>
- *
- * @version $Id$
  */
 public class ISTORE extends StoreInstruction {
 

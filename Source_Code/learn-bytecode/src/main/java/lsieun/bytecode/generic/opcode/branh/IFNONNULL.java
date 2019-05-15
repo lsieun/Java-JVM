@@ -10,7 +10,6 @@ import lsieun.bytecode.generic.instruction.Visitor;
  *
  * <PRE>Stack: ..., reference -&gt; ...</PRE>
  *
- * @version $Id$
  */
 public class IFNONNULL extends IfInstruction {
 

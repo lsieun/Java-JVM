@@ -18,17 +18,17 @@ import lsieun.bytecode.classfile.visitors.ClassFileStandardVisitor;
 import lsieun.bytecode.classfile.visitors.AttributeCodeVisitor;
 import lsieun.bytecode.classfile.visitors.FieldStandardVisitor;
 import lsieun.bytecode.classfile.visitors.MethodStandardVisitor;
-import lsieun.bytecode.generic.instruction.Instruction;
-import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
-import lsieun.bytecode.generic.instruction.InstructionList;
 import lsieun.bytecode.generic.instruction.visitor.CodeStandardVisitor;
+import lsieun.bytecode.generic.instruction.visitor.StackMapFrameVisitor;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.bytecode.utils.ClassParser;
+import lsieun.bytecode.utils.clazz.AttributeUtils;
+import lsieun.bytecode.utils.clazz.FieldUtils;
+import lsieun.bytecode.utils.clazz.MethodUtils;
 import lsieun.bytecode.utils.PropertyUtils;
 import lsieun.utils.StringUtils;
 import lsieun.utils.io.FileUtils;
 import lsieun.utils.io.JarUtils;
-import lsieun.utils.radix.HexUtils;
 
 public class App {
     public static void main(String[] args) {
@@ -98,6 +98,10 @@ public class App {
             String methodSignature = PropertyUtils.getProperty("bytecode.content.method.signature");
             displayCode(classFile, methodSignature);
         }
+        else if("StackMapTable".equalsIgnoreCase(target)) {
+            String methodSignature = PropertyUtils.getProperty("bytecode.content.method.signature");
+            displayStackMapTable(classFile, methodSignature);
+        }
         else if("ClassFileAttribute".equalsIgnoreCase(target)) {
             String attrName = PropertyUtils.getProperty("bytecode.content.classfile.attribute.name");
             displayClassFileAttribute(classFile, attrName);
@@ -144,30 +148,45 @@ public class App {
 
     public static void displayCode(ClassFile classFile, String nameAndType) {
         System.out.println("=================================================" + StringUtils.LF);
-        Methods methods = classFile.getMethods();
-        MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
+        MethodInfo methodInfo = MethodUtils.findMethod(classFile, nameAndType);
         if(methodInfo == null) {
-            System.out.println("Method DOES NOT EXIST: " + nameAndType);
+            MethodUtils.displayAvailableMethods(classFile);
             return;
         }
-        Attributes attributes = methodInfo.getAttributes();
-        AttributeInfo methodAttr = attributes.findAttribute("Code");
-        if(methodAttr == null) {
-            System.out.println("Code Attribute DOES NOT EXIST: " + nameAndType);
+
+        Code code = AttributeUtils.findCodeAttribute(methodInfo);
+        if(code == null) {
             return;
         }
+
         ConstantPool constantPool = classFile.getConstantPool();
-        Code code = (Code) methodAttr;
         byte[] bytes = code.getCode();
+
+        int descriptorIndex = methodInfo.getDescriptorIndex();
+        String descriptor = constantPool.getConstant(descriptorIndex).getValue();
+        System.out.println(descriptor);
 
         CodeStandardVisitor visitor = new CodeStandardVisitor();
         visitor.visit(constantPool, bytes);
     }
 
+    public static void displayStackMapTable(ClassFile classFile, String nameAndType) {
+        System.out.println("=================================================" + StringUtils.LF);
+        MethodInfo methodInfo = MethodUtils.findMethod(classFile, nameAndType);
+        if(methodInfo == null) {
+            MethodUtils.displayAvailableMethods(classFile);
+            return;
+        }
+
+        ConstantPool constantPool = classFile.getConstantPool();
+        StackMapFrameVisitor visitor = new StackMapFrameVisitor();
+        visitor.visit(methodInfo, constantPool);
+    }
+
     public static void displayClassFileAttribute(ClassFile classFile, String attrName) {
         System.out.println("=================================================" + StringUtils.LF);
         Attributes attributes = classFile.getAttributes();
-        AttributeInfo attributeInfo = attributes.findAttribute(attrName);
+        AttributeInfo attributeInfo = AttributeUtils.findAttribute(attributes, attrName);
         if(attributeInfo != null) {
             AttributeClassFileVisitor visitor = new AttributeClassFileVisitor();
             attributeInfo.accept(visitor);
@@ -177,10 +196,10 @@ public class App {
     public static void displayFieldAttribute(ClassFile classFile, String nameAndType, String attrName) {
         System.out.println("=================================================" + StringUtils.LF);
         Fields fields = classFile.getFields();
-        FieldInfo fieldInfo = fields.findByNameAndType(nameAndType);
+        FieldInfo fieldInfo = FieldUtils.findField(fields, nameAndType);
         if(fieldInfo != null) {
             Attributes attributes = fieldInfo.getAttributes();
-            AttributeInfo attributeInfo = attributes.findAttribute(attrName);
+            AttributeInfo attributeInfo = AttributeUtils.findAttribute(attributes, attrName);
             if(attributeInfo != null) {
                 AttributeFieldVisitor visitor = new AttributeFieldVisitor();
                 attributeInfo.accept(visitor);
@@ -191,10 +210,10 @@ public class App {
     public static void displayMethodAttribute(ClassFile classFile, String nameAndType, String attrName) {
         System.out.println("=================================================" + StringUtils.LF);
         Methods methods = classFile.getMethods();
-        MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
+        MethodInfo methodInfo = MethodUtils.findMethod(methods, nameAndType);
         if(methodInfo != null) {
             Attributes attributes = methodInfo.getAttributes();
-            AttributeInfo attributeInfo = attributes.findAttribute(attrName);
+            AttributeInfo attributeInfo = AttributeUtils.findAttribute(attributes, attrName);
             if(attributeInfo != null) {
                 AttributeMethodVisitor visitor = new AttributeMethodVisitor();
                 attributeInfo.accept(visitor);
@@ -202,22 +221,18 @@ public class App {
         }
     }
 
-    private static void displayAttribute(Attributes attributes, String attrName) {
-
-    }
-
     public static void displayCodeAttribute(ClassFile classFile, String nameAndType, String attrName) {
         System.out.println("=================================================" + StringUtils.LF);
         Methods methods = classFile.getMethods();
-        MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
+        MethodInfo methodInfo = MethodUtils.findMethod(methods, nameAndType);
         if(methodInfo == null) {
             System.out.println("Can not find Method: " + nameAndType);
-            System.out.println("Available Methods: " + methods.getMethodNames());
+            System.out.println("Available Methods: " + MethodUtils.getMethodNames(methods));
             return;
         }
 
         Attributes attributes = methodInfo.getAttributes();
-        AttributeInfo attributeInfo = attributes.findAttribute("Code");
+        AttributeInfo attributeInfo = AttributeUtils.findAttribute(attributes, "Code");
         if(attributeInfo == null) {
             System.out.println("Can not find Code Attribute");
             return;
@@ -226,10 +241,10 @@ public class App {
 
         Code code = (Code) attributeInfo;
         Attributes codeAttributes = code.getAttributes();
-        AttributeInfo subAttribute = codeAttributes.findAttribute(attrName);
+        AttributeInfo subAttribute = AttributeUtils.findAttribute(attributes, attrName);
         if(subAttribute == null) {
             System.out.println("Can not find Attribute: " + attrName);
-            System.out.println("Available Attributes: " + codeAttributes.getAttributeNames());
+            System.out.println("Available Attributes: " + AttributeUtils.getAttributeNames(codeAttributes));
             return;
         }
 

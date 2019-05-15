@@ -19,6 +19,14 @@ public final class ConstantInteger extends Constant {
         super.setBytes(bytes);
     }
 
+    /**
+     * @param num Data
+     */
+    public ConstantInteger(final int num) {
+        super(CPConst.CONSTANT_Integer);
+        this.intValue = num;
+    }
+
     public Integer getIntValue() {
         return intValue;
     }

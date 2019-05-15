@@ -12,20 +12,19 @@ import lsieun.bytecode.generic.cst.TypeConst;
  * such as int, object types like String and array types, e.g. int[]<br/><br/>
  *
  * <p>
- *     我对Type的理解是这样的：
+ * 我对Type的理解是这样的：
  * </p>
  * <p>
- *     （1）Java language有自己的类型，例如int/float/Object
+ * （1）Java language有自己的类型，例如int/float/Object
  * </p>
  * <p>
- *     （2）ClassFile对于类型有自己内部的表示，例如I/F/Ljava/lang/Object;
+ * （2）ClassFile对于类型有自己内部的表示，例如I/F/Ljava/lang/Object;
  * </p>
  * <p>
- *     （3）Type类，虽然自己是一个表达“数据类型”的类，但这并不是它的最终目的，
- *     它的目的是将Java language和ClassFile的数据类型进行“中间”连接。
- *     举一个例子：先将美元兑换成银子，再用银子兑换成欧元，那么银子就起到“中间”连接的作用。
+ * （3）Type类，虽然自己是一个表达“数据类型”的类，但这并不是它的最终目的，
+ * 它的目的是将Java language和ClassFile的数据类型进行“中间”连接。
+ * 举一个例子：先将美元兑换成银子，再用银子兑换成欧元，那么银子就起到“中间”连接的作用。
  * </p>
- *
  */
 public abstract class Type {
     private final byte type;
@@ -128,6 +127,7 @@ public abstract class Type {
     // endregion
 
     // region Type-->ClassFile
+
     /**
      * Convert type to Java method signature, e.g. int[] f(java.lang.String x)
      * becomes (Ljava/lang/String;)[I
@@ -264,21 +264,22 @@ public abstract class Type {
      * GOOD_CODE: 这个“方法的实现思路”很不错，它将“两个int值”合并成“一个int值”进行返回。
      * <br/><br/>
      * <p>
-     *     这个方法的返回值（return value），其实包含了两个部分数据：
+     * 这个方法的返回值（return value），其实包含了两个部分数据：
      * </p><br/>
      * <p>
-     *     第一部分数据，就是这个Type究竟占用几个slot，它的取值只能是1或2。
-     *     例如，对于int、float、Object，它所占用的slot的大小就是1个；
-     *     而对于long、double，它所占用的slot大小就是2个。
+     * 第一部分数据，就是这个Type究竟占用几个slot，它的取值只能是1或2。
+     * 例如，对于int、float、Object，它所占用的slot的大小就是1个；
+     * 而对于long、double，它所占用的slot大小就是2个。
      * </p><br/>
      * <p>
-     *     第二部分数据，就是这个Signature的字符长度。
-     *     比如说，I、F、D、J，它的长度是1；对于Ljava/lang/String;，它的长度是18。
+     * 第二部分数据，就是这个Signature的字符长度。
+     * 比如说，I、F、D、J，它的长度是1；对于Ljava/lang/String;，它的长度是18。
      * </p><br/>
      * <p>
-     *     这个方法精妙的地方在于：第一部分数据的取值范围就是1和2,那么这部分只占2个bit就可以进行存储了，
-     *     第二部分的数据在进行存储的时候，只要向左移动2个bit就可以了。
+     * 这个方法精妙的地方在于：第一部分数据的取值范围就是1和2,那么这部分只占2个bit就可以进行存储了，
+     * 第二部分的数据在进行存储的时候，只要向左移动2个bit就可以了。
      * </p>
+     *
      * @param signature
      * @return
      * @throws StringIndexOutOfBoundsException
@@ -320,4 +321,48 @@ public abstract class Type {
     }
 
     // endregion
+
+    /**
+     * Convert runtime java.lang.Class to BCEL Type object.
+     *
+     * @param cl Java class
+     * @return corresponding Type object
+     */
+    public static Type getType(final java.lang.Class<?> cl) {
+        if (cl == null) {
+            throw new IllegalArgumentException("Class must not be null");
+        }
+        /* That's an amzingly easy case, because getName() returns
+         * the signature. That's what we would have liked anyway.
+         */
+        if (cl.isArray()) {
+            return getType(cl.getName());
+        } else if (cl.isPrimitive()) {
+            if (cl == Integer.TYPE) {
+                return INT;
+            } else if (cl == Void.TYPE) {
+                return VOID;
+            } else if (cl == Double.TYPE) {
+                return DOUBLE;
+            } else if (cl == Float.TYPE) {
+                return FLOAT;
+            } else if (cl == Boolean.TYPE) {
+                return BOOLEAN;
+            } else if (cl == Byte.TYPE) {
+                return BYTE;
+            } else if (cl == Short.TYPE) {
+                return SHORT;
+            } else if (cl == Byte.TYPE) {
+                return BYTE;
+            } else if (cl == Long.TYPE) {
+                return LONG;
+            } else if (cl == Character.TYPE) {
+                return CHAR;
+            } else {
+                throw new IllegalStateException("Ooops, what primitive type is " + cl);
+            }
+        } else { // "Real" class
+            return ObjectType.getInstance(cl.getName());
+        }
+    }
 }

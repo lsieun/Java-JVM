@@ -3,6 +3,7 @@ package lsieun.bytecode.generic.instruction;
 import lsieun.bytecode.generic.instruction.facet.AllocationInstruction;
 import lsieun.bytecode.generic.instruction.facet.UnconditionalBranch;
 import lsieun.bytecode.generic.instruction.facet.VariableLengthInstruction;
+import lsieun.bytecode.generic.instruction.sub.CompareInstruction;
 import lsieun.bytecode.generic.instruction.sub.cp.FieldInstruction;
 import lsieun.bytecode.generic.instruction.sub.cp.FieldOrMethod;
 import lsieun.bytecode.generic.LoadClass;
@@ -211,6 +212,28 @@ public interface Visitor {
     void visitLDC2_W(LDC2_W obj);
     // endregion
 
+    // region opcode local variable
+    void visitILOAD(ILOAD obj);
+
+    void visitLLOAD(LLOAD obj);
+
+    void visitFLOAD(FLOAD obj);
+
+    void visitDLOAD(DLOAD obj);
+
+    void visitALOAD(ALOAD obj);
+
+    void visitISTORE(ISTORE obj);
+
+    void visitLSTORE(LSTORE obj);
+
+    void visitFSTORE(FSTORE obj);
+
+    void visitDSTORE(DSTORE obj);
+
+    void visitASTORE(ASTORE obj);
+    // endregion
+
     // region opcode array
     void visitIALOAD(IALOAD obj);
 
@@ -337,6 +360,8 @@ public interface Visitor {
     void visitIXOR(IXOR obj);
 
     void visitLXOR(LXOR obj);
+
+    void visitIINC(IINC obj);
     // endregion
 
     // region opcode conversion
@@ -381,7 +406,56 @@ public interface Visitor {
     void visitDCMPL(DCMPL obj);
 
     void visitDCMPG(DCMPG obj);
+    // endregion
 
+    // region opcode if
+    void visitIFEQ(IFEQ obj);
+
+    void visitIFNE(IFNE obj);
+
+    void visitIFLT(IFLT obj);
+
+    void visitIFGE(IFGE obj);
+
+    void visitIFGT(IFGT obj);
+
+    void visitIFLE(IFLE obj);
+
+    void visitIF_ICMPEQ(IF_ICMPEQ obj);
+
+    void visitIF_ICMPNE(IF_ICMPNE obj);
+
+    void visitIF_ICMPLT(IF_ICMPLT obj);
+
+    void visitIF_ICMPGE(IF_ICMPGE obj);
+
+    void visitIF_ICMPGT(IF_ICMPGT obj);
+
+    void visitIF_ICMPLE(IF_ICMPLE obj);
+
+    void visitIF_ACMPEQ(IF_ACMPEQ obj);
+
+    void visitIF_ACMPNE(IF_ACMPNE obj);
+
+    void visitIFNULL(IFNULL obj);
+
+    void visitIFNONNULL(IFNONNULL obj);
+    // endregion
+
+    // region opcode branch
+    void visitGOTO(GOTO obj);
+
+    void visitGOTO_W(GOTO_W obj);
+
+    void visitJSR(JSR obj);
+
+    void visitJSR_W(JSR_W obj);
+
+    void visitRET(RET obj);
+
+    void visitTABLESWITCH(TABLESWITCH obj);
+
+    void visitLOOKUPSWITCH(LOOKUPSWITCH obj);
     // endregion
 
     // region opcode return
@@ -398,94 +472,10 @@ public interface Visitor {
     void visitRETURN(RETURN obj);
     // endregion
 
-    // region opcode xxx
-    void visitARRAYLENGTH(ARRAYLENGTH obj);
-
-    void visitATHROW(ATHROW obj);
-
-    void visitMONITORENTER(MONITORENTER obj);
-
-    void visitMONITOREXIT(MONITOREXIT obj);
-    // endregion
-
-    // region opcode local variable
-    void visitALOAD(ALOAD obj);
-
-    void visitILOAD(ILOAD obj);
-
-    void visitASTORE(ASTORE obj);
-
-    void visitISTORE(ISTORE obj);
-
-    void visitLLOAD(LLOAD obj);
-
-    void visitFLOAD(FLOAD obj);
-
-    void visitDLOAD(DLOAD obj);
-
-    void visitLSTORE(LSTORE obj);
-
-    void visitFSTORE(FSTORE obj);
-
-    void visitDSTORE(DSTORE obj);
-
-    void visitIINC(IINC obj);
-    // endregion
-
-    // region opcode branch
-    void visitIFNE(IFNE obj);
-
-    void visitIFEQ(IFEQ obj);
-
-    void visitIFGE(IFGE obj);
-
-    void visitIFLT(IFLT obj);
-
-    void visitIFLE(IFLE obj);
-
-    void visitIFGT(IFGT obj);
-
-    void visitIF_ICMPNE(IF_ICMPNE obj);
-
-    void visitIF_ICMPEQ(IF_ICMPEQ obj);
-
-    void visitIF_ICMPGE(IF_ICMPGE obj);
-
-    void visitIF_ICMPLT(IF_ICMPLT obj);
-
-    void visitIF_ICMPLE(IF_ICMPLE obj);
-
-    void visitIF_ICMPGT(IF_ICMPGT obj);
-
-    void visitIF_ACMPNE(IF_ACMPNE obj);
-
-    void visitIF_ACMPEQ(IF_ACMPEQ obj);
-
-    void visitIFNONNULL(IFNONNULL obj);
-
-    void visitIFNULL(IFNULL obj);
-
-    void visitGOTO(GOTO obj);
-
-    void visitGOTO_W(GOTO_W obj);
-
-    void visitJSR(JSR obj);
-
-    void visitJSR_W(JSR_W obj);
-
-    void visitRET(RET obj);
-
-    void visitSelect(SelectInstruction obj);
-
-    void visitTABLESWITCH(TABLESWITCH obj);
-
-    void visitLOOKUPSWITCH(LOOKUPSWITCH obj);
-    // endregion
-
     // region opcode field
-    void visitPUTSTATIC(PUTSTATIC obj);
-
     void visitGETSTATIC(GETSTATIC obj);
+
+    void visitPUTSTATIC(PUTSTATIC obj);
 
     void visitGETFIELD(GETFIELD obj);
 
@@ -511,13 +501,21 @@ public interface Visitor {
 
     void visitANEWARRAY(ANEWARRAY obj);
 
+    void visitARRAYLENGTH(ARRAYLENGTH obj);
+
     void visitMULTIANEWARRAY(MULTIANEWARRAY obj);
     // endregion
 
     // region opcode xxx
+    void visitATHROW(ATHROW obj);
+
     void visitCHECKCAST(CHECKCAST obj);
 
     void visitINSTANCEOF(INSTANCEOF obj);
+
+    void visitMONITORENTER(MONITORENTER obj);
+
+    void visitMONITOREXIT(MONITOREXIT obj);
 
     void visitBREAKPOINT(BREAKPOINT obj);
 
@@ -526,37 +524,10 @@ public interface Visitor {
     void visitIMPDEP2(IMPDEP2 obj);
     // endregion
 
-    // region opcode xxx
-
-    // endregion
-
-
-    // region Instruction
+    // region basic Instruction
     void visitInstruction(Instruction obj);
 
-    void visitTypedInstruction(TypedInstruction obj);
-
-    void visitPushInstruction(PushInstruction obj);
-
-    void visitStackProducer(StackProducer obj);
-
     void visitConstantPushInstruction(ConstantPushInstruction obj);
-
-    void visitArrayInstruction(ArrayInstruction obj);
-
-    void visitStackConsumer(StackConsumer obj);
-
-    void visitPopInstruction(PopInstruction obj);
-
-    void visitStackInstruction(StackInstruction obj);
-
-    void visitArithmeticInstruction(ArithmeticInstruction obj);
-
-    void visitConversionInstruction(ConversionInstruction obj);
-
-    void visitReturnInstruction(ReturnInstruction obj);
-
-    void visitUnconditionalBranch(UnconditionalBranch obj);
 
     void visitLocalVariableInstruction(LocalVariableInstruction obj);
 
@@ -564,19 +535,27 @@ public interface Visitor {
 
     void visitStoreInstruction(StoreInstruction obj);
 
-    void visitCPInstruction(CPInstruction obj);
+    void visitArrayInstruction(ArrayInstruction obj);
+
+    void visitStackInstruction(StackInstruction obj);
+
+    void visitArithmeticInstruction(ArithmeticInstruction obj);
+
+    void visitConversionInstruction(ConversionInstruction obj);
+
+    void visitCompareInstruction(CompareInstruction obj);
 
     void visitBranchInstruction(BranchInstruction obj);
 
     void visitIfInstruction(IfInstruction obj);
 
-    void visitVariableLengthInstruction(VariableLengthInstruction obj);
-
     void visitGotoInstruction(GotoInstruction obj);
 
     void visitJsrInstruction(JsrInstruction obj);
 
-    void visitLoadClass(LoadClass obj);
+    void visitSelectInstruction(SelectInstruction obj);
+
+    void visitReturnInstruction(ReturnInstruction obj);
 
     void visitFieldOrMethod(FieldOrMethod obj);
 
@@ -584,9 +563,28 @@ public interface Visitor {
 
     void visitInvokeInstruction(InvokeInstruction obj);
 
-    void visitAllocationInstruction(AllocationInstruction obj);
     // endregion
 
-//    void visitExceptionThrower(ExceptionThrower obj);
+    // region facet Instruction
+    void visitTypedInstruction(TypedInstruction obj);
+
+    void visitCPInstruction(CPInstruction obj);
+
+    void visitPushInstruction(PushInstruction obj);
+
+    void visitPopInstruction(PopInstruction obj);
+
+    void visitStackProducer(StackProducer obj);
+
+    void visitStackConsumer(StackConsumer obj);
+
+    void visitAllocationInstruction(AllocationInstruction obj);
+
+    void visitLoadClass(LoadClass obj);
+
+    void visitVariableLengthInstruction(VariableLengthInstruction obj);
+
+    void visitUnconditionalBranch(UnconditionalBranch obj);
+    // endregion
 
 }

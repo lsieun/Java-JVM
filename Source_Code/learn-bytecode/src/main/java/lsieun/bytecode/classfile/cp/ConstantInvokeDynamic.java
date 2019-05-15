@@ -9,7 +9,7 @@ public final class ConstantInvokeDynamic extends Constant {
     private final int bootstrap_method_attr_index;
     private final int name_and_type_index;
 
-    ConstantInvokeDynamic(ByteDashboard byteDashboard) {
+    public ConstantInvokeDynamic(ByteDashboard byteDashboard) {
         super(CPConst.CONSTANT_InvokeDynamic);
         byte[] tag_bytes = byteDashboard.nextN(1);
         byte[] bootstrap_method_attr_index_bytes = byteDashboard.nextN(2);

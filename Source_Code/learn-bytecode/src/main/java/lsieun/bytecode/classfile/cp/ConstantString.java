@@ -19,6 +19,14 @@ public final class ConstantString extends Constant {
         super.setBytes(bytes);
     }
 
+    /**
+     * @param string_index Index of Constant_Utf8 in constant pool
+     */
+    public ConstantString(final int string_index) {
+        super(CPConst.CONSTANT_String);
+        this.string_index = string_index;
+    }
+
     public int getStringIndex() {
         return string_index;
     }

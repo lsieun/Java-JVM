@@ -19,6 +19,14 @@ public final class ConstantFloat extends Constant {
         super.setBytes(bytes);
     }
 
+    /**
+     * @param floatValue Data
+     */
+    public ConstantFloat(final float floatValue) {
+        super(CPConst.CONSTANT_Float);
+        this.floatValue = floatValue;
+    }
+
     public Float getFloatValue() {
         return floatValue;
     }

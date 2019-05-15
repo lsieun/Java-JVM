@@ -6,6 +6,7 @@ import lsieun.bytecode.classfile.ClassFile;
 import lsieun.bytecode.classfile.MethodInfo;
 import lsieun.bytecode.classfile.Methods;
 import lsieun.bytecode.utils.ByteDashboard;
+import lsieun.bytecode.utils.clazz.MethodUtils;
 import lsieun.utils.radix.ByteUtils;
 import lsieun.utils.radix.HexUtils;
 
@@ -19,7 +20,7 @@ public class MethodRawVisitor extends AbstractVisitor {
     @Override
     public void visitClassFile(ClassFile obj) {
         Methods methods = obj.getMethods();
-        MethodInfo methodInfo = methods.findByNameAndType(nameAndType);
+        MethodInfo methodInfo = MethodUtils.findMethod(methods, nameAndType);
         if(methodInfo != null) {
             methodInfo.accept(this);
         }
