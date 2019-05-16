@@ -20,31 +20,22 @@ import lsieun.bytecode.generic.instruction.sub.branch.SelectInstruction;
 import lsieun.bytecode.generic.opcode.ARRAYLENGTH;
 import lsieun.bytecode.generic.opcode.ATHROW;
 import lsieun.bytecode.generic.opcode.BREAKPOINT;
-import lsieun.bytecode.generic.opcode.CHECKCAST;
 import lsieun.bytecode.generic.opcode.IMPDEP1;
 import lsieun.bytecode.generic.opcode.IMPDEP2;
-import lsieun.bytecode.generic.opcode.INSTANCEOF;
 import lsieun.bytecode.generic.opcode.MONITORENTER;
 import lsieun.bytecode.generic.opcode.MONITOREXIT;
 import lsieun.bytecode.generic.opcode.NOP;
-import lsieun.bytecode.generic.opcode.allocate.ANEWARRAY;
-import lsieun.bytecode.generic.opcode.allocate.MULTIANEWARRAY;
 import lsieun.bytecode.generic.opcode.allocate.NEWARRAY;
 import lsieun.bytecode.generic.opcode.branh.JSR;
 import lsieun.bytecode.generic.opcode.branh.JSR_W;
 import lsieun.bytecode.generic.opcode.branh.RET;
-import lsieun.bytecode.generic.opcode.compare.DCMPG;
-import lsieun.bytecode.generic.opcode.compare.DCMPL;
-import lsieun.bytecode.generic.opcode.compare.FCMPG;
-import lsieun.bytecode.generic.opcode.compare.FCMPL;
-import lsieun.bytecode.generic.opcode.compare.LCMP;
 import lsieun.bytecode.generic.opcode.cst.ACONST_NULL;
 import lsieun.bytecode.generic.opcode.locals.IINC;
 import lsieun.bytecode.generic.type.Type;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.utils.radix.HexUtils;
 
-public class CodeStandardVisitor extends OpcodeVisitor {
+public class CodeStandardVisitor extends EmptyVisitor {
     private static final String NO_ARG_FORMAT = "%04d: %-20s // %s\n";
     private static final String ONE_ARG_FORMAT = "%04d: %-15s %-4s // %s\n";
     private static final String NEWARRAY_FORMAT = "%04d: %-15s %-4s // %s || %s\n";

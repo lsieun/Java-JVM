@@ -1,36 +1,35 @@
 package lsieun.bytecode.generic.instruction.visitor;
 
-import lsieun.bytecode.generic.instruction.Instruction;
-import lsieun.bytecode.generic.instruction.sub.CompareInstruction;
-import lsieun.bytecode.generic.instruction.sub.cp.FieldOrMethod;
 import lsieun.bytecode.generic.LoadClass;
-import lsieun.bytecode.generic.cst.OpcodeConst;
+import lsieun.bytecode.generic.instruction.Instruction;
+import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.instruction.facet.AllocationInstruction;
+import lsieun.bytecode.generic.instruction.facet.PopInstruction;
+import lsieun.bytecode.generic.instruction.facet.PushInstruction;
+import lsieun.bytecode.generic.instruction.facet.StackConsumer;
+import lsieun.bytecode.generic.instruction.facet.StackProducer;
+import lsieun.bytecode.generic.instruction.facet.TypedInstruction;
+import lsieun.bytecode.generic.instruction.facet.UnconditionalBranch;
+import lsieun.bytecode.generic.instruction.facet.VariableLengthInstruction;
 import lsieun.bytecode.generic.instruction.sub.ArithmeticInstruction;
 import lsieun.bytecode.generic.instruction.sub.ArrayInstruction;
 import lsieun.bytecode.generic.instruction.sub.BranchInstruction;
 import lsieun.bytecode.generic.instruction.sub.CPInstruction;
+import lsieun.bytecode.generic.instruction.sub.CompareInstruction;
 import lsieun.bytecode.generic.instruction.sub.ConstantPushInstruction;
 import lsieun.bytecode.generic.instruction.sub.ConversionInstruction;
-import lsieun.bytecode.generic.instruction.sub.cp.FieldInstruction;
+import lsieun.bytecode.generic.instruction.sub.LocalVariableInstruction;
+import lsieun.bytecode.generic.instruction.sub.ReturnInstruction;
+import lsieun.bytecode.generic.instruction.sub.StackInstruction;
 import lsieun.bytecode.generic.instruction.sub.branch.GotoInstruction;
 import lsieun.bytecode.generic.instruction.sub.branch.IfInstruction;
-import lsieun.bytecode.generic.instruction.sub.cp.InvokeInstruction;
 import lsieun.bytecode.generic.instruction.sub.branch.JsrInstruction;
-import lsieun.bytecode.generic.instruction.sub.load.LoadInstruction;
-import lsieun.bytecode.generic.instruction.sub.LocalVariableInstruction;
-import lsieun.bytecode.generic.instruction.facet.PopInstruction;
-import lsieun.bytecode.generic.instruction.facet.PushInstruction;
-import lsieun.bytecode.generic.instruction.sub.ReturnInstruction;
 import lsieun.bytecode.generic.instruction.sub.branch.SelectInstruction;
-import lsieun.bytecode.generic.instruction.facet.StackConsumer;
-import lsieun.bytecode.generic.instruction.sub.StackInstruction;
-import lsieun.bytecode.generic.instruction.facet.StackProducer;
+import lsieun.bytecode.generic.instruction.sub.cp.FieldInstruction;
+import lsieun.bytecode.generic.instruction.sub.cp.FieldOrMethod;
+import lsieun.bytecode.generic.instruction.sub.cp.InvokeInstruction;
+import lsieun.bytecode.generic.instruction.sub.load.LoadInstruction;
 import lsieun.bytecode.generic.instruction.sub.load.StoreInstruction;
-import lsieun.bytecode.generic.instruction.facet.TypedInstruction;
-import lsieun.bytecode.generic.instruction.facet.UnconditionalBranch;
-import lsieun.bytecode.generic.instruction.facet.VariableLengthInstruction;
-import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.opcode.ARRAYLENGTH;
 import lsieun.bytecode.generic.opcode.ATHROW;
 import lsieun.bytecode.generic.opcode.BREAKPOINT;
@@ -185,7 +184,7 @@ import lsieun.bytecode.generic.opcode.stack.POP;
 import lsieun.bytecode.generic.opcode.stack.POP2;
 import lsieun.bytecode.generic.opcode.stack.SWAP;
 
-public class OpcodeVisitor implements Visitor {
+public abstract class EmptyVisitor implements Visitor {
 
     @Override
     public void visitNOP(NOP obj) {

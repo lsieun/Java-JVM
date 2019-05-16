@@ -1,8 +1,6 @@
 package lsieun.bytecode.generic.instruction.visitor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.classfile.MethodInfo;
@@ -36,6 +34,7 @@ import lsieun.bytecode.generic.opcode.IMPDEP2;
 import lsieun.bytecode.generic.opcode.MONITORENTER;
 import lsieun.bytecode.generic.opcode.MONITOREXIT;
 import lsieun.bytecode.generic.opcode.NOP;
+import lsieun.bytecode.generic.opcode.allocate.ANEWARRAY;
 import lsieun.bytecode.generic.opcode.allocate.NEW;
 import lsieun.bytecode.generic.opcode.allocate.NEWARRAY;
 import lsieun.bytecode.generic.opcode.branh.JSR;
@@ -43,16 +42,26 @@ import lsieun.bytecode.generic.opcode.branh.JSR_W;
 import lsieun.bytecode.generic.opcode.branh.RET;
 import lsieun.bytecode.generic.opcode.cst.ACONST_NULL;
 import lsieun.bytecode.generic.opcode.cst.LDC;
+import lsieun.bytecode.generic.opcode.field.GETFIELD;
+import lsieun.bytecode.generic.opcode.field.GETSTATIC;
+import lsieun.bytecode.generic.opcode.field.PUTFIELD;
+import lsieun.bytecode.generic.opcode.field.PUTSTATIC;
+import lsieun.bytecode.generic.opcode.invoke.INVOKEDYNAMIC;
+import lsieun.bytecode.generic.opcode.invoke.INVOKEINTERFACE;
 import lsieun.bytecode.generic.opcode.invoke.INVOKESPECIAL;
+import lsieun.bytecode.generic.opcode.invoke.INVOKESTATIC;
+import lsieun.bytecode.generic.opcode.invoke.INVOKEVIRTUAL;
 import lsieun.bytecode.generic.opcode.locals.IINC;
 import lsieun.bytecode.generic.opcode.stack.DUP;
 import lsieun.bytecode.generic.type.Type;
 import lsieun.bytecode.utils.ByteDashboard;
 import lsieun.bytecode.utils.clazz.AccessFlagUtils;
 import lsieun.bytecode.utils.clazz.AttributeUtils;
+import lsieun.bytecode.verifier.structurals.ExecutionVisitor;
+import lsieun.bytecode.verifier.structurals.Frame;
 import lsieun.utils.radix.HexUtils;
 
-public class StackMapFrameVisitor extends OpcodeVisitor {
+public class StackMapFrameVisitor extends EmptyVisitor {
     private static final String NO_ARG_FORMAT = "%04d: %-20s || %s\n";
     private static final String ONE_ARG_FORMAT = "%04d: %-15s %-4s || %s\n";
     private static final String NEWARRAY_FORMAT = "%04d: %-15s %-4s || %s || %s\n";
@@ -132,11 +141,18 @@ public class StackMapFrameVisitor extends OpcodeVisitor {
         int[] instructionPositions = il.getInstructionPositions();
         InstructionHandle ih = il.getStart();
 
+        ExecutionVisitor visitor = new ExecutionVisitor();
+        Frame frame = new Frame(max_locals, max_stack);
+        visitor.setFrame(frame);
+        visitor.setConstantPoolGen(cpg);
+
         int count = 0;
         while(ih != null) {
             Instruction instruction = ih.getInstruction();
             offset = instructionPositions[count];
             instruction.accept(this);
+            instruction.accept(visitor);
+//            System.out.println(frame);
             ih = ih.getNext();
             count++;
         }
@@ -206,6 +222,60 @@ public class StackMapFrameVisitor extends OpcodeVisitor {
 
     }
 
+    // region opcode field
+    @Override
+    public void visitGETSTATIC(GETSTATIC obj) {
+        Type type = obj.getType(cpg);
+        int n = obj.produceStack(cpg);
+        for(int i=0; i<n; i++) {
+            push(type);
+        }
+    }
+
+    @Override
+    public void visitPUTSTATIC(PUTSTATIC obj) {
+
+    }
+
+    @Override
+    public void visitGETFIELD(GETFIELD obj) {
+
+    }
+
+    @Override
+    public void visitPUTFIELD(PUTFIELD obj) {
+
+    }
+    // endregion
+
+    // region opcode invoke
+    @Override
+    public void visitINVOKEVIRTUAL(INVOKEVIRTUAL obj) {
+
+    }
+
+    @Override
+    public void visitINVOKESPECIAL(INVOKESPECIAL obj) {
+
+    }
+
+    @Override
+    public void visitINVOKESTATIC(INVOKESTATIC obj) {
+
+    }
+
+    @Override
+    public void visitINVOKEINTERFACE(INVOKEINTERFACE obj) {
+
+    }
+
+    @Override
+    public void visitINVOKEDYNAMIC(INVOKEDYNAMIC obj) {
+
+    }
+    // endregion
+
+    // region opcode allocate
     @Override
     public void visitNEW(NEW obj) {
         Type type = obj.getType(cpg);
@@ -221,6 +291,14 @@ public class StackMapFrameVisitor extends OpcodeVisitor {
         Type type = obj.getType();
         System.out.printf(NEWARRAY_FORMAT, offset, name, atype, HexUtils.fromBytes(bytes), type);
     }
+
+    @Override
+    public void visitANEWARRAY(ANEWARRAY obj) {
+        Type type = obj.getType(cpg);
+        pop();
+        push(type);
+    }
+    // endregion
 
     @Override
     public void visitBREAKPOINT(BREAKPOINT obj) {
@@ -291,6 +369,15 @@ public class StackMapFrameVisitor extends OpcodeVisitor {
     @Override
     public void visitArrayInstruction(ArrayInstruction obj) {
         visitInstruction(obj);
+        int m = obj.consumeStack(cpg);
+        for(int i=0; i<m; i++) {
+            pop();
+        }
+        Type type = obj.getType(cpg);
+        int n = obj.produceStack(cpg);
+        for(int i=0; i<n; i++) {
+            push(type);
+        }
     }
 
     @Override
@@ -349,6 +436,11 @@ public class StackMapFrameVisitor extends OpcodeVisitor {
         int n = obj.consumeStack(cpg);
         while(n-->0) {
             pop();
+        }
+
+        Type returnType = obj.getReturnType(cpg);
+        if(returnType != Type.VOID) {
+            push(returnType);
         }
     }
 

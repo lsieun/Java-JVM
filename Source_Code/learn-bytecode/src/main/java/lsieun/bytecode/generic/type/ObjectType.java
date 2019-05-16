@@ -23,4 +23,20 @@ public class ObjectType extends ReferenceType {
     public static ObjectType getInstance(final String class_name) {
         return new ObjectType(class_name);
     }
+
+    /** @return a hash code value for the object.
+     */
+    @Override
+    public int hashCode() {
+        return class_name.hashCode();
+    }
+
+    /** @return true if both type objects refer to the same class.
+     */
+    @Override
+    public boolean equals( final Object type ) {
+        return (type instanceof ObjectType)
+                ? ((ObjectType) type).class_name.equals(class_name)
+                : false;
+    }
 }

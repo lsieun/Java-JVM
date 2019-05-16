@@ -479,6 +479,8 @@ public class HelloWorld {
 
 ```java
 System.out.println(i);
+```
 
+```java
 System.out.printf("%s\n", "World", "Hello");
 ```
