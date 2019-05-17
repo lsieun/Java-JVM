@@ -32,13 +32,17 @@
 - [6. Examples](#6-examples)
   - [6.1. append_frame example](#61-appendframe-example)
   - [6.2. full_frame example](#62-fullframe-example)
-- [Stack Map Frame Example](#stack-map-frame-example)
-  - [example 001](#example-001)
-  - [example 002](#example-002)
-  - [example 003](#example-003)
-  - [example 004](#example-004)
-  - [example 005](#example-005)
-  - [example 006](#example-006)
+- [7. Stack Map Frame Example](#7-stack-map-frame-example)
+  - [7.1. example 001](#71-example-001)
+  - [7.2. example 002](#72-example-002)
+  - [7.3. example 003](#73-example-003)
+  - [7.4. example 004](#74-example-004)
+  - [7.5. example 005](#75-example-005)
+  - [7.6. example 006](#76-example-006)
+  - [7.7. example 007](#77-example-007)
+  - [7.7. example 008](#77-example-008)
+  - [7.7. example 009](#77-example-009)
+- [8. StringBuilder代码优化](#8-stringbuilder%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96)
 
 <!-- /TOC -->
 
@@ -492,9 +496,9 @@ System.out.println(i);
 System.out.printf("%s\n", "World", "Hello");
 ```
 
-## Stack Map Frame Example
+## 7. Stack Map Frame Example
 
-### example 001
+### 7.1. example 001
 
 ```java
 public void testSimple() {
@@ -504,7 +508,7 @@ public void testSimple() {
 }
 ```
 
-### example 002
+### 7.2. example 002
 
 ```java
 public void testSimple() {
@@ -512,7 +516,7 @@ public void testSimple() {
 }
 ```
 
-### example 003
+### 7.3. example 003
 
 ```java
 public void testSimple() {
@@ -520,7 +524,7 @@ public void testSimple() {
 }
 ```
 
-### example 004
+### 7.4. example 004
 
 ```java
 public void testSimple() {
@@ -528,7 +532,7 @@ public void testSimple() {
 }
 ```
 
-### example 005
+### 7.5. example 005
 
 ```java
 public void testSimple() {
@@ -537,12 +541,100 @@ public void testSimple() {
 }
 ```
 
-### example 006
+### 7.6. example 006
 
 ```java
 public void testSimple() {
     String[] array = new String[2];
     array[0] = array[1] = "Hello";
+}
+```
+
+### 7.7. example 007
+
+- ifeq
+- goto
+
+```java
+public void testSimple() {
+    boolean flag = true;
+    int i = 0;
+    if(flag) {
+        i = 1;
+    }
+    else {
+        i = 2;
+    }
+    System.out.println(i);
+}
+```
+
+### 7.7. example 008
+
+```java
+public void testSimple() {
+    int value = 1;
+    int result = 0;
+
+    switch (value) {
+        case 10:
+            result = 1;
+            break;
+        case 20:
+            result = 2;
+            break;
+        case 30:
+            result = 3;
+            break;
+        default:
+            result = 4;
+    }
+}
+```
+
+### 7.7. example 009
+
+```java
+public void testSimple() {
+    int value = 1;
+    int result = 0;
+
+    switch (value) {
+        case 10:
+            result = 1;
+            break;
+        case 20:
+            result = 2;
+            break;
+        case 30:
+            result = 3;
+            break;
+        default:
+            result = 4;
+    }
+}
+```
+
+## 8. StringBuilder代码优化
+
+优化前：29个instruction
+
+```java
+public void testSimple() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Hello");
+    sb.append("World");
+    System.out.println(sb);
+}
+```
+
+优化后：27个instruction
+
+```java
+public void testSimple() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Hello").append("World");
+    System.out.println(sb);
 }
 ```
 

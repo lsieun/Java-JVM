@@ -1,6 +1,8 @@
 package lsieun.bytecode.generic.instruction.visitor;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import lsieun.bytecode.classfile.ConstantPool;
 import lsieun.bytecode.classfile.MethodInfo;
@@ -17,8 +19,11 @@ import lsieun.bytecode.generic.instruction.ConstantPoolGen;
 import lsieun.bytecode.generic.instruction.Instruction;
 import lsieun.bytecode.generic.instruction.InstructionList;
 import lsieun.bytecode.generic.instruction.handle.InstructionHandle;
+import lsieun.bytecode.generic.instruction.sub.BranchInstruction;
 import lsieun.bytecode.generic.instruction.sub.CPInstruction;
 import lsieun.bytecode.generic.instruction.sub.LocalVariableInstruction;
+import lsieun.bytecode.generic.instruction.sub.branch.GotoInstruction;
+import lsieun.bytecode.generic.instruction.sub.branch.IfInstruction;
 import lsieun.bytecode.generic.instruction.sub.branch.SelectInstruction;
 import lsieun.bytecode.generic.opcode.ARRAYLENGTH;
 import lsieun.bytecode.generic.opcode.ATHROW;
@@ -250,6 +255,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         int idx = 0;
         if (!isStatic) {
             idx++;
+            local_variable[0] = new ObjectType("this");
         }
 
         Type[] argumentTypes = Type.getArgumentTypes(descriptor);
@@ -263,26 +269,85 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         int[] instructionPositions = il.getInstructionPositions();
         InstructionHandle ih = il.getStart();
 
-        ExecutionVisitor visitor = new ExecutionVisitor();
-        Frame frame = new Frame(max_locals, max_stack);
-        visitor.setFrame(frame);
-        visitor.setConstantPoolGen(cpg);
+        Map<Integer, State> map = new HashMap<Integer, State>();
 
         int count = 0;
         while (ih != null) {
             Instruction instruction = ih.getInstruction();
             offset = instructionPositions[count];
+
+            // （1）恢复原来的Stack状态
+            State storedState = map.get(Integer.valueOf(offset));
+            if(storedState != null) {
+                System.arraycopy(storedState.getOperandStack(), 0, operand_stack, 0, max_stack);
+                System.arraycopy(storedState.getLocalVariable(), 0, local_variable, 0, max_locals);
+            }
+
+            // (2)处理当前的instruction
             instruction.accept(this);
-            instruction.accept(visitor);
-//            System.out.println(frame);
+
+            // （3）如果当前指令是跳转指令，那么需要存储当前指令处理后的状态，以便在第（1）处恢复
+            if(instruction instanceof BranchInstruction) {
+                BranchInstruction brIns = (BranchInstruction) instruction;
+                int index = brIns.getIndex();
+                State state = copyState();
+                map.put(Integer.valueOf(offset+index), state);
+
+                if(instruction instanceof SelectInstruction) {
+                    SelectInstruction selectIns = (SelectInstruction) instruction;
+                    int[] indices = selectIns.getIndices();
+                    for(int i : indices) {
+                        State s = copyState();
+                        map.put(Integer.valueOf(offset+i), s);
+                    }
+                }
+            }
+
+
             ih = ih.getNext();
             count++;
         }
     }
 
+    private State copyState() {
+        State state = new State(max_stack, max_locals);
+        System.arraycopy(operand_stack, 0, state.getOperandStack(), 0, max_stack);
+        System.arraycopy(local_variable, 0, state.getLocalVariable(), 0, max_locals);
+        return state;
+    }
+
+    private static class State {
+        private Type[] local_variable;
+        private Type[] operand_stack;
+
+        public State(int max_stack, int max_locals) {
+            operand_stack = new Type[max_stack];
+            local_variable = new Type[max_locals];
+        }
+
+        public Type[] getLocalVariable() {
+            return local_variable;
+        }
+
+        public void setLocalVariable(Type[] local_variable) {
+            this.local_variable = local_variable;
+        }
+
+        public Type[] getOperandStack() {
+            return operand_stack;
+        }
+
+        public void setOperandStack(Type[] operand_stack) {
+            this.operand_stack = operand_stack;
+        }
+    }
+
     public String getLine() {
         String format = "%s %s";
-        String line = String.format(format, Arrays.toString(local_variable), Arrays.toString(operand_stack));
+        Type[] array = new Type[current_stack+1];
+        System.arraycopy(operand_stack, 0, array, 0, current_stack+1);
+
+        String line = String.format(format, Arrays.toString(local_variable), Arrays.toString(array));
         return line;
     }
 
@@ -326,6 +391,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         push(type);
     }
 
+    //FIXME: anewarray test
     @Override
     public void visitANEWARRAY(final ANEWARRAY obj) {
         // Opcode
@@ -443,7 +509,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitNOARGIns(obj);
 
         // StackMapFrame
-        pop(2);
+        pop();
         push(Type.FLOAT);
     }
 
@@ -453,7 +519,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitNOARGIns(obj);
 
         // StackMapFrame
-        pop(2);
+        pop();
         push(Type.INT);
     }
 
@@ -502,8 +568,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitNOARGIns(obj);
 
         // StackMapFrame
-        pop();
-        pop();
+        pop(2);
         push(Type.INT);
     }
 
@@ -513,8 +578,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitNOARGIns(obj);
 
         // StackMapFrame
-        pop();
-        pop();
+        pop(2);
         push(Type.INT);
     }
 
@@ -533,16 +597,14 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitNOARGIns(obj);
 
         // StackMapFrame
-        pop();
-        pop();
+        pop(2);
         push(Type.DOUBLE);
     }
 
     @Override
     public void visitDLOAD(final DLOAD obj) {
         // Opcode
-        int localVarIndex = obj.getIndex();
-        visitONEARGIns(obj, String.valueOf(localVarIndex));
+        int localVarIndex = visitLocalVarIns(obj);
 
         // StackMapFrame
         push(Type.DOUBLE);
@@ -554,8 +616,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitNOARGIns(obj);
 
         // StackMapFrame
-        pop();
-        pop();
+        pop(2);
         push(Type.DOUBLE);
     }
 
@@ -575,8 +636,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitNOARGIns(obj);
 
         // StackMapFrame
-        pop();
-        pop();
+        pop(2);
         push(Type.DOUBLE);
     }
 
@@ -592,8 +652,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
     @Override
     public void visitDSTORE(final DSTORE obj) {
         // Opcode
-        int localVarIndex = obj.getIndex();
-        visitONEARGIns(obj, String.valueOf(localVarIndex));
+        int localVarIndex = visitLocalVarIns(obj);
 
         // StackMapFrame
         pop();
@@ -607,8 +666,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitNOARGIns(obj);
 
         // StackMapFrame
-        pop();
-        pop();
+        pop(2);
         push(Type.DOUBLE);
     }
 
@@ -797,7 +855,6 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         push(Type.FLOAT);
     }
 
-    //FIXME: XLOAD可能处理错了
     @Override
     public void visitFLOAD(final FLOAD obj) {
         // Opcode
@@ -852,8 +909,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         int localVarIndex = visitLocalVarIns(obj);
 
         // StackMapFrame
-        Type type = pop();
-        local_variable[localVarIndex] = type;
+        local_variable[localVarIndex] = Type.FLOAT;
     }
 
     @Override
@@ -971,8 +1027,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitNOARGIns(obj);
 
         // StackMapFrame
-        pop();
-        pop();
+        pop(2);
         push(Type.INT);
     }
 
@@ -1265,8 +1320,6 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         }
     }
 
-
-    // FIXME: 处理constructor时候，要进行处理
     @Override
     public void visitINVOKESPECIAL(INVOKESPECIAL obj) {
         // Opcode
@@ -1736,7 +1789,6 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         push(obj.getType(cpg));
     }
 
-    //FIXME: 测试NEW
     @Override
     public void visitNEW(final NEW obj) {
         // Opcode
@@ -1794,8 +1846,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitCPIns(obj);
 
         // StackMapFrame
-        pop();
-        pop();
+        pop(2);
     }
 
     @Override
@@ -1828,8 +1879,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         visitNOARGIns(obj);
 
         // StackMapFrame
-        pop();
-        pop();
+        pop(2);
         push(Type.INT);
     }
 
@@ -1874,6 +1924,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
     }
 
 
+    // region auxiliary
     private void visitNOARGIns(Instruction obj) {
         String name = obj.getName();
         System.out.printf(NO_ARG_FORMAT, offset, name, getLine());
@@ -1889,7 +1940,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         System.out.printf(WIDE_LOCAL_VAR_FORMAT, offset, name, firstArg, getLine());
     }
 
-    public void visitCPIns(CPInstruction obj) {
+    private void visitCPIns(CPInstruction obj) {
         String name = obj.getName();
         int cpIndex = obj.getIndex();
         Constant constant = constantPool.getConstant(cpIndex);
@@ -1934,6 +1985,7 @@ public class StackMapFrameVisitor extends EmptyVisitor {
         System.out.println(prefix + "  default: " + branch_offset);
         System.out.println(prefix + "}");
     }
+    // endregion
 
 
     // region stack operation
