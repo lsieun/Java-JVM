@@ -206,7 +206,7 @@ public class ExecutionVisitor extends EmptyVisitor {
     /**
      * Sets the ConstantPoolGen needed for symbolic execution.
      */
-    public void setConstantPoolGen(final ConstantPoolGen cpg) { // TODO could be package-protected?
+    public void setConstantPoolGen(final ConstantPoolGen cpg) {
         this.cpg = cpg;
     }
 
@@ -217,7 +217,7 @@ public class ExecutionVisitor extends EmptyVisitor {
      *
      * @see #setConstantPoolGen(ConstantPoolGen)
      */
-    public void setFrame(final Frame f) { // TODO could be package-protected?
+    public void setFrame(final Frame f) {
         this.frame = f;
     }
 

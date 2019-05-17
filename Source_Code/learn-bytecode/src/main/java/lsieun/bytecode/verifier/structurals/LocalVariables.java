@@ -39,7 +39,7 @@ public class LocalVariables implements Cloneable {
     /**
      * Sets a new Type for the given local variable slot.
      */
-    public void set(final int i, final Type type) { // TODO could be package-protected?
+    public void set(final int i, final Type type) {
         if (type == Type.BYTE || type == Type.SHORT || type == Type.BOOLEAN || type == Type.CHAR) {
             throw new AssertionViolatedException("LocalVariables do not know about '"+type+"'. Use Type.INT instead.");
         }

@@ -32,6 +32,13 @@
 - [6. Examples](#6-examples)
   - [6.1. append_frame example](#61-appendframe-example)
   - [6.2. full_frame example](#62-fullframe-example)
+- [Stack Map Frame Example](#stack-map-frame-example)
+  - [example 001](#example-001)
+  - [example 002](#example-002)
+  - [example 003](#example-003)
+  - [example 004](#example-004)
+  - [example 005](#example-005)
+  - [example 006](#example-006)
 
 <!-- /TOC -->
 
@@ -484,3 +491,58 @@ System.out.println(i);
 ```java
 System.out.printf("%s\n", "World", "Hello");
 ```
+
+## Stack Map Frame Example
+
+### example 001
+
+```java
+public void testSimple() {
+    int a = 1;
+    int b = 2;
+    int c = a + b;
+}
+```
+
+### example 002
+
+```java
+public void testSimple() {
+    System.out.println(100);
+}
+```
+
+### example 003
+
+```java
+public void testSimple() {
+    int max = Math.max(5, 15);
+}
+```
+
+### example 004
+
+```java
+public void testSimple() {
+    System.out.printf("%s\n", "World", "Hello");
+}
+```
+
+### example 005
+
+```java
+public void testSimple() {
+    Map map = new HashMap();
+    map.put("key", "value");
+}
+```
+
+### example 006
+
+```java
+public void testSimple() {
+    String[] array = new String[2];
+    array[0] = array[1] = "Hello";
+}
+```
+

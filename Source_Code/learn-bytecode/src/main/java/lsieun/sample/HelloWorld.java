@@ -1,18 +1,14 @@
 package lsieun.sample;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lsieun.bytecode.generic.cst.OpcodeConst;
 
 public class HelloWorld {
     public void testSimple() {
-        boolean flag = true;
-        int i;
-        if (flag) {
-            i = 1;
-        } else {
-            i = 2;
-        }
-        //System.out.println(100);
-        //System.out.printf("%s\n", "World", "Hello");
+        String[] array = new String[2];
+        array[0] = array[1] = "Hello";
     }
 
     public static void main(String[] args) {
