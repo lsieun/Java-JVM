@@ -3,6 +3,7 @@ package lsieun.bytecode.generic.instruction;
 import java.io.IOException;
 
 import lsieun.bytecode.exceptions.ClassGenException;
+import lsieun.bytecode.generic.ConstantPoolGen;
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.sub.LocalVariableInstruction;
 import lsieun.bytecode.generic.opcode.BREAKPOINT;

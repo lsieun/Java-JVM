@@ -1,6 +1,5 @@
 package lsieun.bytecode.generic;
 
-import lsieun.bytecode.generic.instruction.ConstantPoolGen;
 import lsieun.bytecode.generic.type.ObjectType;
 import lsieun.bytecode.generic.type.Type;
 

@@ -6,7 +6,7 @@ import lsieun.bytecode.classfile.cp.ConstantLong;
 import lsieun.bytecode.generic.cst.CPConst;
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.sub.CPInstruction;
-import lsieun.bytecode.generic.instruction.ConstantPoolGen;
+import lsieun.bytecode.generic.ConstantPoolGen;
 import lsieun.bytecode.generic.instruction.facet.PushInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.Type;

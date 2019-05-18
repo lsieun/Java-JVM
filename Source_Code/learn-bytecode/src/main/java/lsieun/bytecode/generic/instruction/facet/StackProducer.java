@@ -1,6 +1,6 @@
 package lsieun.bytecode.generic.instruction.facet;
 
-import lsieun.bytecode.generic.instruction.ConstantPoolGen;
+import lsieun.bytecode.generic.ConstantPoolGen;
 
 /**
  * Denote an instruction that may produce a value on top of the stack

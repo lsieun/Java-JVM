@@ -3,7 +3,7 @@ package lsieun.bytecode.generic.instruction.sub;
 import lsieun.bytecode.exceptions.ClassGenException;
 import lsieun.bytecode.generic.cst.JVMConst;
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.instruction.ConstantPoolGen;
+import lsieun.bytecode.generic.ConstantPoolGen;
 import lsieun.bytecode.generic.instruction.Instruction;
 import lsieun.bytecode.generic.instruction.facet.TypedInstruction;
 import lsieun.bytecode.generic.instruction.facet.IndexedInstruction;

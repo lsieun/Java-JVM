@@ -1,4 +1,4 @@
-package lsieun.bytecode.generic.instruction;
+package lsieun.bytecode.generic;
 
 import java.util.HashMap;
 import java.util.Map;

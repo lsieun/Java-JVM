@@ -1,6 +1,6 @@
 package lsieun.bytecode.generic.instruction.facet;
 
-import lsieun.bytecode.generic.instruction.ConstantPoolGen;
+import lsieun.bytecode.generic.ConstantPoolGen;
 
 /**
  * Denote an instruction that may consume a value from the stack.

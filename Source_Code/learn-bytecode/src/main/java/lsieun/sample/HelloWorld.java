@@ -26,9 +26,15 @@ public class HelloWorld {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 256; i++) {
-            String opcodeName = OpcodeConst.getOpcodeName(i);
-            System.out.println("- " + opcodeName);
+        String str = "abcdef";
+        int hashCode = str.hashCode();
+        System.out.println(hashCode);
+        int sum = 0;
+        for(int i=0; i<str.length(); i++) {
+            sum = sum * 31 + str.charAt(i);
         }
+        System.out.println(sum);
+        double sqrt = Math.sqrt(Short.MAX_VALUE);
+        System.out.println(sqrt);
     }
 }
