@@ -14,6 +14,15 @@ public class LineNumber {
         this.line_number = ByteUtils.bytesToInt(line_number_bytes, 0);
     }
 
+    /**
+     * @param start_pc Program Counter (PC) corresponds to
+     * @param line_number line number in source file
+     */
+    public LineNumber(final int start_pc, final int line_number) {
+        this.start_pc = (short) start_pc;
+        this.line_number = (short)line_number;
+    }
+
     public int getStartPC() {
         return start_pc;
     }

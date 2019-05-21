@@ -124,7 +124,7 @@ import lsieun.bytecode.generic.opcode.locals.ALOAD;
  * 使用FlyWeight设计模式<br/><br/>
  * <p>
  * This feature is an adaptation of the FlyWeight design pattern, we
- * just use an array instead of a factory.
+ * just use an array instead of a fairydust.
  * </p><br/>
  *
  * <p>

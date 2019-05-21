@@ -10,7 +10,7 @@ public class ExceptionTable {
     private final int end_pc;
     private final int handler_pc;
     private final int catch_type;
-    private final String exceptionType;
+    private String exceptionType;
 
     public ExceptionTable(ByteDashboard byteDashboard, ConstantPool constantPool) {
         byte[] start_pc_bytes = byteDashboard.nextN(2);
@@ -35,6 +35,23 @@ public class ExceptionTable {
 
         exceptionType = exceptionType.replaceAll("/", ".");
         this.exceptionType = exceptionType;
+    }
+
+    /**
+     * @param start_pc Range in the code the exception handler is active,
+     * start_pc is inclusive while
+     * @param end_pc is exclusive
+     * @param handler_pc Starting address of exception handler, i.e.,
+     * an offset from start of code.
+     * @param catch_type If zero the handler catches any
+     * exception, otherwise it points to the exception class which is
+     * to be caught.
+     */
+    public ExceptionTable(final int start_pc, final int end_pc, final int handler_pc, final int catch_type) {
+        this.start_pc = start_pc;
+        this.end_pc = end_pc;
+        this.handler_pc = handler_pc;
+        this.catch_type = catch_type;
     }
 
     public int getStartPC() {

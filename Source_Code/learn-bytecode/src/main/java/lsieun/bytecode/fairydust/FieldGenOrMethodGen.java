@@ -1,4 +1,4 @@
-package lsieun.bytecode.generic;
+package lsieun.bytecode.fairydust;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +12,13 @@ import lsieun.bytecode.generic.type.Type;
  * some methods in common!
  */
 public abstract class FieldGenOrMethodGen implements Cloneable {
+    //这是MethodInfo或FieldInfo的内部信息
     private int access_flags;
     private String name;
     private Type type;
-    private ConstantPoolGen cp;
     private final List<AttributeInfo> attribute_vec = new ArrayList();
+    //这是MethodInfo或FieldInfo之外的辅助信息
+    private ConstantPoolGen cp;
 
     protected FieldGenOrMethodGen() {
     }
@@ -25,6 +27,7 @@ public abstract class FieldGenOrMethodGen implements Cloneable {
         this.access_flags = access_flags;
     }
 
+    // region getter and setter
     public int getAccessFlags() {
         return access_flags;
     }
@@ -52,15 +55,6 @@ public abstract class FieldGenOrMethodGen implements Cloneable {
         this.type = type;
     }
 
-    public ConstantPoolGen getConstantPool() {
-        return cp;
-    }
-
-
-    public void setConstantPool(final ConstantPoolGen cp) {
-        this.cp = cp;
-    }
-
     public void addAttribute( final AttributeInfo a ) {
         attribute_vec.add(a);
     }
@@ -78,6 +72,16 @@ public abstract class FieldGenOrMethodGen implements Cloneable {
         attribute_vec.toArray(attributes);
         return attributes;
     }
+
+    public ConstantPoolGen getConstantPool() {
+        return cp;
+    }
+
+
+    public void setConstantPool(final ConstantPoolGen cp) {
+        this.cp = cp;
+    }
+    // endregion
 
     public abstract String getSignature();
 

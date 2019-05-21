@@ -1,4 +1,4 @@
-package lsieun.bytecode.generic;
+package lsieun.bytecode.fairydust;
 
 import java.util.HashMap;
 import java.util.Map;

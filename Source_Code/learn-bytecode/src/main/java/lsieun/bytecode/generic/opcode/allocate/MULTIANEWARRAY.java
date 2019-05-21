@@ -5,7 +5,7 @@ import lsieun.bytecode.generic.LoadClass;
 import lsieun.bytecode.generic.cst.OpcodeConst;
 import lsieun.bytecode.generic.instruction.facet.AllocationInstruction;
 import lsieun.bytecode.generic.instruction.sub.CPInstruction;
-import lsieun.bytecode.generic.ConstantPoolGen;
+import lsieun.bytecode.fairydust.ConstantPoolGen;
 import lsieun.bytecode.generic.instruction.Visitor;
 import lsieun.bytecode.generic.type.ArrayType;
 import lsieun.bytecode.generic.type.ObjectType;

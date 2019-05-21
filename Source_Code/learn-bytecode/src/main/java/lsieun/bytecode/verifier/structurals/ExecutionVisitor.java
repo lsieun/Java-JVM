@@ -8,7 +8,7 @@ import lsieun.bytecode.classfile.cp.ConstantInteger;
 import lsieun.bytecode.classfile.cp.ConstantLong;
 import lsieun.bytecode.classfile.cp.ConstantString;
 import lsieun.bytecode.generic.cst.JVMConst;
-import lsieun.bytecode.generic.ConstantPoolGen;
+import lsieun.bytecode.fairydust.ConstantPoolGen;
 import lsieun.bytecode.generic.instruction.visitor.EmptyVisitor;
 import lsieun.bytecode.generic.opcode.ARRAYLENGTH;
 import lsieun.bytecode.generic.opcode.ATHROW;

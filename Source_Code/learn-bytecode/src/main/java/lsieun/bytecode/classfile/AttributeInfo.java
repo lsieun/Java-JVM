@@ -29,10 +29,9 @@ public class AttributeInfo extends Node {
 
         this.attribute_name_index = ByteUtils.bytesToInt(attribute_name_index_bytes, 0);
         this.attribute_length = ByteUtils.bytesToInt(attribute_length_bytes, 0);
-        if(isPeek) {
+        if (isPeek) {
             this.info = byteDashboard.peekN(attribute_length);
-        }
-        else {
+        } else {
             this.info = byteDashboard.nextN(attribute_length);
         }
 
@@ -69,43 +68,31 @@ public class AttributeInfo extends Node {
         String name = constantPool.getConstantString(attributeNameIndex, CPConst.CONSTANT_Utf8);
         AttributeInfo instance = null;
 
-        if("SourceFile".equals(name)) {
+        if ("SourceFile".equals(name)) {
             instance = new SourceFile(byteDashboard, constantPool);
-        }
-        else if("InnerClasses".equals(name)) {
+        } else if ("InnerClasses".equals(name)) {
             instance = new InnerClasses(byteDashboard, constantPool);
-        }
-        else if("Code".equals(name)) {
+        } else if ("Code".equals(name)) {
             instance = new Code(byteDashboard, constantPool);
-        }
-        else if("LineNumberTable".equals(name)) {
+        } else if ("LineNumberTable".equals(name)) {
             instance = new LineNumberTable(byteDashboard, constantPool);
-        }
-        else if("LocalVariableTable".equals(name)) {
+        } else if ("LocalVariableTable".equals(name)) {
             instance = new LocalVariableTable(byteDashboard, constantPool);
-        }
-        else if("LocalVariableTypeTable".equals(name)) {
+        } else if ("LocalVariableTypeTable".equals(name)) {
             instance = new LocalVariableTypeTable(byteDashboard, constantPool);
-        }
-        else if("Signature".equals(name)) {
+        } else if ("Signature".equals(name)) {
             instance = new Signature(byteDashboard, constantPool);
-        }
-        else if("Deprecated".equals(name)) {
+        } else if ("Deprecated".equals(name)) {
             instance = new Deprecated(byteDashboard, constantPool);
-        }
-        else if("Exceptions".equals(name)) {
+        } else if ("Exceptions".equals(name)) {
             instance = new Exceptions(byteDashboard, constantPool);
-        }
-        else if("ConstantValue".equals(name)) {
+        } else if ("ConstantValue".equals(name)) {
             instance = new ConstantValue(byteDashboard, constantPool);
-        }
-        else if("RuntimeVisibleAnnotations".equals(name)) {
+        } else if ("RuntimeVisibleAnnotations".equals(name)) {
             instance = new RuntimeVisibleAnnotations(byteDashboard, constantPool);
-        }
-        else if("StackMapTable".equals(name)) {
+        } else if ("StackMapTable".equals(name)) {
             instance = new StackMapTable(byteDashboard, constantPool);
-        }
-        else {
+        } else {
             instance = new AttributeInfo(byteDashboard, constantPool);
         }
 

@@ -1,6 +1,6 @@
 package lsieun.bytecode.generic.instruction.sub.cp;
 
-import lsieun.bytecode.generic.ConstantPoolGen;
+import lsieun.bytecode.fairydust.ConstantPoolGen;
 import lsieun.bytecode.generic.type.Type;
 
 /**

@@ -1,7 +1,7 @@
 package lsieun.bytecode.generic.opcode.field;
 
 import lsieun.bytecode.generic.cst.OpcodeConst;
-import lsieun.bytecode.generic.ConstantPoolGen;
+import lsieun.bytecode.fairydust.ConstantPoolGen;
 import lsieun.bytecode.generic.instruction.sub.cp.FieldInstruction;
 import lsieun.bytecode.generic.instruction.facet.PushInstruction;
 import lsieun.bytecode.generic.instruction.Visitor;
