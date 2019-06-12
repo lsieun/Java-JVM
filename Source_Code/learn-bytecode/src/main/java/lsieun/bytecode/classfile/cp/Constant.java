@@ -35,15 +35,7 @@ public abstract class Constant extends Node {
         this.value = value;
     }
 
-    // FIXME: 2,要进行混合，
-    //  Class->Utf8
-    //  String->Utf8
-    //  NameAndType->Utf8
-    //  MethodType->Utf8
-    //  Module->Utf8
-    //  Dynamic->NameAndType
-    //  MemberRef->Class,NameAndType
-    //  MethodHandle-> Ref
+
     public static Constant readConstant(final ByteDashboard byteDashboard) {
         final byte tag = byteDashboard.peek();
 
